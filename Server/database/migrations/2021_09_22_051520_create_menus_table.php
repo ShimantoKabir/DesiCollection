@@ -16,13 +16,13 @@ class CreateMenusTable extends Migration
         Schema::create('menus', function (Blueprint $table) {
             $table->id();
             $table->integer('oid');
-            $table->integer('srl');
             $table->string('href')->nullable();
-            $table->string('text')->nullable();
             $table->string('icon')->nullable();
-            $table->integer('level');
+            $table->integer('tree_id');
             $table->integer('for_whom')->comment("1 - admin, 2 - customer");
+            $table->string('menu_name')->nullable();
             $table->integer("is_active")->default(1);
+            $table->integer('tree_parent_id');
             $table->timestamps();
         });
     }

@@ -4,14 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Role extends Model
+class MenuPermissionForRole extends Model
 {
-    protected $table = "Role";
+    protected $table = "MenuPermissionForRole";
     public $timestamps = false;
     protected $fillable = [
         'id',
-        'oid',
-        'role_name',
+        'role_oid',
+        'menu_oid',
         'created_at',
         'updated_at'
     ];

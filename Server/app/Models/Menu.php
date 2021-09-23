@@ -11,14 +11,13 @@ class Menu extends Model
     protected $fillable = [
         'id',
         'oid',
-        'srl',
         'href',
-        'text',
         'icon',
-        'level',
-        'strength',
+        'tree_id',
         'for_whom',
+        'menu_name',
         'is_active',
+        'tree_parent_id',
         'created_at',
         'updated_at'
     ];

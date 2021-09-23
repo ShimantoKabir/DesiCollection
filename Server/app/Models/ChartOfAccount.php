@@ -11,12 +11,12 @@ class ChartOfAccount extends Model
     protected $fillable = [
         'id',
         'oid',
-        'srl',
         'path',
-        'level',
         'org_id',
+        'tree_id',
         'is_ledger',
         'account_name',
+        'tree_parent_id',
         'created_at',
         'updated_at'
     ];
