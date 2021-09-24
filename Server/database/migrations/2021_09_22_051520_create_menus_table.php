@@ -22,7 +22,7 @@ class CreateMenusTable extends Migration
             $table->integer('for_whom')->comment("1 - admin, 2 - customer");
             $table->string('menu_name')->nullable();
             $table->integer("is_active")->default(1);
-            $table->integer('tree_parent_id');
+            $table->integer('parent_tree_id');
             $table->timestamps();
         });
     }

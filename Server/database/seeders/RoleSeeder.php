@@ -36,6 +36,11 @@ class RoleSeeder extends Seeder
                 "oid" => 103,
                 "role_name" => "Manager",
                 "for_whom" => 1
+            ],
+            [
+                "oid" => 104,
+                "role_name" => "Assistant Manager",
+                "for_whom" => 1
             ]
         ];
 
