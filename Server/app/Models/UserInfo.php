@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserInfo extends Model
 {
-    protected $table = "UserInfo";
+    protected $table = "user_infos";
     public $timestamps = false;
     protected $fillable = [
         'id',

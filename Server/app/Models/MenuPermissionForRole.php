@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class MenuPermissionForRole extends Model
 {
-    protected $table = "MenuPermissionForRole";
+    protected $table = "menu_permission_for_roles";
     public $timestamps = false;
     protected $fillable = [
         'id',

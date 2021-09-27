@@ -1,6 +1,7 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\TestCtl;
+use App\Http\Controllers\UserInfoCtl;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::get('/test', [TestCtl::class, 'test']);
+Route::post('/user-info/login', [UserInfoCtl::class, 'login']);
+Route::post('/user-info/reload', [UserInfoCtl::class, 'reload']);
+

@@ -53,7 +53,7 @@ class UserInfoSeeder extends Seeder
                 "op_access" => "R",
                 "is_active" => 1,
                 "is_approved" => 1,
-                "restricted_menu_oid" => "108,109,110"
+                "restricted_menu_oid" => "109,110"
             ]
         ];
 

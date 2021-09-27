@@ -1,4 +1,4 @@
-# AdminClient
+# Admin
 
 ## Build Setup
 

@@ -16,7 +16,7 @@ class ChartOfAccount extends Model
         'tree_id',
         'is_ledger',
         'account_name',
-        'tree_parent_id',
+        'parent_tree_id',
         'created_at',
         'updated_at'
     ];

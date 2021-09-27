@@ -206,7 +206,7 @@ class MenuSeeder extends Seeder
                 "oid" => 119,
                 "href" => "/ais-report",
                 "icon" => null,
-                "tree_id" => 119,
+                "tree_id" => 19,
                 "for_whom" => 1,
                 "menu_name" => "Report",
                 "is_active" => 1,
