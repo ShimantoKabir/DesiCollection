@@ -7,7 +7,8 @@
       </div>
       <div v-if="response.hasError" class="alert alert-warning alert-dismissible fade show" role="alert">
         <strong>Error!</strong> {{response.errorMsg}}
-        <button v-on:click="onErrorMsgClose" type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <button v-on:click="onErrorMsgClose" type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+        </button>
       </div>
       <br>
       <div class="mb-3">
@@ -22,7 +23,12 @@
       </div>
       <div class="mb-3">
         <label for="exampleInputPassword" class="form-label">Password</label>
-        <input v-model="userInfo.password" type="password" class="form-control" id="exampleInputPassword" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required>
+        <input v-model="userInfo.password"
+               type="password"
+               class="form-control"
+               id="exampleInputPassword"
+               pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+               autocomplete="true" required>
         <div class="form-text">
           Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters.
         </div>
@@ -35,7 +41,8 @@
       </div>
       <div class="d-grid gap-2">
         <button v-on:click="verifyInput('login')" type="submit" class="btn btn-primary">
-          <span v-if="isNetworkOpStarted" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          <span v-if="isNetworkOpStarted" class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+          </span>
           <span v-else>Login</span>
         </button>
       </div>
@@ -99,6 +106,7 @@
                         this.response.hasError = false;
                         this.response.errorMsg = "";
 
+                        // localStorage.setItem("userInfo",JSON.stringify(res.userInfo));
                         this.$store.commit("setMenusAndPaths", res.userInfo);
                         this.$cookies.set("userInfo", {
                             email: res.userInfo.email,
