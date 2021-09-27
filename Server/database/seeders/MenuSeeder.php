@@ -34,7 +34,7 @@ class MenuSeeder extends Seeder
             ],
             [
                 "oid" => 102,
-                "href" => "/administration/user",
+                "href" => "/dashboard/administration/user",
                 "icon" => "fas fa-user-plus",
                 "tree_id" => 2,
                 "for_whom" => 1,
@@ -44,7 +44,7 @@ class MenuSeeder extends Seeder
             ],
             [
                 "oid" => 103,
-                "href" => "/administration/role",
+                "href" => "/dashboard/administration/role",
                 "icon" => "fas fa-user-tag",
                 "tree_id" => 3,
                 "for_whom" => 1,
@@ -64,7 +64,7 @@ class MenuSeeder extends Seeder
             ],
             [
                 "oid" => 105,
-                "href" => "/menu/manage",
+                "href" => "/dashboard/menu/manage",
                 "icon" => "fas fa-tasks",
                 "tree_id" => 5,
                 "for_whom" => 1,
@@ -74,7 +74,7 @@ class MenuSeeder extends Seeder
             ],
             [
                 "oid" => 106,
-                "href" => "/menu/role-wise-permission",
+                "href" => "/dashboard/menu/role-wise-permission",
                 "icon" => "fas fa-id-badge",
                 "tree_id" => 6,
                 "for_whom" => 1,
@@ -84,7 +84,7 @@ class MenuSeeder extends Seeder
             ],
             [
                 "oid" => 107,
-                "href" => "/menu/user-wise-permission",
+                "href" => "/dashboard/menu/user-wise-permission",
                 "icon" => "fas fa-user-shield",
                 "tree_id" => 7,
                 "for_whom" => 1,
@@ -104,7 +104,7 @@ class MenuSeeder extends Seeder
             ],
             [
                 "oid" => 109,
-                "href" => "/product/color",
+                "href" => "/dashboard/product/color",
                 "icon" => "fas fa-fill-drip",
                 "tree_id" => 9,
                 "for_whom" => 1,
@@ -114,7 +114,7 @@ class MenuSeeder extends Seeder
             ],
             [
                 "oid" => 110,
-                "href" => "/product/fabric",
+                "href" => "/dashboard/product/fabric",
                 "icon" => "fas fa-toilet-paper",
                 "tree_id" => 10,
                 "for_whom" => 1,
@@ -124,7 +124,7 @@ class MenuSeeder extends Seeder
             ],
             [
                 "oid" => 111,
-                "href" => "/product/size",
+                "href" => "/dashboard/product/size",
                 "icon" => "fas fa-weight",
                 "tree_id" => 11,
                 "for_whom" => 1,
@@ -134,7 +134,7 @@ class MenuSeeder extends Seeder
             ],
             [
                 "oid" => 112,
-                "href" => "/product/brand",
+                "href" => "/dashboard/product/brand",
                 "icon" => null,
                 "tree_id" => 12,
                 "for_whom" => 1,
@@ -144,7 +144,7 @@ class MenuSeeder extends Seeder
             ],
             [
                 "oid" => 113,
-                "href" => "/product/type",
+                "href" => "/dashboard/product/type",
                 "icon" => null,
                 "tree_id" => 13,
                 "for_whom" => 1,
@@ -154,7 +154,7 @@ class MenuSeeder extends Seeder
             ],
             [
                 "oid" => 114,
-                "href" => "/product/user-type",
+                "href" => "/dashboard/product/user-type",
                 "icon" => null,
                 "tree_id" => 14,
                 "for_whom" => 1,
@@ -164,7 +164,7 @@ class MenuSeeder extends Seeder
             ],
             [
                 "oid" => 115,
-                "href" => "/product/manage",
+                "href" => "/dashboard/product/manage",
                 "icon" => null,
                 "tree_id" => 15,
                 "for_whom" => 1,
@@ -184,7 +184,7 @@ class MenuSeeder extends Seeder
             ],
             [
                 "oid" => 117,
-                "href" => "/ais/chart-of-account",
+                "href" => "/dashboard/ais/chart-of-account",
                 "icon" => null,
                 "tree_id" => 17,
                 "for_whom" => 1,
@@ -194,7 +194,7 @@ class MenuSeeder extends Seeder
             ],
             [
                 "oid" => 118,
-                "href" => "/ais/entry",
+                "href" => "/dashboard/ais/entry",
                 "icon" => null,
                 "tree_id" => 18,
                 "for_whom" => 1,
@@ -204,7 +204,7 @@ class MenuSeeder extends Seeder
             ],
             [
                 "oid" => 119,
-                "href" => "/ais/report",
+                "href" => "/dashboard/ais/report",
                 "icon" => null,
                 "tree_id" => 19,
                 "for_whom" => 1,

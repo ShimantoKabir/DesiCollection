@@ -1,6 +1,14 @@
 <template>
   <div>
-    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consectetur cumque expedita ipsum laudantium libero nostrum quod similique sunt? Amet debitis doloremque doloribus error, fuga magni nihil numquam quia suscipit voluptate!
+    <AppHeader/>
+    <div class="container-fluid">
+      <div class="row">
+        <AppSidebar/>
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+          User
+        </main>
+      </div>
+    </div>
   </div>
 </template>
 

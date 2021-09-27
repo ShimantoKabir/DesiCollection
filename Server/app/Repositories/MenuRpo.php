@@ -61,7 +61,7 @@ class MenuRpo
 
             foreach ($menus as $key => $val){
                 if (!is_null($val->href)){
-                    array_push($paths,"/dashboard".$val->href);
+                    array_push($paths, $val->href);
                 }
             }
 

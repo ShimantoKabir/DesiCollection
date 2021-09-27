@@ -106,7 +106,6 @@
                         this.response.hasError = false;
                         this.response.errorMsg = "";
 
-                        // localStorage.setItem("userInfo",JSON.stringify(res.userInfo));
                         this.$store.commit("setMenusAndPaths", res.userInfo);
                         this.$cookies.set("userInfo", {
                             email: res.userInfo.email,

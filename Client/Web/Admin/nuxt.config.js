@@ -26,8 +26,8 @@ export default {
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
-    '@/static/css/fontawesome.min.css',
     '@/static/css/bootstrap.min.css',
+    '@/static/css/fontawesome.min.css',
     '@/static/css/main.css'
   ],
 
