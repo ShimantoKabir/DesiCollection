@@ -96,7 +96,7 @@
                 }
             },
             login(){
-                this.$axios.$post('/user-info/login',{
+                this.$axios.$post('/user-infos/login',{
                     userInfo : this.userInfo
                 }).then(res=>{
                     if(res.code !== 200){

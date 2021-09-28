@@ -9,9 +9,11 @@
 namespace App\Repositories;
 
 
+use App\Models\Menu;
 use App\Models\UserInfo;
 use App\Utilities\TokenGenerator;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\DB;
 class UserInfoRpo
 {
@@ -115,11 +117,11 @@ class UserInfoRpo
                 $sessionId = $u->session_id;
 
                 $request->request->replace([
-                    'userInfo' => $userInfo,
-                    'auth' => [
+                    'userInfo' => [
                         "roleOid" => $roleOid,
-                        'sessionId' => $sessionId
-                    ]
+                        "sessionId" => $sessionId,
+                        "email" => $userInfo['email']
+                    ],
                 ]);
 
                 $menus = MenuRpo::getAuthorizedMenusByUserInfo($request);
@@ -149,6 +151,13 @@ class UserInfoRpo
 
         return response()->json($res, 200);
 
+    }
+
+    public static function read($request)
+    {
+
+
+        return null;
     }
 
 }

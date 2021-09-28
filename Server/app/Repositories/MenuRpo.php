@@ -11,7 +11,6 @@ namespace App\Repositories;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Http\Response;
 
 class MenuRpo
 {
@@ -23,7 +22,7 @@ class MenuRpo
             'code' => ''
         ];
 
-        $auth = $request->auth;
+        $userInfo = $request->userInfo;
 
         DB::beginTransaction();
         try {
@@ -51,8 +50,8 @@ class MenuRpo
                 where
                     user_infos.session_id = '@sessionId');",
                 [
-                    "@roleOid" => $auth["roleOid"],
-                    "@sessionId" => $auth["sessionId"]
+                    "@roleOid" => $userInfo["roleOid"],
+                    "@sessionId" => $userInfo["sessionId"]
                 ]
             );
 
