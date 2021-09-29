@@ -8,13 +8,12 @@
 
 namespace App\Repositories;
 
-
-use App\Models\Menu;
+use App\Models\Role;
 use App\Models\UserInfo;
 use App\Utilities\TokenGenerator;
 use Illuminate\Http\Request;
-use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\DB;
+
 class UserInfoRpo
 {
 
@@ -47,15 +46,13 @@ class UserInfoRpo
 
                     UserInfo::where('id', $u->id)->update(array('session_id' => $sessionId));
 
-                    $request->request->replace([
-                        'userInfo' => $userInfo,
-                        'auth' => [
+                    $menus = MenuRpo::getAuthorizedMenusByUserInfo(new Request([
+                        'userInfo' => [
+                            'email' => $u->email,
                             "roleOid" => $roleOid,
                             'sessionId' => $sessionId,
                         ]
-                    ]);
-
-                    $menus = MenuRpo::getAuthorizedMenusByUserInfo($request);
+                    ]));
 
                     $userInfo = [
                         'email' => $u->email,
@@ -158,6 +155,42 @@ class UserInfoRpo
 
 
         return null;
+    }
+
+    public static function getInitialData($request)
+    {
+
+        $res = [
+            'msg' => '',
+            'code' => ''
+        ];
+
+        try{
+
+            $roles = Role::select("role_oid","role_name")->get();
+            $userInfos = DB::table('user_infos')
+                ->join('roles', 'user_infos.role_oid', '=', 'roles.oid')
+                ->select(
+                    'user_infos.id',
+                    'user_infos.email',
+                    'user_infos.is_active',
+                    'user_infos.mobile_number',
+                    'roles.role_name'
+                )
+                ->get();
+
+            $res["roles"] = $roles;
+            $res["userInfos"] = $userInfos;
+            $res['msg'] = "Initial date fetched successfully!";
+            $res['code'] = 200;
+
+        }catch (\Exception $e) {
+            $res['msg'] = $e->getMessage();
+            $res['code'] = 404;
+        }
+
+        return response()->json($res, 200);
+
     }
 
 }

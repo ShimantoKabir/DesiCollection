@@ -1,6 +1,11 @@
 .cp{
   cursor: pointer;
 }
-
+.open{
+  display: block;
+}
+.my-main{
+  margin-top: 10px;
+}
 
 

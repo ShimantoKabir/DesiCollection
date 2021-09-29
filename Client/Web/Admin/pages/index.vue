@@ -10,10 +10,9 @@
         <button v-on:click="onErrorMsgClose" type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
         </button>
       </div>
-      <br>
       <div class="mb-3">
-        <label for="exampleInputEmail" class="form-label">Email address</label>
-        <input v-model="userInfo.email" type="email" class="form-control" id="exampleInputEmail" required>
+        <label for="validationCustom01" class="form-label">Email/Username</label>
+        <input v-model="userInfo.email" type="email" class="form-control" id="validationCustom01" required>
         <div class="invalid-feedback">
           Please give your email address!
         </div>
@@ -28,7 +27,7 @@
                class="form-control"
                id="exampleInputPassword"
                pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-               autocomplete="true" required>
+               autocomplete="on" required>
         <div class="form-text">
           Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters.
         </div>
@@ -76,7 +75,6 @@
             },
             verifyInput(which){
                 if (which === 'login') {
-                    console.log(this);
                     let isFormValidate = false;
                     let loginForm = document.querySelectorAll('.needs-validation');
                     loginForm.forEach(function (form) {
@@ -114,7 +112,6 @@
                         this.$router.push({path: '/dashboard/home'});
                     }
                 }).catch(err=>{
-
                     this.response.hasError = true;
                     this.response.errorMsg = "Something went wrong, please try again!";
                 }).finally(end=>{

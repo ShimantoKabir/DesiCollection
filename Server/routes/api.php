@@ -16,7 +16,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/test', [TestCtl::class, 'test']);
+
 Route::post('/user-infos/login', [UserInfoCtl::class, 'login']);
 Route::post('/user-infos/reload', [UserInfoCtl::class, 'reload']);
-Route::get('/user-infos', [UserInfoCtl::class, 'read']);
+Route::post('/user-infos/view-init', [UserInfoCtl::class, 'getInitialData']);
 

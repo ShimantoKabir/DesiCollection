@@ -15,18 +15,16 @@ use Illuminate\Http\Request;
 class UserInfoCtl extends Controller
 {
 
-    private static function modifyRequest(Request $request, $operation)
+    private static function createRequest(Request $request, $operation)
     {
         $userInfo = $request->userInfo;
-        $request->request->replace([
+        return new Request([
             'userInfo' => [
                 "sessionId" => $userInfo['sessionId'],
                 "email" => $userInfo['email'],
                 "operation" => $operation,
             ],
         ]);
-
-        return $request;
     }
 
     public function login(Request $request)
@@ -39,14 +37,14 @@ class UserInfoCtl extends Controller
         return UserInfoRpo::reload($request);
     }
 
-    public function read(Request $request)
+    public function getInitialData(Request $request)
     {
 
-        $request = self::modifyRequest($request,"R");
+        $request = self::createRequest($request,"R");
         $administrationRes = AdministrationService::checkPermission($request);
 
         if($administrationRes["code"] == 200){
-            return UserInfoRpo::read($request);
+            return UserInfoRpo::getInitialData($request);
         }else {
             return $administrationRes;
         }
