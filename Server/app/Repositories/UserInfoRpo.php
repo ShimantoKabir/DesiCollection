@@ -150,11 +150,59 @@ class UserInfoRpo
 
     }
 
-    public static function read($request)
+    public static function create($request)
     {
+        $res = [
+            'msg' => '',
+            'code' => ''
+        ];
 
+        $userInfo = $request->newUserInfo;
+        DB::beginTransaction();
+        try {
 
-        return null;
+            $isEmailAlreadyExist = UserInfo::where("email",$userInfo["email"])->exists();
+
+            if ($isEmailAlreadyExist){
+
+                $res["code"] = 404;
+                $res["msg"] = "This email address already exists!";
+
+            }else{
+
+                $newUserInfo = new UserInfo();
+                $newUserInfo->email = $userInfo["email"];
+                $newUserInfo->mobile_number = $userInfo["mobileNumber"];
+                $newUserInfo->password = sha1($userInfo["password"]);
+                $newUserInfo->role_oid = $userInfo["roleOid"];
+                $newUserInfo->op_access = join($userInfo["opAccess"]);
+                $newUserInfo->for_whom = 1;
+                $newUserInfo->save();
+
+                DB::commit();
+
+                $res["userInfos"] = DB::table('user_infos')
+                    ->join('roles', 'user_infos.role_oid', '=', 'roles.oid')
+                    // ->whereNotIn("user_infos.session_id",$userInfo["sessionId"])
+                    ->select(
+                        'user_infos.id',
+                        'user_infos.email',
+                        'user_infos.is_active',
+                        'user_infos.mobile_number',
+                        'roles.role_name'
+                    )
+                    ->paginate(10);
+
+                $res["code"] = 200;
+                $res["msg"] = "User info save successfully!";
+            }
+
+        }catch (\Exception $e) {
+            $res['msg'] = $e->getMessage();
+            $res['code'] = 404;
+        }
+
+        return response()->json($res, 200);
     }
 
     public static function getInitialData($request)
@@ -165,11 +213,13 @@ class UserInfoRpo
             'code' => ''
         ];
 
+        $userInfo = $request->userInfo;
         try{
 
-            $roles = Role::select("role_oid","role_name")->get();
+            $roles = Role::select("oid","role_name")->get();
             $userInfos = DB::table('user_infos')
                 ->join('roles', 'user_infos.role_oid', '=', 'roles.oid')
+                // ->whereNotIn("user_infos.session_id",$userInfo["sessionId"])
                 ->select(
                     'user_infos.id',
                     'user_infos.email',
@@ -177,7 +227,7 @@ class UserInfoRpo
                     'user_infos.mobile_number',
                     'roles.role_name'
                 )
-                ->get();
+                ->paginate(10);
 
             $res["roles"] = $roles;
             $res["userInfos"] = $userInfos;

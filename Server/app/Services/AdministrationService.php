@@ -25,7 +25,7 @@ class AdministrationService
           "code"=>""
         ];
         $userInfo = $request->userInfo;
-        $path = $userInfo["path"];
+        $path = $userInfo["href"];
         $operation = $userInfo["operation"];
 
         try{
@@ -41,7 +41,7 @@ class AdministrationService
                 $roleOid = $u->role_oid;
                 $sessionId = $u->session_id;
 
-                $request->request->replace([
+                $menuRequest = new Request([
                     'userInfo' => [
                         "roleOid" => $roleOid,
                         "sessionId" => $sessionId,
@@ -50,7 +50,7 @@ class AdministrationService
                     ],
                 ]);
 
-                $menus = MenuRpo::getAuthorizedMenusByUserInfo($request);
+                $menus = MenuRpo::getAuthorizedMenusByUserInfo($menuRequest);
                 $paths = $menus['paths'];
 
                 if (in_array($path, $paths))

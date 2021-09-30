@@ -14,7 +14,17 @@
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                  <form :class="'user-creation-form '+wasValidated" >
+                  <form :class="'user-creation-form needs-validation '+wasValidated" >
+                    <div v-show="response.code !== 0 && response.init === 0" >
+                      <div :class="response.code === 200 ? 'alert alert-dismissible fade show alert-success'
+                        : 'alert alert-dismissible fade show alert-warning'" >
+                        <strong v-if="response.code === 200" >SUCCESS!</strong>
+                        <strong v-else >ERROR!</strong>
+                        {{response.msg}}
+                        <button v-on:click="onResetResponse" type="button" class="btn-close">
+                        </button>
+                      </div>
+                    </div>
                     <div class="mb-3">
                       <label for="validationCustom01" class="form-label">Email/Username</label>
                       <input v-model="userInfo.email" type="email" class="form-control" id="validationCustom01" required>
@@ -48,8 +58,7 @@
                     <div class="mb-3">
                       <label for="validationCustom04" class="form-label">Role</label>
                       <select v-model="userInfo.roleOid" class="form-select" id="validationCustom04" required>
-                        <option value="1" >--select--</option>
-                        <option value="2" >--select--</option>
+                        <option :value="r.oid" v-for="r in roles" >{{r.role_name}}</option>
                       </select>
                       <div class="invalid-feedback">
                         Please select a role!
@@ -106,18 +115,30 @@
                   </form>
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-outline-dark">Reset</button>
-                  <button v-on:click="verifyInput"
-                          type="button"
+                  <button class="btn btn-outline-dark">Reset</button>
+                  <button v-on:click="verifyInput('create')"
+                          type="submit"
                           class="btn btn-primary"
                           :data-bs-dismiss="dataBsDismiss">
-                    Save
+                    <span v-if="isNetworkOpStarted" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    <span v-else>Save</span>
                   </button>
                 </div>
               </div>
             </div>
           </div>
-          <!-- Modal -->
+          <div v-show="response.code !== 200 && response.init === 1" class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>
+              <span v-if="isNetworkOpStarted" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              <span v-else >ERROR!</span>
+            </strong>
+            &nbsp;
+            <span v-if="isNetworkOpStarted" >Loading...</span>
+            <span v-else >{{response.msg}}</span>
+            <button v-on:click="onResetResponse" type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+            </button>
+          </div>
+          <!-- User table -->
           <div class="d-flex
             justify-content-between
             flex-wrap
@@ -146,122 +167,22 @@
               <th>SL</th>
               <th>Email</th>
               <th>Role</th>
-              <th>Is Active</th>
-              <th >Edit</th>
+              <th>Status</th>
+              <th>Update</th>
+              <th>Delete</th>
             </tr>
             </thead>
-            <tbody>
-            <tr>
-              <td>1,001</td>
-              <td>random</td>
-              <td>data</td>
-              <td>placeholder</td>
-              <td><i class="fas fa-edit" ></i></td>
-            </tr>
-            <tr>
-              <td>1,002</td>
-              <td>placeholder</td>
-              <td>irrelevant</td>
-              <td>visual</td>
-              <td>layout</td>
-            </tr>
-            <tr>
-              <td>1,003</td>
-              <td>data</td>
-              <td>rich</td>
-              <td>dashboard</td>
-              <td>tabular</td>
-            </tr>
-            <tr>
-              <td>1,003</td>
-              <td>information</td>
-              <td>placeholder</td>
-              <td>illustrative</td>
-              <td>data</td>
-            </tr>
-            <tr>
-              <td>1,004</td>
-              <td>text</td>
-              <td>random</td>
-              <td>layout</td>
-              <td>dashboard</td>
-            </tr>
-            <tr>
-              <td>1,005</td>
-              <td>dashboard</td>
-              <td>irrelevant</td>
-              <td>text</td>
-              <td>placeholder</td>
-            </tr>
-            <tr>
-              <td>1,006</td>
-              <td>dashboard</td>
-              <td>illustrative</td>
-              <td>rich</td>
-              <td>data</td>
-            </tr>
-            <tr>
-              <td>1,007</td>
-              <td>placeholder</td>
-              <td>tabular</td>
-              <td>information</td>
-              <td>irrelevant</td>
-            </tr>
-            <tr>
-              <td>1,008</td>
-              <td>random</td>
-              <td>data</td>
-              <td>placeholder</td>
-              <td>text</td>
-            </tr>
-            <tr>
-              <td>1,009</td>
-              <td>placeholder</td>
-              <td>irrelevant</td>
-              <td>visual</td>
-              <td>layout</td>
-            </tr>
-            <tr>
-              <td>1,010</td>
-              <td>data</td>
-              <td>rich</td>
-              <td>dashboard</td>
-              <td>tabular</td>
-            </tr>
-            <tr>
-              <td>1,011</td>
-              <td>information</td>
-              <td>placeholder</td>
-              <td>illustrative</td>
-              <td>data</td>
-            </tr>
-            <tr>
-              <td>1,012</td>
-              <td>text</td>
-              <td>placeholder</td>
-              <td>layout</td>
-              <td>dashboard</td>
-            </tr>
-            <tr>
-              <td>1,013</td>
-              <td>dashboard</td>
-              <td>irrelevant</td>
-              <td>text</td>
-              <td>visual</td>
-            </tr>
-            <tr>
-              <td>1,014</td>
-              <td>dashboard</td>
-              <td>illustrative</td>
-              <td>rich</td>
-              <td>data</td>
-            </tr>
-            <tr>
-              <td>1,015</td>
-              <td>random</td>
-              <td>tabular</td>
-              <td>information</td>
-              <td>text</td>
+            <tbody v-for="(u,i) in userInfos.data" >
+            <tr :key="i" >
+              <td>{{i+1}}</td>
+              <td>{{u.email}}</td>
+              <td>{{u.role_name}}</td>
+              <td>
+                <span v-if="u.is_active == 0" >Inactive</span>
+                <span v-else >Active</span>
+              </td>
+              <td><i class="fas fa-edit" v-on:click="setFormDate(u)" ></i></td>
+              <td><i class="fas fa-trash" ></i></td>
             </tr>
             </tbody>
           </table>
@@ -280,10 +201,13 @@
         },
         data(){
             return{
+                isNetworkOpStarted: false,
                 cookieUserInfo : "",
                 modalState : "close",
                 dataBsDismiss : "",
                 wasValidated : "",
+                roles : [],
+                userInfos : [],
                 userInfo : {
                     email: "",
                     password : "",
@@ -293,34 +217,42 @@
                     isActive: 0
                 },
                 response : {
-                    hasError : false,
-                    errorMsg : ""
+                    code : 0,
+                    msg : "",
+                    init : 0
                 }
             }
         },
         methods: {
+            setFormDate(u){
+                console.log(u);
+            },
+            onResetResponse(init){
+                this.response.code = 0;
+                this.response.msg = "";
+                this.response.init = init;
+            },
             getInitialData(){
-
+                this.onResetResponse(1);
+                this.isNetworkOpStarted = true;
                 this.$axios.$post('/user-infos/view-init',{
                     userInfo : {
                         email : this.cookieUserInfo.email,
                         sessionId: this.cookieUserInfo.sessionId,
-                        path : window.location.pathname
+                        href : window.location.pathname
                     }
                 }).then(res=>{
-                    console.log(res);
-                    if(res.code !== 200){
-                        this.response.hasError = true;
-                        this.response.errorMsg = res.msg;
-                    }else {
-                        this.response.hasError = false;
-                        this.response.errorMsg = "";
-
-
+                    this.isNetworkOpStarted = false;
+                    this.response.code = res.code;
+                    this.response.msg = res.msg;
+                    if(res.code === 200){
+                        this.roles = res.roles;
+                        this.userInfos = res.userInfos;
                     }
                 }).catch(err=>{
-                    this.response.hasError = true;
-                    this.response.errorMsg = "Something went wrong, please try again!";
+                    this.isNetworkOpStarted = false;
+                    this.response.code = 404;
+                    this.response.msg = "Something went wrong, please try again!";
                 }).finally(end=>{
                     this.isNetworkOpStarted = false;
                 });
@@ -329,11 +261,48 @@
 
             },
             onModalOpen(){
-
+                this.onResetResponse();
             },
-            verifyInput(){
-                this.wasValidated = "was-validated";
+            verifyInput(which){
+                if (which === "create"){
+                    this.wasValidated = "was-validated";
+                    if(this.userInfo.roleOid !== 0
+                        && this.userInfo.opAccess.length !== 0
+                        && this.userInfo.email
+                        && this.userInfo.mobileNumber
+                        && this.userInfo.password
+                    ){
+                        this.onCreate();
+                    }
+                }
+            },
+            onCreate(){
+                this.onResetResponse(0);
+                this.isNetworkOpStarted = true;
+                this.$axios.$post('/user-infos',{
+                    newUserInfo : this.userInfo,
+                    userInfo : {
+                        email : this.cookieUserInfo.email,
+                        sessionId: this.cookieUserInfo.sessionId,
+                        href : window.location.pathname
+                    }
+                }).then(res=>{
 
+                    this.isNetworkOpStarted = false;
+                    this.response.code = res.code;
+                    this.response.msg = res.msg;
+
+                    if(res.code === 200){
+                        this.userInfos = res.userInfos;
+                    }
+
+                }).catch(err=>{
+                    this.isNetworkOpStarted = false;
+                    this.response.code = 404;
+                    this.response.msg = "Something went wrong, please try again!";
+                }).finally(end=>{
+                    this.isNetworkOpStarted = false;
+                });
             }
         }
     }

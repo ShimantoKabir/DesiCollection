@@ -23,6 +23,7 @@ class UserInfoCtl extends Controller
                 "sessionId" => $userInfo['sessionId'],
                 "email" => $userInfo['email'],
                 "operation" => $operation,
+                "href" => $userInfo['href']
             ],
         ]);
     }
@@ -40,11 +41,25 @@ class UserInfoCtl extends Controller
     public function getInitialData(Request $request)
     {
 
-        $request = self::createRequest($request,"R");
-        $administrationRes = AdministrationService::checkPermission($request);
+        $permissionRequest = self::createRequest($request,"R");
+        $administrationRes = AdministrationService::checkPermission($permissionRequest);
 
         if($administrationRes["code"] == 200){
             return UserInfoRpo::getInitialData($request);
+        }else {
+            return $administrationRes;
+        }
+
+    }
+
+    public function create(Request $request)
+    {
+
+        $permissionRequest = self::createRequest($request,"C");
+        $administrationRes = AdministrationService::checkPermission($permissionRequest);
+
+        if($administrationRes["code"] == 200){
+            return UserInfoRpo::create($request);
         }else {
             return $administrationRes;
         }
