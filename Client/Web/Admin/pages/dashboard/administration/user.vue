@@ -10,7 +10,10 @@
             <div class="modal-dialog">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">Create User</h5>
+                  <h5 class="modal-title" id="exampleModalLabel">
+                    <span v-if="userInfo.id === 0" >Create User</span>
+                    <span v-else >Update User</span>
+                  </h5>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -35,7 +38,7 @@
                         Looks good!
                       </div>
                     </div>
-                    <div class="mb-3">
+                    <div v-show="userInfo.id === 0" class="mb-3">
                       <label for="validationCustom02" class="form-label">Password</label>
                       <input v-model="userInfo.password" type="text" class="form-control" id="validationCustom02" required>
                       <div class="invalid-feedback">
@@ -58,7 +61,7 @@
                     <div class="mb-3">
                       <label for="validationCustom04" class="form-label">Role</label>
                       <select v-model="userInfo.roleOid" class="form-select" id="validationCustom04" required>
-                        <option :value="r.oid" v-for="r in roles" >{{r.role_name}}</option>
+                        <option :value="r.oid" v-for="r in roles" >{{r.roleName}}</option>
                       </select>
                       <div class="invalid-feedback">
                         Please select a role!
@@ -115,13 +118,28 @@
                   </form>
                 </div>
                 <div class="modal-footer">
-                  <button class="btn btn-outline-dark">Reset</button>
-                  <button v-on:click="verifyInput('create')"
+                  <button class="btn btn-outline-dark" v-on:click="onReset" >Reset</button>
+                  <button v-if="userInfo.id === 0" v-on:click="verifyInput('create')"
                           type="submit"
                           class="btn btn-primary"
                           :data-bs-dismiss="dataBsDismiss">
-                    <span v-if="isNetworkOpStarted" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    <span v-if="isNetworkOpStarted"
+                          class="spinner-border spinner-border-sm"
+                          role="status"
+                          aria-hidden="true">
+                    </span>
                     <span v-else>Save</span>
+                  </button>
+                  <button v-else v-on:click="verifyInput('update')"
+                          type="submit"
+                          class="btn btn-primary"
+                          :data-bs-dismiss="dataBsDismiss">
+                    <span v-if="isNetworkOpStarted"
+                          class="spinner-border spinner-border-sm"
+                          role="status"
+                          aria-hidden="true">
+                    </span>
+                    <span v-else>Update</span>
                   </button>
                 </div>
               </div>
@@ -152,6 +170,7 @@
             <div class="btn-toolbar mb-2 mb-md-0">
               <div class="btn-group me-2">
                 <button v-on:click="onModalOpen"
+                        ref="addUserBtn"
                         type="button"
                         class="btn btn-sm btn-outline-secondary"
                         data-bs-toggle="modal"
@@ -167,22 +186,25 @@
               <th>SL</th>
               <th>Email</th>
               <th>Role</th>
+              <th>MobileNumber</th>
               <th>Status</th>
               <th>Update</th>
-              <th>Delete</th>
             </tr>
             </thead>
             <tbody v-for="(u,i) in userInfos.data" >
             <tr :key="i" >
               <td>{{i+1}}</td>
               <td>{{u.email}}</td>
-              <td>{{u.role_name}}</td>
+              <td>{{u.roleName}}</td>
               <td>
-                <span v-if="u.is_active == 0" >Inactive</span>
+                <span v-if="u.mobileNumber">{{u.mobileNumber}}</span>
+                <span v-else>N/A</span>
+              </td>
+              <td>
+                <span v-if="u.isActive == 0" >Inactive</span>
                 <span v-else >Active</span>
               </td>
               <td><i class="fas fa-edit" v-on:click="setFormDate(u)" ></i></td>
-              <td><i class="fas fa-trash" ></i></td>
             </tr>
             </tbody>
           </table>
@@ -209,11 +231,12 @@
                 roles : [],
                 userInfos : [],
                 userInfo : {
+                    id: 0,
                     email: "",
-                    password : "",
+                    password: "",
                     mobileNumber: "",
-                    roleOid : 0,
-                    opAccess : [],
+                    roleOid: 0,
+                    opAccess: [],
                     isActive: 0
                 },
                 response : {
@@ -224,8 +247,28 @@
             }
         },
         methods: {
+            onReset(){
+                this.userInfo.id =  0;
+                this.userInfo.email =  "";
+                this.userInfo.password =  "";
+                this.userInfo.mobileNumber =  "";
+                this.userInfo.roleOid =  0;
+                this.userInfo.opAccess =  [];
+                this.userInfo.isActive =  0;
+            },
             setFormDate(u){
-                console.log(u);
+
+                this.$refs.addUserBtn.click();
+                this.userInfo.opAccess = [];
+                this.userInfo.id = u.id;
+                this.userInfo.email = u.email;
+                this.userInfo.roleOid = u.roleOid;
+                this.userInfo.mobileNumber = u.mobileNumber;
+                for (let i in u.opAccess) {
+                    this.userInfo.opAccess.push(u.opAccess[i]);
+                }
+
+                console.log(this.userInfo);
             },
             onResetResponse(init){
                 this.response.code = 0;
@@ -261,6 +304,7 @@
 
             },
             onModalOpen(){
+                this.onReset();
                 this.onResetResponse();
             },
             verifyInput(which){
@@ -271,6 +315,15 @@
                         && this.userInfo.email
                         && this.userInfo.mobileNumber
                         && this.userInfo.password
+                    ){
+                        this.onCreate();
+                    }
+                }else if (which === "update"){
+                    this.wasValidated = "was-validated";
+                    if(this.userInfo.roleOid !== 0
+                        && this.userInfo.opAccess.length !== 0
+                        && this.userInfo.email
+                        && this.userInfo.mobileNumber
                     ){
                         this.onCreate();
                     }

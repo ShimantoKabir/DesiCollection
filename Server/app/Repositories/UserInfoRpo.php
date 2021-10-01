@@ -181,17 +181,7 @@ class UserInfoRpo
 
                 DB::commit();
 
-                $res["userInfos"] = DB::table('user_infos')
-                    ->join('roles', 'user_infos.role_oid', '=', 'roles.oid')
-                    // ->whereNotIn("user_infos.session_id",$userInfo["sessionId"])
-                    ->select(
-                        'user_infos.id',
-                        'user_infos.email',
-                        'user_infos.is_active',
-                        'user_infos.mobile_number',
-                        'roles.role_name'
-                    )
-                    ->paginate(10);
+                $res["userInfos"] = self::getUserInfos($userInfo["sessionId"]);
 
                 $res["code"] = 200;
                 $res["msg"] = "User info save successfully!";
@@ -216,21 +206,10 @@ class UserInfoRpo
         $userInfo = $request->userInfo;
         try{
 
-            $roles = Role::select("oid","role_name")->get();
-            $userInfos = DB::table('user_infos')
-                ->join('roles', 'user_infos.role_oid', '=', 'roles.oid')
-                // ->whereNotIn("user_infos.session_id",$userInfo["sessionId"])
-                ->select(
-                    'user_infos.id',
-                    'user_infos.email',
-                    'user_infos.is_active',
-                    'user_infos.mobile_number',
-                    'roles.role_name'
-                )
-                ->paginate(10);
+            $roles = Role::select("oid","role_name AS roleName")->get();
 
             $res["roles"] = $roles;
-            $res["userInfos"] = $userInfos;
+            $res["userInfos"] =  self::getUserInfos($userInfo["email"]);
             $res['msg'] = "Initial date fetched successfully!";
             $res['code'] = 200;
 
@@ -240,6 +219,59 @@ class UserInfoRpo
         }
 
         return response()->json($res, 200);
+
+    }
+
+    public static function update($request)
+    {
+
+        $res = [
+            'msg' => '',
+            'code' => ''
+        ];
+
+        $userInfo = $request->userInfo;
+        try{
+
+            UserInfo::where("id",$userInfo['id'])
+                ->update([
+                    "role_oid" => $userInfo["roleOid"],
+                    "op_access" => join($userInfo["opAccess"]),
+                    "mobile_number" => $userInfo["mobile_number"],
+                    "email" => $userInfo["email"],
+                    "is_active" => $userInfo["isActive"]
+                ]);
+
+            DB::commit();
+
+            $res["userInfos"] = self::getUserInfos($userInfo["email"]);
+            $res["res"] = "User info updated successfully!";
+            $res["code"] = 200;
+
+        }catch (\Exception $e) {
+            $res['msg'] = $e->getMessage();
+            $res['code'] = 404;
+        }
+
+        return response()->json($res, 200);
+    }
+
+    private static function getUserInfos($email)
+    {
+
+        return DB::table('user_infos')
+            ->join('roles', 'user_infos.role_oid', '=', 'roles.oid')
+            ->whereNotIn("user_infos.email",[$email])
+            ->select(
+                'user_infos.id',
+                'user_infos.email',
+                'user_infos.is_active AS isActive',
+                'user_infos.mobile_number AS mobileNumber',
+                'user_infos.role_oid AS roleOid',
+                'user_infos.op_access AS opAccess',
+                'roles.role_name AS roleName'
+            )
+            ->paginate(10);
 
     }
 

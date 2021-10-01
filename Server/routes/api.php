@@ -21,3 +21,4 @@ Route::post('/user-infos/login', [UserInfoCtl::class, 'login']);
 Route::post('/user-infos/reload', [UserInfoCtl::class, 'reload']);
 Route::post('/user-infos/view-init', [UserInfoCtl::class, 'getInitialData']);
 Route::post('/user-infos', [UserInfoCtl::class, 'create']);
+Route::put('/user-infos', [UserInfoCtl::class, 'update']);

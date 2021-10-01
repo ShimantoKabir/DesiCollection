@@ -66,4 +66,18 @@ class UserInfoCtl extends Controller
 
     }
 
+    public function update(Request $request)
+    {
+
+        $permissionRequest = self::createRequest($request,"U");
+        $administrationRes = AdministrationService::checkPermission($permissionRequest);
+
+        if($administrationRes["code"] == 200){
+            return UserInfoRpo::update($request);
+        }else {
+            return $administrationRes;
+        }
+
+    }
+
 }
