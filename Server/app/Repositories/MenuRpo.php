@@ -32,11 +32,11 @@ class MenuRpo
                 menus.oid, 
                 menus.href, 
                 menus.icon, 
-                menus.tree_id,
-                menus.menu_name,
-                menus.parent_tree_id,
-                menu_permission_for_roles.role_oid,
-                menu_permission_for_roles.menu_oid
+                menus.tree_id AS treeId,
+                menus.menu_name AS menuName,
+                menus.parent_tree_id AS parentTreeId,
+                menu_permission_for_roles.role_oid AS roleOid,
+                menu_permission_for_roles.menu_oid AS menuOid
             from
                 menus
             inner join menu_permission_for_roles on

@@ -1,29 +1,29 @@
 <template>
   <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
-    <div class="position-sticky pt-3">
-      <div class="flex-shrink-0 p-3">
-        <ul :key="i" v-for="(m,i) in menus" class="list-unstyled ps-0">
-          <li class="mb-1">
-            <button class="btn btn-toggle align-items-center rounded collapsed"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#home-collapse"
-                    aria-expanded="true">
-              {{m.menu_name}}
-            </button>
-            <div class="collapse show" id="home-collapse">
-              <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                <li v-for="c in m.children" v-on:click="navigateTo(c.href)" >
-                  <a class="link-dark rounded cp">
-                    {{c.menu_name}}
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </li>
-        </ul>
-      </div>
+  <div class="position-sticky pt-3">
+    <div class="flex-shrink-0 p-3">
+      <ul :key="i" v-for="(m,i) in menus" class="list-unstyled ps-0">
+        <li class="mb-1">
+          <button class="btn btn-toggle align-items-center rounded collapsed"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#home-collapse"
+                  aria-expanded="true">
+            {{m.menuName}}
+          </button>
+          <div class="collapse show" id="home-collapse">
+            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+              <li v-for="c in m.children" v-on:click="navigateTo(c.href)" >
+                <a class="link-dark rounded cp">
+                  {{c.menuName}}
+                </a>
+              </li>
+            </ul>
+          </div>
+        </li>
+      </ul>
     </div>
-  </nav>
+  </div>
+</nav>
 </template>
 
 <script>
@@ -31,7 +31,6 @@
         name: "AppSidebar",
         mounted() {
             this.menus = this.makeMenuTree(this.$store.state.menus,0);
-            console.log(this.menus);
         },
         data(){
             return{
@@ -43,15 +42,15 @@
               console.log(path);
                 this.$router.push({path: path});
             },
-            makeMenuTree(menuList,parent_tree_id){
+            makeMenuTree(menuList,parentTreeId){
 
                 let  tree = [];
 
                 for (let i = 0; i < menuList.length; i++) {
 
-                    if(menuList[i].parent_tree_id === parent_tree_id) {
+                    if(menuList[i].parentTreeId === parentTreeId) {
 
-                        let children = this.makeMenuTree(menuList, menuList[i].tree_id);
+                        let children = this.makeMenuTree(menuList, menuList[i].treeId);
 
                         if(children.length > 0) {
 
