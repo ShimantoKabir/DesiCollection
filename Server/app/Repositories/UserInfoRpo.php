@@ -41,29 +41,38 @@ class UserInfoRpo
                 if (count($userInfos) > 0) {
 
                     $u = $userInfos[0];
-                    $sessionId = TokenGenerator::generate();
-                    $roleOid = $u->role_oid;
 
-                    UserInfo::where('id', $u->id)->update(array('session_id' => $sessionId));
+                    if($u["is_active"] == 0){
 
-                    $menus = MenuRpo::getAuthorizedMenusByUserInfo(new Request([
-                        'userInfo' => [
+                        $res['msg'] = 'Account inactive!';
+                        $res['code'] = 404;
+
+                    }else {
+
+                        $sessionId = TokenGenerator::generate();
+                        $roleOid = $u->role_oid;
+
+                        UserInfo::where('id', $u->id)->update(array('session_id' => $sessionId));
+
+                        $menus = MenuRpo::getAuthorizedMenusByUserInfo(new Request([
+                            'userInfo' => [
+                                'email' => $u->email,
+                                "roleOid" => $roleOid,
+                                'sessionId' => $sessionId,
+                            ]
+                        ]));
+
+                        $userInfo = [
                             'email' => $u->email,
-                            "roleOid" => $roleOid,
                             'sessionId' => $sessionId,
-                        ]
-                    ]));
+                            'menus' => $menus["menus"],
+                            'paths' => $menus['paths']
+                        ];
 
-                    $userInfo = [
-                        'email' => $u->email,
-                        'sessionId' => $sessionId,
-                        'menus' => $menus["menus"],
-                        'paths' => $menus['paths']
-                    ];
-
-                    $res['userInfo'] = $userInfo;
-                    $res['msg'] = 'Login successful!';
-                    $res['code'] = 200;
+                        $res['userInfo'] = $userInfo;
+                        $res['msg'] = 'Login successful!';
+                        $res['code'] = 200;
+                    }
 
                 } else {
 
@@ -157,11 +166,12 @@ class UserInfoRpo
             'code' => ''
         ];
 
-        $userInfo = $request->newUserInfo;
+        $newUserInfo = $request->newUserInfo;
+        $authUserInfo = $request->userInfo;
         DB::beginTransaction();
         try {
 
-            $isEmailAlreadyExist = UserInfo::where("email",$userInfo["email"])->exists();
+            $isEmailAlreadyExist = UserInfo::where("email",$newUserInfo["email"])->exists();
 
             if ($isEmailAlreadyExist){
 
@@ -170,18 +180,19 @@ class UserInfoRpo
 
             }else{
 
-                $newUserInfo = new UserInfo();
-                $newUserInfo->email = $userInfo["email"];
-                $newUserInfo->mobile_number = $userInfo["mobileNumber"];
-                $newUserInfo->password = sha1($userInfo["password"]);
-                $newUserInfo->role_oid = $userInfo["roleOid"];
-                $newUserInfo->op_access = join($userInfo["opAccess"]);
-                $newUserInfo->for_whom = 1;
-                $newUserInfo->save();
+                $u = new UserInfo();
+                $u->email = $newUserInfo["email"];
+                $u->mobile_number = $newUserInfo["mobileNumber"];
+                $u->password = sha1($newUserInfo["password"]);
+                $u->role_oid = $newUserInfo["roleOid"];
+                $u->op_access = join($newUserInfo["opAccess"]);
+                $u->is_active = $newUserInfo["isActive"];
+                $u->for_whom = 1;
+                $u->save();
 
                 DB::commit();
 
-                $res["userInfos"] = self::getUserInfos($userInfo["sessionId"]);
+                $res["userInfos"] = self::getUserInfos($authUserInfo["email"]);
 
                 $res["code"] = 200;
                 $res["msg"] = "User info save successfully!";
@@ -222,7 +233,7 @@ class UserInfoRpo
 
     }
 
-    public static function update($request)
+    public static function update($request,$id)
     {
 
         $res = [
@@ -230,21 +241,24 @@ class UserInfoRpo
             'code' => ''
         ];
 
-        $userInfo = $request->userInfo;
+        $oldUserInfo = $request->oldUserInfo;
+        $authUserInfo = $request->userInfo;
+
+        DB::beginTransaction();
         try{
 
-            UserInfo::where("id",$userInfo['id'])
+            UserInfo::where("id",$id)
                 ->update([
-                    "role_oid" => $userInfo["roleOid"],
-                    "op_access" => join($userInfo["opAccess"]),
-                    "mobile_number" => $userInfo["mobile_number"],
-                    "email" => $userInfo["email"],
-                    "is_active" => $userInfo["isActive"]
+                    "role_oid" => $oldUserInfo["roleOid"],
+                    "op_access" => join($oldUserInfo["opAccess"]),
+                    "mobile_number" => $oldUserInfo["mobileNumber"],
+                    "email" => $oldUserInfo["email"],
+                    "is_active" => $oldUserInfo["isActive"]
                 ]);
 
             DB::commit();
 
-            $res["userInfos"] = self::getUserInfos($userInfo["email"]);
+            $res["userInfos"] = self::getUserInfos($authUserInfo["email"]);
             $res["res"] = "User info updated successfully!";
             $res["code"] = 200;
 
@@ -260,18 +274,18 @@ class UserInfoRpo
     {
 
         return DB::table('user_infos')
-            ->join('roles', 'user_infos.role_oid', '=', 'roles.oid')
-            ->whereNotIn("user_infos.email",[$email])
-            ->select(
-                'user_infos.id',
-                'user_infos.email',
-                'user_infos.is_active AS isActive',
-                'user_infos.mobile_number AS mobileNumber',
-                'user_infos.role_oid AS roleOid',
-                'user_infos.op_access AS opAccess',
-                'roles.role_name AS roleName'
-            )
-            ->paginate(10);
+        ->join('roles', 'user_infos.role_oid', '=', 'roles.oid')
+        ->whereNotIn("user_infos.email",[$email])
+        ->select(
+            'user_infos.id',
+            'user_infos.email',
+            'user_infos.is_active AS isActive',
+            'user_infos.mobile_number AS mobileNumber',
+            'user_infos.role_oid AS roleOid',
+            'user_infos.op_access AS opAccess',
+            'roles.role_name AS roleName'
+        )
+        ->paginate(10);
 
     }
 

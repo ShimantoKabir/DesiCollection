@@ -26,7 +26,7 @@
                type="password"
                class="form-control"
                id="exampleInputPassword"
-               pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+               pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*?[0-9])(?=.*?[!@#$%^&*+`~'=?\|\]\[\(\)\-<>/]).{8,}"
                autocomplete="on" required>
         <div class="form-text">
           Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters.

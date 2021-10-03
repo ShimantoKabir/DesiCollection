@@ -18,7 +18,9 @@ class CreateRolesTable extends Migration
             $table->integer('oid');
             $table->string("role_name");
             $table->tinyInteger('for_whom')->comment("1 - admin, 2 - customer");
+            $table->string("ip")->nullable();
             $table->timestamps();
+            $table->integer("modified_by")->nullable();
         });
     }
 

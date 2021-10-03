@@ -9,6 +9,7 @@
 namespace App\Repositories;
 
 
+use App\Models\UserInfo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -83,6 +84,56 @@ class MenuRpo
         }
 
         return $res;
+
+    }
+
+    public static function getInitialData($request)
+    {
+
+        $res = [
+            'msg' => '',
+            'code' => ''
+        ];
+
+        $userInfo = $request->userInfo;
+        try{
+
+            $userInfos = UserInfo::where('email', $userInfo['email'])
+                ->where('session_id', $userInfo['sessionId'])
+                ->get();
+
+            if (count($userInfos) > 0) {
+
+                $u = $userInfos[0];
+                $roleOid = $u->role_oid;
+
+                $menuRequest = new Request([
+                    'userInfo' => [
+                        "roleOid" => $roleOid,
+                        "email" => $userInfo['email'],
+                        "sessionId" => $userInfo['sessionId'],
+                    ]
+                ]);
+
+                $menus = MenuRpo::getAuthorizedMenusByUserInfo($menuRequest);
+
+                $res["menus"] = $menus["menus"];
+                $res['msg'] = "Initial date fetched successfully!";
+                $res['code'] = 200;
+
+
+            }else{
+                $res["msg"]="Session expired!";
+                $res["code"] = 404;
+            }
+
+
+        }catch (\Exception $e) {
+            $res['msg'] = $e->getMessage();
+            $res['code'] = 404;
+        }
+
+        return response()->json($res, 200);
 
     }
 

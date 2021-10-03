@@ -12,7 +12,9 @@ class Role extends Model
         'id',
         'oid',
         'role_name',
+        'ip',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'modified_by'
     ];
 }

@@ -2,17 +2,17 @@
 /**
  * Created by PhpStorm.
  * User: kabir
- * Date: 9/25/2021
- * Time: 6:42 PM
+ * Date: 10/3/2021
+ * Time: 12:00 PM
  */
 
 namespace App\Http\Controllers;
 
-use App\Repositories\UserInfoRpo;
+use App\Repositories\RoleRpo;
 use App\Services\AdministrationService;
 use Illuminate\Http\Request;
 
-class UserInfoCtl extends Controller
+class RoleCtl  extends Controller
 {
 
     private static function createRequest(Request $request, $operation)
@@ -28,16 +28,6 @@ class UserInfoCtl extends Controller
         ]);
     }
 
-    public function login(Request $request)
-    {
-        return UserInfoRpo::login($request);
-    }
-
-    public function reload(Request $request)
-    {
-        return UserInfoRpo::reload($request);
-    }
-
     public function getInitialData(Request $request)
     {
 
@@ -45,39 +35,41 @@ class UserInfoCtl extends Controller
         $administrationRes = AdministrationService::checkPermission($permissionRequest);
 
         if($administrationRes["code"] == 200){
-            return UserInfoRpo::getInitialData($request);
+            return RoleRpo::getInitialData($request);
         }else {
             return $administrationRes;
         }
 
     }
+
 
     public function create(Request $request)
     {
 
-        $permissionRequest = self::createRequest($request,"C");
+        $permissionRequest = self::createRequest($request,"R");
         $administrationRes = AdministrationService::checkPermission($permissionRequest);
 
         if($administrationRes["code"] == 200){
-            return UserInfoRpo::create($request);
+            return RoleRpo::create($request);
         }else {
             return $administrationRes;
         }
 
     }
 
-    public function update(Request $request,$id)
+    public function update(Request $request,$oid)
     {
 
-        $permissionRequest = self::createRequest($request,"U");
+        $permissionRequest = self::createRequest($request,"R");
         $administrationRes = AdministrationService::checkPermission($permissionRequest);
 
         if($administrationRes["code"] == 200){
-            return UserInfoRpo::update($request,$id);
+            return RoleRpo::update($request,$oid);
         }else {
             return $administrationRes;
         }
 
     }
+
 
 }

@@ -40,7 +40,13 @@
                     </div>
                     <div v-show="userInfo.id === 0" class="mb-3">
                       <label for="validationCustom02" class="form-label">Password</label>
-                      <input v-model="userInfo.password" type="text" class="form-control" id="validationCustom02" required>
+                      <input
+                        v-model="userInfo.password"
+                        type="text"
+                        class="form-control"
+                        id="validationCustom02"
+                        pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*?[0-9])(?=.*?[!@#$%^&*+`~'=?\|\]\[\(\)\-<>/]).{8,}"
+                        required>
                       <div class="invalid-feedback">
                         Password Required!
                       </div>
@@ -102,7 +108,7 @@
                       <div id="validationCustom06" >
                         <div class="form-check form-check-inline">
                           <input v-model="userInfo.isActive"
-                                 value="0"
+                                 :value="1"
                                  class="form-check-input"
                                  type="radio"
                                  name="inlineRadioOptions"
@@ -110,7 +116,12 @@
                           <label class="form-check-label" for="inlineRadio1">Active</label>
                         </div>
                         <div class="form-check form-check-inline">
-                          <input v-model="userInfo.isActive" value="1" class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" required>
+                          <input v-model="userInfo.isActive"
+                                 :value="0"
+                                 class="form-check-input"
+                                 type="radio"
+                                 name="inlineRadioOptions"
+                                 id="inlineRadio2" required>
                           <label class="form-check-label" for="inlineRadio2">Inactive</label>
                         </div>
                       </div>
@@ -191,8 +202,8 @@
               <th>Update</th>
             </tr>
             </thead>
-            <tbody v-for="(u,i) in userInfos.data" >
-            <tr :key="i" >
+            <tbody>
+            <tr  v-for="(u,i) in userInfos.data" >
               <td>{{i+1}}</td>
               <td>{{u.email}}</td>
               <td>{{u.roleName}}</td>
@@ -204,7 +215,7 @@
                 <span v-if="u.isActive == 0" >Inactive</span>
                 <span v-else >Active</span>
               </td>
-              <td><i class="fas fa-edit" v-on:click="setFormDate(u)" ></i></td>
+              <td><i class="fas fa-edit cp" v-on:click="setFormDate(u)" ></i></td>
             </tr>
             </tbody>
           </table>
@@ -228,8 +239,14 @@
                 modalState : "close",
                 dataBsDismiss : "",
                 wasValidated : "",
+                response : {
+                    code : 0,
+                    msg : "",
+                    init : 0
+                },
                 roles : [],
                 userInfos : [],
+                passwordPattern : /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*?[0-9])(?=.*?[!@#$%^&*+`~'=?\|\]\[\(\)\-<>/]).{8,}/,
                 userInfo : {
                     id: 0,
                     email: "",
@@ -237,17 +254,13 @@
                     mobileNumber: "",
                     roleOid: 0,
                     opAccess: [],
-                    isActive: 0
-                },
-                response : {
-                    code : 0,
-                    msg : "",
-                    init : 0
+                    isActive: 1
                 }
             }
         },
         methods: {
             onReset(){
+                this.wasValidated = "";
                 this.userInfo.id =  0;
                 this.userInfo.email =  "";
                 this.userInfo.password =  "";
@@ -267,8 +280,8 @@
                 for (let i in u.opAccess) {
                     this.userInfo.opAccess.push(u.opAccess[i]);
                 }
+                this.userInfo.isActive = u.isActive;
 
-                console.log(this.userInfo);
             },
             onResetResponse(init){
                 this.response.code = 0;
@@ -313,6 +326,7 @@
                     if(this.userInfo.roleOid !== 0
                         && this.userInfo.opAccess.length !== 0
                         && this.userInfo.email
+                        && this.passwordPattern.test(this.userInfo.password)
                         && this.userInfo.mobileNumber
                         && this.userInfo.password
                     ){
@@ -325,9 +339,37 @@
                         && this.userInfo.email
                         && this.userInfo.mobileNumber
                     ){
-                        this.onCreate();
+                        this.onUpdate();
                     }
                 }
+            },
+            onUpdate(){
+                this.onResetResponse(0);
+                this.isNetworkOpStarted = true;
+                this.$axios.$put('/user-infos/'+this.userInfo.id,{
+                    oldUserInfo : this.userInfo,
+                    userInfo : {
+                        email : this.cookieUserInfo.email,
+                        sessionId: this.cookieUserInfo.sessionId,
+                        href : window.location.pathname
+                    }
+                }).then(res=>{
+
+                    this.isNetworkOpStarted = false;
+                    this.response.code = res.code;
+                    this.response.msg = res.msg;
+
+                    if(res.code === 200){
+                        this.userInfos = res.userInfos;
+                    }
+
+                }).catch(err=>{
+                    this.isNetworkOpStarted = false;
+                    this.response.code = 404;
+                    this.response.msg = "Something went wrong, please try again!";
+                }).finally(end=>{
+                    this.isNetworkOpStarted = false;
+                });
             },
             onCreate(){
                 this.onResetResponse(0);
