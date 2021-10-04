@@ -33,7 +33,6 @@
         name: "manage",
         mounted(){
             this.cookieUserInfo = this.$cookies.get('userInfo');
-            // this.$refs.tree.setModel(this.makeMenuTree(this.$store.state.menus,0));
         },
         data(){
             return{

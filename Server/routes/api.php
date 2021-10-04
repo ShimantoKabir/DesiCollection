@@ -30,7 +30,7 @@ Route::post('/roles', [RoleCtl::class, 'create']);
 Route::put('/roles/{oid}', [RoleCtl::class, 'update']);
 
 
-Route::post('/menus/view-init', [MenuCtl::class, 'getInitialData']);
+Route::post('/menus/roles/{roleOid}', [MenuCtl::class, 'getMenusByRole']);
 
 
 

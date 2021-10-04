@@ -87,7 +87,7 @@ class MenuRpo
 
     }
 
-    public static function getInitialData($request)
+    public static function getMenusByRole($request,$roleOid)
     {
 
         $res = [
@@ -95,38 +95,32 @@ class MenuRpo
             'code' => ''
         ];
 
-        $userInfo = $request->userInfo;
+
         try{
 
-            $userInfos = UserInfo::where('email', $userInfo['email'])
-                ->where('session_id', $userInfo['sessionId'])
-                ->get();
+            $menuQuery = strtr("select 
+                menus.oid, 
+                menus.href, 
+                menus.icon, 
+                menus.tree_id AS treeId,
+                menus.menu_name AS menuName,
+                menus.parent_tree_id AS parentTreeId,
+                menu_permission_for_roles.role_oid AS roleOid,
+                menu_permission_for_roles.menu_oid AS menuOid
+            from
+                menus
+            inner join menu_permission_for_roles on
+                menus.oid = menu_permission_for_roles.menu_oid
+            where
+                menu_permission_for_roles.role_oid = @roleOid;",
+                [
+                    "@roleOid" => $roleOid
+                ]
+            );
 
-            if (count($userInfos) > 0) {
-
-                $u = $userInfos[0];
-                $roleOid = $u->role_oid;
-
-                $menuRequest = new Request([
-                    'userInfo' => [
-                        "roleOid" => $roleOid,
-                        "email" => $userInfo['email'],
-                        "sessionId" => $userInfo['sessionId'],
-                    ]
-                ]);
-
-                $menus = MenuRpo::getAuthorizedMenusByUserInfo($menuRequest);
-
-                $res["menus"] = $menus["menus"];
-                $res['msg'] = "Initial date fetched successfully!";
-                $res['code'] = 200;
-
-
-            }else{
-                $res["msg"]="Session expired!";
-                $res["code"] = 404;
-            }
-
+            $res['menus'] = DB::select($menuQuery);
+            $res['msg'] = "Fetched menus successfully by role!";
+            $res['code'] = 200;
 
         }catch (\Exception $e) {
             $res['msg'] = $e->getMessage();
