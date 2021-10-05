@@ -87,48 +87,4 @@ class MenuRpo
 
     }
 
-    public static function getMenusByRole($request,$roleOid)
-    {
-
-        $res = [
-            'msg' => '',
-            'code' => ''
-        ];
-
-
-        try{
-
-            $menuQuery = strtr("select 
-                menus.oid, 
-                menus.href, 
-                menus.icon, 
-                menus.tree_id AS treeId,
-                menus.menu_name AS menuName,
-                menus.parent_tree_id AS parentTreeId,
-                menu_permission_for_roles.role_oid AS roleOid,
-                menu_permission_for_roles.menu_oid AS menuOid
-            from
-                menus
-            inner join menu_permission_for_roles on
-                menus.oid = menu_permission_for_roles.menu_oid
-            where
-                menu_permission_for_roles.role_oid = @roleOid;",
-                [
-                    "@roleOid" => $roleOid
-                ]
-            );
-
-            $res['menus'] = DB::select($menuQuery);
-            $res['msg'] = "Fetched menus successfully by role!";
-            $res['code'] = 200;
-
-        }catch (\Exception $e) {
-            $res['msg'] = $e->getMessage();
-            $res['code'] = 404;
-        }
-
-        return response()->json($res, 200);
-
-    }
-
 }

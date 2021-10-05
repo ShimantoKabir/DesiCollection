@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\MenuCtl;
+use App\Http\Controllers\MenuPermissionForRoleCtl;
 use App\Http\Controllers\RoleCtl;
 use App\Http\Controllers\TestCtl;
 use App\Http\Controllers\UserInfoCtl;
@@ -29,8 +30,11 @@ Route::post('/roles/view-init', [RoleCtl::class, 'getInitialData']);
 Route::post('/roles', [RoleCtl::class, 'create']);
 Route::put('/roles/{oid}', [RoleCtl::class, 'update']);
 
+Route::post('/menu-permission-for-roles/permitted-menus', [
+    MenuPermissionForRoleCtl::class, 'getPermittedMenusByRole'
+]);
 
-Route::post('/menus/roles/{roleOid}', [MenuCtl::class, 'getMenusByRole']);
-
-
+Route::post('/menu-permission-for-roles', [
+    MenuPermissionForRoleCtl::class, 'create'
+]);
 

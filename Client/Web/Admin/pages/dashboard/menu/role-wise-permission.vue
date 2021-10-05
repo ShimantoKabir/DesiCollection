@@ -5,7 +5,9 @@
       <div class="row">
         <AppSidebar/>
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 my-main">
-          <div v-show="response.code !== 200 && response.init === 1" class="alert alert-warning alert-dismissible fade show" role="alert">
+          <div v-show="response.code !== 200 && response.init === 1"
+               class="alert alert-warning alert-dismissible fade show alert-top"
+               role="alert">
             <strong>
               <span v-if="isNetworkOpStarted" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
               <span v-else >ERROR!</span>
@@ -13,7 +15,7 @@
             &nbsp;
             <span v-if="isNetworkOpStarted" >Loading...</span>
             <span v-else >{{response.msg}}</span>
-            <button v-on:click="onResetResponse" type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+            <button v-on:click="onResetResponse" type="button" class="btn-close" aria-label="Close">
             </button>
           </div>
           <div class="d-flex
@@ -43,7 +45,7 @@
                   <button class="btn btn-outline-dark" v-on:click="onReset" >Reset</button>
                 </div>
                 <div class="col-auto">
-                  <button v-on:click="verifyInput('save')" class="btn btn-success" >Save</button>
+                  <button v-on:click="verifyInput('create')" class="btn btn-success" >Save</button>
                 </div>
               </div>
               <hr/>
@@ -96,9 +98,14 @@
                 this.role.oid = 0;
                 let allSelection = this.$refs.tree.findAll({data : { menuFor: "admin"}},true);
                 allSelection.uncheck();
+                this.onResetResponse();
             },
             verifyInput(which){
-                if(which === "save"){
+                if(which === "create"){
+                    let allSelection = this.$refs.tree.findAll({
+                        data : { menuFor: "admin"},
+                        state : {checked: true}
+                    },true);
 
                     if(this.role.oid === 0){
 
@@ -106,11 +113,12 @@
                         this.response.msg = "Please select a role!";
                         this.response.code = 404;
 
+                    }else if(allSelection.length === 0){
+                        this.response.init = 1;
+                        this.response.msg = "Please check at least one menu!";
+                        this.response.code = 404;
                     }else {
-                        let allSelection = this.$refs.tree.findAll({data : { menuFor: "admin"}, state : {checked: true}},true);
-                        allSelection.forEach(m=>{
-                            console.log(m.data.oid);
-                        });
+                        this.onCreate();
                     }
                 }
             },
@@ -120,21 +128,13 @@
                 this.response.init = init;
             },
             makeMenuTree(menuList,parentTreeId){
-
                 let  tree = [];
-
                 for (let i = 0; i < menuList.length; i++) {
-
                     if(menuList[i].parentTreeId === parentTreeId) {
-
                         let children = this.makeMenuTree(menuList, menuList[i].treeId);
-
                         if(children.length > 0) {
-
                             menuList[i].children = children;
-
                         }
-
                         menuList[i].text = menuList[i].menuName;
                         menuList[i].data = {
                             oid : menuList[i].oid,
@@ -156,11 +156,8 @@
                             dropable : true
                         };
                         tree.push(menuList[i]);
-
                     }
-
                 }
-
                 return tree
             },
             onNodeSelected(node){
@@ -193,7 +190,10 @@
             onRoleChange(){
                 this.onResetResponse(1);
                 this.isNetworkOpStarted = true;
-                this.$axios.$post('/menus/roles/'+this.role.oid,{
+                this.$axios.$post('/menu-permission-for-roles/permitted-menus',{
+                    menuPermissionForRole : {
+                        roleOid : this.role.oid
+                    },
                     userInfo : {
                         email : this.cookieUserInfo.email,
                         sessionId: this.cookieUserInfo.sessionId,
@@ -219,6 +219,44 @@
                 }).finally(end=>{
                     this.isNetworkOpStarted = false;
                 });
+            },
+            onCreate(){
+
+                let menuPermissionForRoles = [];
+
+                let allSelection = this.$refs.tree.findAll({
+                    data : { menuFor: "admin"},
+                    state : {checked: true}
+                },true);
+
+                allSelection.forEach(m=>{
+                    menuPermissionForRoles.push({
+                        roleOid : this.role.oid,
+                        menuOid: m.data.oid
+                    });
+                });
+
+                this.onResetResponse(1);
+                this.isNetworkOpStarted = true;
+                this.$axios.$post('/menu-permission-for-roles',{
+                    menuPermissionForRoles : menuPermissionForRoles,
+                    userInfo : {
+                        email : this.cookieUserInfo.email,
+                        sessionId: this.cookieUserInfo.sessionId,
+                        href : window.location.pathname
+                    }
+                }).then(res=>{
+                    this.isNetworkOpStarted = false;
+                    this.response.code = res.code;
+                    this.response.msg = res.msg;
+                }).catch(err=>{
+                    this.isNetworkOpStarted = false;
+                    this.response.code = 404;
+                    this.response.msg = "Something went wrong, please try again!";
+                }).finally(end=>{
+                    this.isNetworkOpStarted = false;
+                });
+
             }
         }
     }

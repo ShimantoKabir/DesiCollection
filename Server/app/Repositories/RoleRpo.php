@@ -27,7 +27,9 @@ class RoleRpo
         $userInfo = $request->userInfo;
         try{
 
-            $roles = Role::select("oid","role_name AS roleName")->get();
+            $roles = Role::select("oid","role_name AS roleName")
+                ->where("oid","!=",101)
+                ->get();
 
             $res["roles"] = $roles;
             $res['msg'] = "Initial date fetched successfully!";

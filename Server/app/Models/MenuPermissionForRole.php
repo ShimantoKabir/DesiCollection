@@ -12,7 +12,9 @@ class MenuPermissionForRole extends Model
         'id',
         'role_oid',
         'menu_oid',
+        'ip',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'modified_by'
     ];
 }

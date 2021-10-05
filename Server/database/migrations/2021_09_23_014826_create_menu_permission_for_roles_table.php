@@ -17,7 +17,9 @@ class CreateMenuPermissionForRolesTable extends Migration
             $table->id();
             $table->integer('role_oid');
             $table->integer('menu_oid');
+            $table->string("ip")->nullable();
             $table->timestamps();
+            $table->integer("modified_by")->nullable();
         });
     }
 

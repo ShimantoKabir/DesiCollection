@@ -12,7 +12,7 @@ use App\Repositories\MenuRpo;
 use App\Services\AdministrationService;
 use Illuminate\Http\Request;
 
-class MenuCtl
+class MenuCtl extends Controller
 {
 
     private static function createRequest(Request $request, $operation)
@@ -26,20 +26,6 @@ class MenuCtl
                 "href" => $userInfo['href']
             ],
         ]);
-    }
-
-    public function getMenusByRole(Request $request,$roleOid)
-    {
-
-        $permissionRequest = self::createRequest($request,"R");
-        $administrationRes = AdministrationService::checkPermission($permissionRequest);
-
-        if($administrationRes["code"] == 200){
-            return MenuRpo::getMenusByRole($request,$roleOid);
-        }else {
-            return $administrationRes;
-        }
-
     }
 
 }
