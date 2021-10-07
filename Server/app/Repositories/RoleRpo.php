@@ -24,11 +24,15 @@ class RoleRpo
             'code' => ''
         ];
 
-        $userInfo = $request->userInfo;
+        $authInfo = $request->authInfo;
         try{
 
-            $roles = Role::select("oid","role_name AS roleName")
+            $roleOid = $authInfo['role_oid'];
+
+            $roles = Role::select("oid","role_name AS roleName","power")
                 ->where("oid","!=",101)
+                ->whereRaw("power <= (select power from roles where oid = ?)",[$roleOid])
+                ->orderBy("power")
                 ->get();
 
             $res["roles"] = $roles;
@@ -53,7 +57,7 @@ class RoleRpo
         ];
 
         $role = $request->role;
-        $authUserInfo = $request->userInfo;
+        $authInfo = $request->authInfo;
 
         DB::beginTransaction();
         try {
@@ -74,16 +78,20 @@ class RoleRpo
 
                 $r = new Role();
                 $r->oid = $maxOid;
-                $r->role_name = $role["roleName"];
+                $r->power = $role["power"];
                 $r->for_whom = 1;
+                $r->role_name = $role["roleName"];
                 $r->created_at = date('Y-m-d H:i:s');
-                $r->modified_by = 1; // $authUserInfo["id"];
+                $r->modified_by = $authInfo['id'];
                 $r->ip = $request->ip();
                 $r->save();
 
                 DB::commit();
 
-                $res["roles"] = Role::select("oid","role_name AS roleName")->get();
+                $res["roles"] = Role::select("oid","role_name AS roleName","power")
+                    ->where("oid","!=",101)
+                    ->orderBy("power")
+                    ->get();
 
                 $res["code"] = 200;
                 $res["msg"] = "Role save successfully!";
@@ -114,6 +122,7 @@ class RoleRpo
 
             Role::where("oid",$oid)
                 ->update([
+                    "power" => $role["power"],
                     "role_name" => $role["roleName"],
                     "modified_by" => 1, //$authUserInfo["id"],
                     "updated_at" => date('Y-m-d H:i:s'), //$authUserInfo["id"],
@@ -122,8 +131,12 @@ class RoleRpo
 
             DB::commit();
 
-            $res["roles"] = Role::select("oid","role_name AS roleName")->get();
-            $res["res"] = "Role updated successfully!";
+            $res["roles"] = Role::select("oid","role_name AS roleName","power")
+                ->where("oid","!=",101)
+                ->orderBy("power")
+                ->get();
+
+            $res["msg"] = "Role updated successfully!";
             $res["code"] = 200;
 
         }catch (\Exception $e) {

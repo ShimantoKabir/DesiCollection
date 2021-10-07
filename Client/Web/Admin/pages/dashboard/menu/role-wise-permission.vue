@@ -203,7 +203,7 @@
                     this.isNetworkOpStarted = false;
                     this.response.code = res.code;
                     this.response.msg = res.msg;
-
+                    console.log(res.menus.length);
                     let allSelection = this.$refs.tree.findAll({data : { menuFor: "admin"}},true);
                     allSelection.uncheck();
 

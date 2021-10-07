@@ -5,6 +5,7 @@ use App\Http\Controllers\MenuPermissionForRoleCtl;
 use App\Http\Controllers\RoleCtl;
 use App\Http\Controllers\TestCtl;
 use App\Http\Controllers\UserInfoCtl;
+use App\Http\Controllers\UserWisePermissionCtl;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,3 +39,9 @@ Route::post('/menu-permission-for-roles', [
     MenuPermissionForRoleCtl::class, 'create'
 ]);
 
+Route::post('/user-wise-permissions/view-init', [
+    UserWisePermissionCtl::class, 'getInitialData'
+]);
+Route::post('/user-wise-permissions/permitted-menus', [
+    UserWisePermissionCtl::class, 'getPermittedMenusByUser'
+]);

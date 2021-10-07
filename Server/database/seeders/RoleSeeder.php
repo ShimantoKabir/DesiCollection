@@ -24,23 +24,27 @@ class RoleSeeder extends Seeder
         $roles = [
             [
                 "oid" => 101,
+                "power" => 100,
+                "for_whom" => 1,
                 "role_name" => "Admin",
-                "for_whom" => 1
             ],
             [
                 "oid" => 102,
+                "power" => 50,
+                "for_whom" => 1,
                 "role_name" => "Developer",
-                "for_whom" => 1
             ],
             [
                 "oid" => 103,
+                "power" => 49,
+                "for_whom" => 1,
                 "role_name" => "Manager",
-                "for_whom" => 1
             ],
             [
                 "oid" => 104,
+                "power" => 48,
+                "for_whom" => 1,
                 "role_name" => "Assistant Manager",
-                "for_whom" => 1
             ]
         ];
 
@@ -50,8 +54,9 @@ class RoleSeeder extends Seeder
 
             DB::table('roles')->insert([
                 "oid" => $val['oid'],
-                "role_name" => $val['role_name'],
-                "for_whom" => $val['for_whom']
+                "power" => $val['power'],
+                "for_whom" => $val['for_whom'],
+                "role_name" => $val['role_name']
             ]);
         }
 

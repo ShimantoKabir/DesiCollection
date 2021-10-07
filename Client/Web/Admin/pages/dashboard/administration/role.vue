@@ -6,7 +6,11 @@
         <AppSidebar/>
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 my-main">
           <!-- Modal -->
-          <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal fade"
+               id="exampleModal"
+               tabindex="-1"
+               aria-labelledby="exampleModalLabel"
+               aria-hidden="true">
             <div class="modal-dialog">
               <div class="modal-content">
                 <div class="modal-header">
@@ -30,9 +34,19 @@
                     </div>
                     <div class="mb-3">
                       <label for="validationCustom01" class="form-label">Role Name</label>
-                      <input v-model="role.roleName" type="email" class="form-control" id="validationCustom01" required>
+                      <input v-model="role.roleName" type="text" class="form-control" id="validationCustom01" required>
                       <div class="invalid-feedback">
                         Role Name Required!
+                      </div>
+                      <div class="valid-feedback">
+                        Looks good!
+                      </div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="validationCustom02" class="form-label">Role Power</label>
+                      <input v-model="role.power" type="number" class="form-control" id="validationCustom02" required>
+                      <div class="invalid-feedback">
+                        Role Power Required!
                       </div>
                       <div class="valid-feedback">
                         Looks good!
@@ -68,15 +82,23 @@
               </div>
             </div>
           </div>
-          <div v-show="response.code !== 200 && response.init === 1" class="alert alert-warning alert-dismissible fade show" role="alert">
+          <div v-show="response.code !== 200 && response.init === 1"
+               class="alert alert-warning alert-dismissible fade show alert-top"
+               role="alert">
             <strong>
-              <span v-if="isNetworkOpStarted" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              <span v-if="isNetworkOpStarted"
+                    class="spinner-border spinner-border-sm"
+                    role="status" aria-hidden="true">
+              </span>
               <span v-else >ERROR!</span>
             </strong>
             &nbsp;
             <span v-if="isNetworkOpStarted" >Loading...</span>
             <span v-else >{{response.msg}}</span>
-            <button v-on:click="onResetResponse" type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+            <button v-on:click="onResetResponse"
+                    type="button" class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Close">
             </button>
           </div>
           <!-- User table -->
@@ -108,6 +130,7 @@
             <tr>
               <th>SL</th>
               <th>Role</th>
+              <th>Power</th>
               <th>Update</th>
             </tr>
             </thead>
@@ -115,6 +138,7 @@
             <tr  v-for="(r,i) in roles" >
               <td>{{i+1}}</td>
               <td>{{r.roleName}}</td>
+              <td>{{r.power}}</td>
               <td><i class="fas fa-edit cp" v-on:click="setFormDate(r)" ></i></td>
             </tr>
             </tbody>
@@ -142,7 +166,8 @@
                 roles : [],
                 role : {
                     oid: 0,
-                    roleName : ""
+                    power : undefined,
+                    roleName : undefined
                 },
                 response : {
                     code : 0,
@@ -155,13 +180,16 @@
             onReset(){
                 this.wasValidated = "";
                 this.role.oid =  0;
-                this.role.roleName =  "";
+                this.role.power = undefined;
+                this.role.roleName =  undefined;
+                this.onResetResponse(0);
             },
             setFormDate(r){
 
                 this.$refs.addRoleBtn.click();
                 this.role.oid = r.oid;
                 this.role.roleName = r.roleName;
+                this.role.power = r.power;
 
             },
             onResetResponse(init){
@@ -201,7 +229,7 @@
                 this.onResetResponse();
             },
             verifyInput(which){
-                if(this.role.roleName){
+                if(this.role.roleName && this.role.power){
                     which === "create" ? this.onCreate() : this.onUpdate();
                 }else {
                     this.wasValidated = "was-validated";

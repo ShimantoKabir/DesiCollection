@@ -8,7 +8,6 @@
 
 namespace App\Services;
 
-
 use App\Models\UserInfo;
 use App\Repositories\MenuRpo;
 use Exception;
@@ -58,6 +57,7 @@ class AdministrationService
                     if (str_contains($opAccess, $operation)) {
                         $res["msg"] = "All permission ok!";
                         $res["code"] = 200;
+                        $res['authInfo'] = $u;
                     } else {
                         $res["msg"] = "You don't have the permission to do this action!";
                         $res["code"] = 404;

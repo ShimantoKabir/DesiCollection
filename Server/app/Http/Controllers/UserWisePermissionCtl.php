@@ -2,18 +2,16 @@
 /**
  * Created by PhpStorm.
  * User: kabir
- * Date: 10/3/2021
- * Time: 12:00 PM
+ * Date: 10/7/2021
+ * Time: 10:12 AM
  */
 
 namespace App\Http\Controllers;
-
-use App\Models\UserInfo;
-use App\Repositories\RoleRpo;
+use App\Repositories\UserWisePermissionRpo;
 use App\Services\AdministrationService;
 use Illuminate\Http\Request;
 
-class RoleCtl  extends Controller
+class UserWisePermissionCtl extends Controller
 {
 
     private static function createRequest(Request $request, $operation)
@@ -39,46 +37,28 @@ class RoleCtl  extends Controller
             $request->request->add([
                 "authInfo" => $administrationRes["authInfo"]
             ]);
-            return RoleRpo::getInitialData($request);
+            return UserWisePermissionRpo::getInitialData($request);
         }else {
             return $administrationRes;
         }
 
     }
 
-
-    public function create(Request $request)
+    public function getPermittedMenusByUser(Request $request)
     {
 
         $permissionRequest = self::createRequest($request,"R");
         $administrationRes = AdministrationService::checkPermission($permissionRequest);
 
         if($administrationRes["code"] == 200){
-
             $request->request->add([
                 "authInfo" => $administrationRes["authInfo"]
             ]);
-
-            return RoleRpo::create($request);
+            return UserWisePermissionRpo::getPermittedMenusByUser($request);
         }else {
             return $administrationRes;
         }
 
     }
-
-    public function update(Request $request,$oid)
-    {
-
-        $permissionRequest = self::createRequest($request,"R");
-        $administrationRes = AdministrationService::checkPermission($permissionRequest);
-
-        if($administrationRes["code"] == 200){
-            return RoleRpo::update($request,$oid);
-        }else {
-            return $administrationRes;
-        }
-
-    }
-
 
 }
