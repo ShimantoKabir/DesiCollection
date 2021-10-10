@@ -58,11 +58,11 @@ class UserWisePermissionRpo
 
         $userInfo = $request->exUserInfo;
         try{
-
-            $menuQuery = strtr("select 
-                menus.oid, 
-                menus.href, 
-                menus.icon, 
+            // hi
+            $menuQuery = strtr("select
+                menus.oid,
+                menus.href,
+                menus.icon,
                 menus.tree_id AS treeId,
                 menus.menu_name AS menuName,
                 menus.parent_tree_id AS parentTreeId,
