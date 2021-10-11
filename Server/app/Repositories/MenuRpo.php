@@ -8,7 +8,6 @@
 
 namespace App\Repositories;
 
-
 use App\Models\UserInfo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -28,10 +27,10 @@ class MenuRpo
         DB::beginTransaction();
         try {
 
-            $menuQuery = strtr("select 
-                menus.oid, 
-                menus.href, 
-                menus.icon, 
+            $menuQuery = strtr("select
+                menus.oid,
+                menus.href,
+                menus.icon,
                 menus.tree_id AS treeId,
                 menus.menu_name AS menuName,
                 menus.parent_tree_id AS parentTreeId,

@@ -31,17 +31,9 @@ Route::post('/roles/view-init', [RoleCtl::class, 'getInitialData']);
 Route::post('/roles', [RoleCtl::class, 'create']);
 Route::put('/roles/{oid}', [RoleCtl::class, 'update']);
 
-Route::post('/menu-permission-for-roles/permitted-menus', [
-    MenuPermissionForRoleCtl::class, 'getPermittedMenusByRole'
-]);
+Route::post('/menu-permission-for-roles/permitted-menus', [MenuPermissionForRoleCtl::class, 'getPermittedMenusByRole']);
+Route::post('/menu-permission-for-roles', [MenuPermissionForRoleCtl::class, 'create']);
 
-Route::post('/menu-permission-for-roles', [
-    MenuPermissionForRoleCtl::class, 'create'
-]);
-
-Route::post('/user-wise-permissions/view-init', [
-    UserWisePermissionCtl::class, 'getInitialData'
-]);
-Route::post('/user-wise-permissions/permitted-menus', [
-    UserWisePermissionCtl::class, 'getPermittedMenusByUser'
-]);
+Route::post('/user-wise-permissions/view-init', [UserWisePermissionCtl::class, 'getInitialData']);
+Route::post('/user-wise-permissions/permitted-menus', [UserWisePermissionCtl::class, 'getPermittedMenusByUser']);
+Route::put('/user-wise-permissions/{userInfoId}', [UserWisePermissionCtl::class, 'update']);

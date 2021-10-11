@@ -77,6 +77,7 @@
                 dataBsDismiss : "",
                 wasValidated : "",
                 userInfos : [],
+                restrictedMenuOidList : [],
                 userInfo: {
                   id : undefined,
                   email : undefined,
@@ -98,7 +99,6 @@
                 let u = this.userInfos.find(x=>x.id === this.userInfo.id);
                 this.userInfo.roleOid = u.roleOid;
 
-
                 this.onResetResponse(1);
                 this.isNetworkOpStarted = true;
                 this.$axios.$post('/user-wise-permissions/permitted-menus',{
@@ -109,20 +109,25 @@
                         href : window.location.pathname
                     }
                 }).then(res=>{
-                    this.isNetworkOpStarted = false;
-                    this.response.code = res.code;
-                    this.response.msg = res.msg;
 
-                    console.log(res.menus.length);
+                  this.isNetworkOpStarted = false;
+                  this.response.code = res.code;
+                  this.response.msg = res.msg;
 
-                    let allSelection = this.$refs.tree.findAll({data : { menuFor: "admin"}},true);
-                    allSelection.uncheck();
+                  let allSelection = this.$refs.tree.findAll({data : { menuFor: "admin"}},true);
+                  allSelection.uncheck();
+                  allSelection.disable();
 
-                    res.menus.forEach(m=>{
-                        console.log(m.oid);
-                        let selection = this.$refs.tree.find({data: { oid : m.oid }});
-                        selection.check(true);
-                    });
+                  res.menus.forEach(m=>{
+                    let selection = this.$refs.tree.find({data: { oid : m.oid}});
+                    selection.enable();
+                    selection.check();
+                  });
+
+                  res.restrictedMenuOidList.forEach((oid=>{
+                    let selection = this.$refs.tree.find({data: { oid : parseInt(oid)}});
+                    selection.uncheck();
+                  }));
 
                 }).catch(err=>{
                     this.isNetworkOpStarted = false;
@@ -134,8 +139,46 @@
             },
             onReset(){
 
+
             },
             verifyInput(which){
+              this.restrictedMenuOidList = [];
+              this.$store.state.menus.forEach(m=>{
+                let selection = this.$refs.tree.find({
+                  data: {
+                    oid : m.oid,
+                    hasChildren : false
+                  },
+                  state : {
+                    disabled : false,
+                    checked: false
+                  }
+                });
+                selection.forEach(item=>{
+                  this.restrictedMenuOidList.push(item.data.oid);
+                });
+              });
+
+              this.onResetResponse(1);
+              this.isNetworkOpStarted = true;
+              this.$axios.$put('/user-wise-permissions/'+this.userInfo.id,{
+                restrictedMenuOidList : this.restrictedMenuOidList,
+                userInfo : {
+                  email : this.cookieUserInfo.email,
+                  sessionId: this.cookieUserInfo.sessionId,
+                  href : window.location.pathname
+                }
+              }).then(res=>{
+                this.isNetworkOpStarted = false;
+                this.response.code = res.code;
+                this.response.msg = res.msg;
+              }).catch(err=>{
+                this.isNetworkOpStarted = false;
+                this.response.code = 404;
+                this.response.msg = "Something went wrong, please try again!";
+              }).finally(end=>{
+                this.isNetworkOpStarted = false;
+              });
 
             },
             onResetResponse(init){
@@ -179,7 +222,8 @@
                         menuList[i].data = {
                             oid : menuList[i].oid,
                             roleOid : menuList[i].roleOid,
-                            menuFor : "admin"
+                            menuFor : "admin",
+                            hasChildren : children.length > 0
                         };
                         menuList[i].state = {
                             selected : false,

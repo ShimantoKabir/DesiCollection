@@ -61,4 +61,21 @@ class UserWisePermissionCtl extends Controller
 
     }
 
+    public function update(Request $request,$userInfoId)
+    {
+
+        $permissionRequest = self::createRequest($request,"U");
+        $administrationRes = AdministrationService::checkPermission($permissionRequest);
+
+        if($administrationRes["code"] == 200){
+            $request->request->add([
+                "authInfo" => $administrationRes["authInfo"]
+            ]);
+            return UserWisePermissionRpo::update($request,$userInfoId);
+        }else {
+            return $administrationRes;
+        }
+
+    }
+
 }

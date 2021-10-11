@@ -9,12 +9,14 @@
 namespace App\Repositories;
 
 
+use App\Models\UserInfo;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
 class UserWisePermissionRpo
 {
 
-    public static function getInitialData($request)
+    public static function getInitialData($request) : JsonResponse
     {
         $res = [
             'msg' => '',
@@ -48,7 +50,7 @@ class UserWisePermissionRpo
         return response()->json($res, 200);
     }
 
-    public static function getPermittedMenusByUser($request)
+    public static function getPermittedMenusByUser($request): JsonResponse
     {
 
         $res = [
@@ -58,36 +60,30 @@ class UserWisePermissionRpo
 
         $userInfo = $request->exUserInfo;
         try{
-            // hi
-            $menuQuery = strtr("select
-                menus.oid,
-                menus.href,
-                menus.icon,
-                menus.tree_id AS treeId,
-                menus.menu_name AS menuName,
-                menus.parent_tree_id AS parentTreeId,
-                menu_permission_for_roles.role_oid AS roleOid,
-                menu_permission_for_roles.menu_oid AS menuOid
-            from
-                menus
-            inner join menu_permission_for_roles on
-                menus.oid = menu_permission_for_roles.menu_oid
-            where
-                menu_permission_for_roles.role_oid = @roleOid
-                and menus.oid not in (
-                select
-                    ifnull(restricted_menu_oid,'')
-                from
-                    user_infos
-                where
-                    user_infos.id = @id);",
-                [
-                    "@roleOid" => $userInfo["roleOid"],
-                    "@id" => $userInfo["id"]
-                ]
-            );
 
-            $res['menus'] = DB::select($menuQuery);
+            $u = UserInfo::where("id",$userInfo['id'])->first();
+            $restrictedMenuOidList = explode(",",$u->restricted_menu_oid);
+
+            $res['menus'] = DB::table('menus')
+                ->join('menu_permission_for_roles',
+                    'menus.oid',
+                    '=',
+                    'menu_permission_for_roles.menu_oid'
+                )
+                ->select(
+                    "menus.oid",
+                    "menus.href",
+                    "menus.icon",
+                    "menus.tree_id AS treeId",
+                    "menus.menu_name AS menuName",
+                    "menus.parent_tree_id AS parentTreeId",
+                    "menu_permission_for_roles.role_oid AS roleOid",
+                    "menu_permission_for_roles.menu_oid AS menuOid",
+                )
+                ->where("menu_permission_for_roles.role_oid","=",$userInfo["roleOid"])
+                ->get();
+
+            $res['restrictedMenuOidList'] = $restrictedMenuOidList;
             $res['msg'] = "Fetched permitted menus successfully by user!";
             $res['code'] = 200;
 
@@ -99,4 +95,39 @@ class UserWisePermissionRpo
         return response()->json($res, 200);
 
     }
+
+    public static function update($request,$userInfoId): JsonResponse
+    {
+
+        $res = [
+            'msg' => '',
+            'code' => ''
+        ];
+
+        $authInfo = $request->authInfo;
+        $restrictedMenuOidList = $request->restrictedMenuOidList;
+        try{
+
+            UserInfo::where("id",$userInfoId)
+            ->update([
+                "restricted_menu_oid" => join(",",$restrictedMenuOidList),
+//                "modified_by" => $authInfo['id'],
+//                "updated_at" => date('Y-m-d H:i:s'),
+//                "ip" => $request->ip()
+            ]);
+
+            DB::commit();
+
+            $res["msg"] = "Restricted menu save successfully!";
+            $res["code"] = 200;
+
+        }catch (\Exception $e) {
+            $res['msg'] = $e->getMessage();
+            $res['code'] = 404;
+        }
+
+        return response()->json($res, 200);
+
+    }
+
 }
