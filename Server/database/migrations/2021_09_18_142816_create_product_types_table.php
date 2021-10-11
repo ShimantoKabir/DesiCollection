@@ -17,7 +17,9 @@ class CreateProductTypesTable extends Migration
             $table->id();
             $table->string("type_id");
             $table->string("type_name");
+            $table->string("ip")->nullable();
             $table->timestamps();
+            $table->integer("modified_by")->nullable();
         });
     }
 

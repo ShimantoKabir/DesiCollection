@@ -16,7 +16,9 @@ class SupplierBill extends Model
         'debit_amount',
         'credit_amount',
         'total_quantity',
+        'ip',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'modified_by'
     ];
 }

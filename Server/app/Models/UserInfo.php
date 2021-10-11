@@ -25,7 +25,9 @@ class UserInfo extends Model
         'mobile_number',
         'social_login_id',
         'restricted_menu_oid',
+        'ip',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'modified_by'
     ];
 }

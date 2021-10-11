@@ -111,9 +111,9 @@ class UserWisePermissionRpo
             UserInfo::where("id",$userInfoId)
             ->update([
                 "restricted_menu_oid" => join(",",$restrictedMenuOidList),
-//                "modified_by" => $authInfo['id'],
-//                "updated_at" => date('Y-m-d H:i:s'),
-//                "ip" => $request->ip()
+                "modified_by" => $authInfo['id'],
+                "updated_at" => date('Y-m-d H:i:s'),
+                "ip" => $request->ip()
             ]);
 
             DB::commit();

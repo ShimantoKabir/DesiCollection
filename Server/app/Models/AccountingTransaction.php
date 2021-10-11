@@ -23,7 +23,9 @@ class AccountingTransaction extends Model
         'reference_number',
         'chart_of_account_oid',
         'chart_of_account_root_oid',
+        'ip',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'modified_by'
     ];
 }

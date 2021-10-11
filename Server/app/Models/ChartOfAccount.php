@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ChartOfAccount extends Model
 {
-    protected $table = "ChartOfAccount";
+    protected $table = "chart_of_accounts";
     public $timestamps = false;
     protected $fillable = [
         'id',
@@ -17,7 +17,9 @@ class ChartOfAccount extends Model
         'is_ledger',
         'account_name',
         'parent_tree_id',
+        'ip',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'modified_by'
     ];
 }

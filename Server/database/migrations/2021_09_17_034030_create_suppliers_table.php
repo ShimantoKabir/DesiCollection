@@ -17,7 +17,9 @@ class CreateSuppliersTable extends Migration
             $table->id();
             $table->integer("supplier_id");
             $table->string('supplier_name');
+            $table->string("ip")->nullable();
             $table->timestamps();
+            $table->integer("modified_by")->nullable();
         });
     }
 

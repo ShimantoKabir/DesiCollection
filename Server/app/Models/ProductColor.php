@@ -11,7 +11,9 @@ class ProductColor extends Model
     protected $fillable = [
         'id',
         'color_name',
+        'ip',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'modified_by'
     ];
 }

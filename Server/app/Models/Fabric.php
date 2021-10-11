@@ -11,7 +11,9 @@ class Fabric extends Model
     protected $fillable = [
         'id',
         'fabric_name',
+        'ip',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'modified_by'
     ];
 }

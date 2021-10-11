@@ -6,11 +6,11 @@
         <li class="mb-1">
           <button class="btn btn-toggle align-items-center rounded collapsed"
                   data-bs-toggle="collapse"
-                  data-bs-target="#home-collapse"
+                  :data-bs-target="'#menuCollapse'+i"
                   aria-expanded="true">
             {{m.menuName}}
           </button>
-          <div class="collapse show" id="home-collapse">
+          <div class="collapse show" :id="'menuCollapse'+i">
             <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
               <li v-for="c in m.children" v-on:click="navigateTo(c.href)" >
                 <a class="link-dark rounded cp">

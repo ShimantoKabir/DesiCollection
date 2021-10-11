@@ -16,7 +16,9 @@ class CreateProductUserTypesTable extends Migration
         Schema::create('product_user_types', function (Blueprint $table) {
             $table->id();
             $table->string("user_type_name");
+            $table->string("ip")->nullable();
             $table->timestamps();
+            $table->integer("modified_by")->nullable();
         });
     }
 

@@ -16,7 +16,9 @@ class CreateFabricsTable extends Migration
         Schema::create('fabrics', function (Blueprint $table) {
             $table->id();
             $table->string("fabric_name");
+            $table->string("ip")->nullable();
             $table->timestamps();
+            $table->integer("modified_by")->nullable();
         });
     }
 

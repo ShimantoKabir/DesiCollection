@@ -23,7 +23,9 @@ class CreateMenusTable extends Migration
             $table->string('menu_name')->nullable();
             $table->integer("is_active")->default(1);
             $table->integer('parent_tree_id');
+            $table->string("ip")->nullable();
             $table->timestamps();
+            $table->integer("modified_by")->nullable();
         });
     }
 

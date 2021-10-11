@@ -23,7 +23,7 @@ class ChartOfAccountSeeder extends Seeder
         $chartOfAccounts = [
             [
                 "oid" => 101,
-                "path" => ["Asset"],
+                "path" => "Asset",
                 "org_id" => 101,
                 "tree_id" => 1,
                 "is_ledger" => 0,
@@ -32,7 +32,7 @@ class ChartOfAccountSeeder extends Seeder
             ],
             [
                 "oid" => 102,
-                "path" => ["Asset","Cash"],
+                "path" => "Asset,Cash",
                 "org_id" => 101,
                 "tree_id" => 2,
                 "is_ledger" => 1,
@@ -41,7 +41,7 @@ class ChartOfAccountSeeder extends Seeder
             ],
             [
                 "oid" => 103,
-                "path" => ["Asset","Bank"],
+                "path" => "Asset,Bank",
                 "org_id" => 101,
                 "tree_id" => 3,
                 "is_ledger" => 0,
@@ -50,7 +50,7 @@ class ChartOfAccountSeeder extends Seeder
             ],
             [
                 "oid" => 104,
-                "path" => ["Expanse"],
+                "path" => "Expanse",
                 "org_id" => 101,
                 "tree_id" => 4,
                 "is_ledger" => 0,
@@ -59,7 +59,7 @@ class ChartOfAccountSeeder extends Seeder
             ],
             [
                 "oid" => 105,
-                "path" => ["Expanse","Electricity Bill"],
+                "path" => "Expanse,Electricity Bill",
                 "org_id" => 101,
                 "tree_id" => 5,
                 "is_ledger" => 1,
@@ -68,7 +68,7 @@ class ChartOfAccountSeeder extends Seeder
             ],
             [
                 "oid" => 106,
-                "path" => ["Expanse","Delivery Cost"],
+                "path" => "Expanse,Delivery Cost",
                 "org_id" => 101,
                 "tree_id" => 6,
                 "is_ledger" => 1,
@@ -77,7 +77,7 @@ class ChartOfAccountSeeder extends Seeder
             ],
             [
                 "oid" => 106,
-                "path" => ["Expanse","Conditional Charge"],
+                "path" => "Expanse,Conditional Charge",
                 "org_id" => 101,
                 "tree_id" => 6,
                 "is_ledger" => 1,
@@ -86,7 +86,7 @@ class ChartOfAccountSeeder extends Seeder
             ],
             [
                 "oid" => 106,
-                "path" => ["Expanse","Shop Rent"],
+                "path" => "Expanse,Shop Rent",
                 "org_id" => 101,
                 "tree_id" => 6,
                 "is_ledger" => 1,
@@ -95,7 +95,7 @@ class ChartOfAccountSeeder extends Seeder
             ],
             [
                 "oid" => 107,
-                "path" => ["Expanse","Employee Salary"],
+                "path" => "Expanse,Employee Salary",
                 "org_id" => 101,
                 "tree_id" => 7,
                 "is_ledger" => 0,
@@ -104,7 +104,7 @@ class ChartOfAccountSeeder extends Seeder
             ],
             [
                 "oid" => 108,
-                "path" => ["Liabilities"],
+                "path" => "Liabilities",
                 "org_id" => 101,
                 "tree_id" => 8,
                 "is_ledger" => 0,
@@ -113,7 +113,7 @@ class ChartOfAccountSeeder extends Seeder
             ],
             [
                 "oid" => 110,
-                "path" => ["Equity"],
+                "path" => "Equity",
                 "org_id" => 101,
                 "tree_id" => 10,
                 "is_ledger" => 0,
@@ -122,7 +122,7 @@ class ChartOfAccountSeeder extends Seeder
             ],
             [
                 "oid" => 111,
-                "path" => ["Revenue"],
+                "path" => "Revenue",
                 "org_id" => 101,
                 "tree_id" => 11,
                 "is_ledger" => 0,
@@ -138,7 +138,7 @@ class ChartOfAccountSeeder extends Seeder
 
             DB::table('chart_of_accounts')->insert([
                 "oid" => $val['oid'],
-                "path" => json_encode($val['path']),
+                "path" => $val['path'],
                 "org_id" => $val['org_id'],
                 "tree_id" => $val['tree_id'],
                 "is_ledger" => $val['is_ledger'],

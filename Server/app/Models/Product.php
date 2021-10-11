@@ -22,7 +22,9 @@ class Product extends Model
         'offer_percentage',
         'profit_percentage',
         'available_quantity',
+        'ip',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'modified_by'
     ];
 }

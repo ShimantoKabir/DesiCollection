@@ -16,13 +16,15 @@ class CreateChartOfAccountsTable extends Migration
         Schema::create('chart_of_accounts', function (Blueprint $table) {
             $table->id();
             $table->integer("oid");
-            $table->json("path");
+            $table->string("path");
             $table->integer("org_id");
             $table->integer("tree_id");
             $table->tinyInteger("is_ledger")->comment("0 - no, 1 - yes");
             $table->string("account_name");
             $table->integer("parent_tree_id");
+            $table->string("ip")->nullable();
             $table->timestamps();
+            $table->integer("modified_by")->nullable();
         });
     }
 

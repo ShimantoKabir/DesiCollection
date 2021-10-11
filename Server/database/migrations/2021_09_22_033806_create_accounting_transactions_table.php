@@ -28,7 +28,9 @@ class CreateAccountingTransactionsTable extends Migration
             $table->string('reference_number');
             $table->integer('chart_of_account_oid');
             $table->integer('chart_of_account_root_oid');
+            $table->string("ip")->nullable();
             $table->timestamps();
+            $table->integer("modified_by")->nullable();
         });
     }
 

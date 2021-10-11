@@ -12,7 +12,9 @@ class ProductType extends Model
         'id',
         'type_id',
         'type_name',
+        'ip',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'modified_by'
     ];
 }

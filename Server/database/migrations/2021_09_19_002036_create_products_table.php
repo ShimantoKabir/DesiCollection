@@ -27,7 +27,9 @@ class CreateProductsTable extends Migration
             $table->integer("offer_percentage");
             $table->integer("profit_percentage");
             $table->integer("available_quantity");
+            $table->string("ip")->nullable();
             $table->timestamps();
+            $table->integer("modified_by")->nullable();
         });
     }
 

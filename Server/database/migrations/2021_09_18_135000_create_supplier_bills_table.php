@@ -21,7 +21,9 @@ class CreateSupplierBillsTable extends Migration
             $table->bigInteger("debit_amount")->comment("Total price of cloth");
             $table->bigInteger("credit_amount")->comment("Given amount/deposit amount");
             $table->integer("total_quantity");
+            $table->string("ip")->nullable();
             $table->timestamps();
+            $table->integer("modified_by")->nullable();
         });
     }
 

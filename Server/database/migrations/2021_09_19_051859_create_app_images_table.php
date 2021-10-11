@@ -18,7 +18,9 @@ class CreateAppImagesTable extends Migration
             $table->string("image_url");
             $table->boolean("is_active")->default(false);
             $table->integer("reference_id")->comment("can be user id/ can be product id/ others");
+            $table->string("ip")->nullable();
             $table->timestamps();
+            $table->integer("modified_by")->nullable();
         });
     }
 

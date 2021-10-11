@@ -25,7 +25,9 @@ class CreateAddressesTable extends Migration
             $table->bigInteger("link_up_id");
             $table->string("first_mobile_no");
             $table->string("second_mobile_no")->nullable();
+            $table->string("ip")->nullable();
             $table->timestamps();
+            $table->integer("modified_by")->nullable();
         });
     }
 

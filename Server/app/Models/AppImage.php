@@ -13,7 +13,9 @@ class AppImage extends Model
         'image_url',
         'is_active',
         'reference_id',
+        'ip',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'modified_by'
     ];
 }

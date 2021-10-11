@@ -12,7 +12,9 @@ class Supplier extends Model
         'id',
         'supplier_id',
         'supplier_name',
+        'ip',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'modified_by'
     ];
 }

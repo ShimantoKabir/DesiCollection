@@ -30,7 +30,9 @@ class CreateUserInfosTable extends Migration
             $table->string('mobile_number')->nullable();
             $table->string('social_login_id')->nullable();
             $table->string("restricted_menu_oid")->nullable();
+            $table->string("ip")->nullable();
             $table->timestamps();
+            $table->integer("modified_by")->nullable();
         });
     }
 
