@@ -3,15 +3,14 @@
 namespace App\Repositories;
 
 use App\Models\ChartOfAccount;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
-class ChartOfAccountRpo
+class AisEntryRpo
 {
 
-    public static function getInitialData(Request $request): JsonResponse
+    public static function getInitialData(Request $request) : JsonResponse
     {
-
         $res = [
             'msg' => '',
             'code' => ''
@@ -29,8 +28,7 @@ class ChartOfAccountRpo
                 "is_ledger AS isLedger",
                 "account_name AS accountName",
                 "parent_tree_id AS parentTreeId"
-            )->get();
-
+            )->where("is_ledger","=",1)->get();
             $res['msg'] = "Initial date fetched successfully!";
             $res['code'] = 200;
 
