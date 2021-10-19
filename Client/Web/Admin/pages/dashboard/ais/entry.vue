@@ -105,7 +105,7 @@
             <tr  v-for="(t,i) in accountingTransactions" >
               <td>{{i+1}}</td>
               <td>
-                <select v-model="t.chartOfAccountOid" class="form-select">
+                <select v-model="t.chartOfAccountOid" class="form-select" v-on:change="onChartOfAccountChange(t,i)">
                   <option v-bind:value="0">--select--</option>
                   <option v-bind:value="c.oid" v-for="c in chartOfAccounts" >{{c.accountName}}</option>
                 </select>
@@ -116,7 +116,7 @@
             </tr>
             <tr>
               <td colspan="3" >
-                <textarea class="form-control" ></textarea>
+                <textarea v-model="accountingTransaction.narration" class="form-control" placeholder="N" ></textarea>
               </td>
             </tr>
             <tr>
@@ -162,28 +162,38 @@ export default {
       chartOfAccounts : [],
       bankAccounts : [],
       accountingTransaction : {
-        accountName : "",
-        voucherDate : "",
-        voucherType : 0,
-        voucherNo : "",
-        checkNo : "",
-        checkDate : "",
-        chartOfAccountOid : 0
+          accountName : "",
+          voucherDate : "",
+          voucherType : 0,
+          voucherNo : "",
+          checkNo : "",
+          checkDate : "",
+          chartOfAccountOid : 0,
+          narration : ""
       },
       accountingTransactions : [
         {
           amt : 0,
-          chartOfAccountOid : 0
+          chartOfAccountOid : 0,
+          chartOfAccountRootOid : 0
         }
       ]
     }
   },
   methods : {
+      onChartOfAccountChange(obj,pos){
+          let coa = this.chartOfAccounts.find(function (item) {
+              return item.oid = obj.chartOfAccountOid;
+          });
+          this.accountingTransactions[pos].chartOfAccountRootOid = coa.rootOid;
+          console.log("obj",JSON.stringify(this.accountingTransactions));
+      },
     addOrRemoveAccountingTransaction(flag){
       if(flag === 1){
         this.accountingTransactions.push({
-          amt : 0,
-          chartOfAccountOid : 0
+            amt : 0,
+            chartOfAccountOid : 0,
+            chartOfAccountRootOid : 0
         });
       }else {
         this.accountingTransactions.pop();

@@ -20,6 +20,7 @@ class CreateChartOfAccountsTable extends Migration
             $table->integer("org_id");
             $table->integer("tree_id");
             $table->tinyInteger("is_ledger")->comment("0 - no, 1 - yes");
+            $table->tinyInteger("is_editable")->comment("0 - no, 1 - yes");
             $table->string("account_name");
             $table->integer("parent_tree_id");
             $table->string("ip")->nullable();

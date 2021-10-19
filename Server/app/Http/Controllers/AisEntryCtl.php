@@ -40,4 +40,21 @@ class AisEntryCtl extends Controller
 
     }
 
+    public function create(Request $request)
+    {
+
+        $permissionRequest = self::createRequest($request,"C");
+        $administrationRes = AdministrationService::checkPermission($permissionRequest);
+
+        if($administrationRes["code"] == 200){
+            $request->request->add([
+                "authInfo" => $administrationRes["authInfo"]
+            ]);
+            return AisEntryRpo::create($request);
+        }else {
+            return $administrationRes;
+        }
+
+    }
+
 }

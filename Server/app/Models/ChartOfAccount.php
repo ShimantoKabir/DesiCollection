@@ -15,6 +15,7 @@ class ChartOfAccount extends Model
         'org_id',
         'tree_id',
         'is_ledger',
+        'is_editable',
         'account_name',
         'parent_tree_id',
         'ip',

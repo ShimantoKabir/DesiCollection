@@ -10,13 +10,12 @@ namespace App\Repositories;
 
 
 use App\Models\UserInfo;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
 class UserWisePermissionRpo
 {
 
-    public static function getInitialData($request) : JsonResponse
+    public static function getInitialData($request)
     {
         $res = [
             'msg' => '',
@@ -50,7 +49,7 @@ class UserWisePermissionRpo
         return response()->json($res, 200);
     }
 
-    public static function getPermittedMenusByUser($request): JsonResponse
+    public static function getPermittedMenusByUser($request)
     {
 
         $res = [
@@ -78,7 +77,7 @@ class UserWisePermissionRpo
                     "menus.menu_name AS menuName",
                     "menus.parent_tree_id AS parentTreeId",
                     "menu_permission_for_roles.role_oid AS roleOid",
-                    "menu_permission_for_roles.menu_oid AS menuOid",
+                    "menu_permission_for_roles.menu_oid AS menuOid"
                 )
                 ->where("menu_permission_for_roles.role_oid","=",$userInfo["roleOid"])
                 ->get();
@@ -96,7 +95,7 @@ class UserWisePermissionRpo
 
     }
 
-    public static function update($request,$userInfoId): JsonResponse
+    public static function update($request,$userInfoId)
     {
 
         $res = [
