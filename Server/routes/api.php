@@ -42,5 +42,6 @@ Route::put('/user-wise-permissions/{userInfoId}', [UserWisePermissionCtl::class,
 Route::post('/chart-of-account/view-init', [ChartOfAccountCtl::class, 'getInitialData']);
 
 Route::post('/ais-entry/view-init', [AisEntryCtl::class, 'getInitialData']);
+Route::post('/ais-entry', [AisEntryCtl::class, 'create']);
 
 

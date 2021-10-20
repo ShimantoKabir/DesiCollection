@@ -15,8 +15,7 @@
             &nbsp;
             <span v-if="isNetworkOpStarted" >Loading...</span>
             <span v-else >{{response.msg}}</span>
-            <button v-on:click="onResetResponse" type="button" class="btn-close" aria-label="Close">
-            </button>
+            <button v-on:click="onResetResponse" type="button" class="btn-close" aria-label="Close"></button>
           </div>
           <div class="d-flex
             justify-content-between
@@ -34,12 +33,15 @@
               <div class="input-group input-group-sm mb-3">
                 <span class="input-group-text">Voucher Date</span>
                 <input type="date" v-model="accountingTransaction.voucherDate" class="form-control">
+                <div v-show="showValidation && !accountingTransaction.voucherDate" class="invalid-feedback open">
+                  Voucher date required!
+                </div>
               </div>
             </div>
             <div class="col" >
               <div class="input-group input-group-sm mb-3">
                 <span class="input-group-text">Voucher Type</span>
-                <select v-model="accountingTransaction.voucherType" class="form-select">
+                <select v-model="accountingTransaction.voucherType" class="form-select" v-on:change="onVoucherTypeChange" >
                   <option v-bind:value="0">--select--</option>
                   <option v-bind:value="1" >Cash payment voucher</option>
                   <option v-bind:value="2" >Cash receive voucher</option>
@@ -48,6 +50,10 @@
                   <option v-bind:value="5" >Journal voucher(Debit)</option>
                   <option v-bind:value="6" >Journal voucher(Credit)</option>
                 </select>
+                <div v-show="showValidation && accountingTransaction.voucherType === 0"
+                     class="invalid-feedback open">
+                  Please select a voucher type!
+                </div>
               </div>
             </div>
             <div class="col" >
@@ -61,23 +67,35 @@
                class="row" >
             <div class="col" >
               <div class="input-group input-group-sm mb-3">
-                <span class="input-group-text">Bank A/C</span>
+                <span class="input-group-text">Bank Account</span>
                 <select v-model="accountingTransaction.chartOfAccountOid" class="form-select">
                   <option v-bind:value="0">--select--</option>
                   <option v-for="b in bankAccounts" >{{b.accountName}}</option>
                 </select>
+                <div v-show="showValidation && accountingTransaction.chartOfAccountOid === 0"
+                     class="invalid-feedback open">
+                  Please select a bank account!
+                </div>
               </div>
             </div>
             <div class="col" >
               <div class="input-group input-group-sm mb-3">
                 <span class="input-group-text">Check Date</span>
                 <input type="date" v-model="accountingTransaction.checkDate" class="form-control">
+                <div v-show="showValidation && !accountingTransaction.checkDate"
+                     class="invalid-feedback open">
+                  Bank check date required!
+                </div>
               </div>
             </div>
             <div class="col" >
               <div class="input-group input-group-sm mb-3">
                 <span class="input-group-text">Check No.</span>
                 <input v-model="accountingTransaction.checkNo" type="text" class="form-control">
+                <div v-show="showValidation && !accountingTransaction.checkNo"
+                     class="invalid-feedback open">
+                  Bank check number required!
+                </div>
               </div>
             </div>
           </div>
@@ -90,6 +108,10 @@
                   <option v-bind:value="0">--select--</option>
                   <option v-for="c in chartOfAccounts" >{{c.accountName}}</option>
                 </select>
+                <div v-show="showValidation && accountingTransaction.chartOfAccountOid === 0"
+                     class="invalid-feedback open">
+                  Please select an account!
+                </div>
               </div>
             </div>
           </div>
@@ -102,10 +124,14 @@
             </tr>
             </thead>
             <tbody>
+            <tr v-show="showValidation && accountingTransactionsValidation.code === 404"
+                class="text-center">
+              <td colspan="3" style="color: red" >{{accountingTransactionsValidation.msg}}</td>
+            </tr>
             <tr  v-for="(t,i) in accountingTransactions" >
               <td>{{i+1}}</td>
               <td>
-                <select v-model="t.chartOfAccountOid" class="form-select" v-on:change="onChartOfAccountChange(t,i)">
+                <select v-model="t.chartOfAccountOid" class="form-select">
                   <option v-bind:value="0">--select--</option>
                   <option v-bind:value="c.oid" v-for="c in chartOfAccounts" >{{c.accountName}}</option>
                 </select>
@@ -116,12 +142,12 @@
             </tr>
             <tr>
               <td colspan="3" >
-                <textarea v-model="accountingTransaction.narration" class="form-control" placeholder="N" ></textarea>
+                <textarea v-model="accountingTransaction.narration" class="form-control" placeholder="Narration" ></textarea>
               </td>
             </tr>
             <tr>
               <td colspan="2" >
-                <button class="btn btn-success" >Save</button>
+                <button class="btn btn-success" v-on:click="verifyInput('create')" >Save</button>
               </td>
               <td>
                 <button v-on:click="addOrRemoveAccountingTransaction(1)" class="btn btn-outline-success" >
@@ -149,97 +175,176 @@ export default {
   },
   data(){
     return{
-      isNetworkOpStarted: false,
-      cookieUserInfo : "",
-      modalState : "close",
-      dataBsDismiss : "",
-      wasValidated : "",
-      response : {
-        code : 0,
-        msg : "",
-        init : 0
-      },
-      chartOfAccounts : [],
-      bankAccounts : [],
-      accountingTransaction : {
-          accountName : "",
-          voucherDate : "",
-          voucherType : 0,
-          voucherNo : "",
-          checkNo : "",
-          checkDate : "",
-          chartOfAccountOid : 0,
-          narration : ""
-      },
-      accountingTransactions : [
-        {
-          amt : 0,
-          chartOfAccountOid : 0,
-          chartOfAccountRootOid : 0
-        }
-      ]
-    }
-  },
-  methods : {
-      onChartOfAccountChange(obj,pos){
-          let coa = this.chartOfAccounts.find(function (item) {
-              return item.oid = obj.chartOfAccountOid;
-          });
-          this.accountingTransactions[pos].chartOfAccountRootOid = coa.rootOid;
-          console.log("obj",JSON.stringify(this.accountingTransactions));
-      },
-    addOrRemoveAccountingTransaction(flag){
-      if(flag === 1){
-        this.accountingTransactions.push({
+        isNetworkOpStarted: false,
+        cookieUserInfo : "",
+        modalState : "close",
+        dataBsDismiss : "",
+        wasValidated : "",
+        showValidation : false,
+        response : {
+          code : 0,
+          msg : "",
+          init : 0
+        },
+        chartOfAccounts : [],
+        bankAccounts : [],
+        accountingTransaction : {
+            accountName : "",
+            voucherDate : "",
+            voucherType : 0,
+            voucherNo : "",
+            checkNo : "",
+            checkDate : "",
+            chartOfAccountOid : 0,
+            narration : ""
+        },
+        accountingTransactionsValidation : {
+            code : 404,
+            msg : "Please select at least one account and give some amount!"
+        },
+        accountingTransactions : [
+          {
             amt : 0,
             chartOfAccountOid : 0,
             chartOfAccountRootOid : 0
-        });
-      }else {
-        this.accountingTransactions.pop();
-      }
-    },
-    onResetResponse(init){
-      this.response.code = 0;
-      this.response.msg = "";
-      this.response.init = init;
-    },
-    getInitialData(){
-      this.onResetResponse(1);
-      this.isNetworkOpStarted = true;
-      this.$axios.$post('/ais-entry/view-init',{
-        userInfo : {
-          email : this.cookieUserInfo.email,
-          sessionId: this.cookieUserInfo.sessionId,
-          href : window.location.pathname
+          }
+        ]
+    }
+  },
+  methods : {
+      onVoucherTypeChange(){
+          if (this.accountingTransaction.voucherType === 1 || this.accountingTransaction.voucherType === 2){
+
+          }
+      },
+      performAccountingTransactionsValidation(){
+          let accountCheck = this.accountingTransactions.find(function (item) {
+              return item.chartOfAccountOid === 0;
+          });
+
+          let amtCheck = this.accountingTransactions.find(function (item) {
+              return item.amt === 0 || item.amt === "";
+          });
+
+          if(this.accountingTransactions.length === 0){
+              this.accountingTransactionsValidation.msg = "Please add at least one account!";
+              this.accountingTransactionsValidation.code = 404;
+          }else if(accountCheck !== undefined){
+              this.accountingTransactionsValidation.msg = "Account selection missing!";
+              this.accountingTransactionsValidation.code = 404;
+          }else if(amtCheck !== undefined){
+              this.accountingTransactionsValidation.msg = "Amount missing!";
+              this.accountingTransactionsValidation.code = 404;
+          }else {
+              let self = this;
+              let exChartOfAccounts = JSON.parse(JSON.stringify(self.chartOfAccounts));
+              this.accountingTransactions.forEach(function (i) {
+                  let coa = exChartOfAccounts.find(function (j) {
+                      return j.oid === i.chartOfAccountOid;
+                  });
+                  i.chartOfAccountRootOid = coa.rootOid;
+              });
+              this.accountingTransactionsValidation.code = 200;
+          }
+          return this.accountingTransactionsValidation.code === 200;
+      },
+      verifyInput(which){
+          if(which === "create"){
+              this.showValidation = true;
+              if(this.accountingTransaction.voucherType === 1 || this.accountingTransaction.voucherType === 2){
+                  if(this.accountingTransaction.voucherDate && this.performAccountingTransactionsValidation()){
+                      this.onCreate();
+                  }
+              }else if(this.accountingTransaction.voucherType === 3 || this.accountingTransaction.voucherType === 4){
+                  if(this.accountingTransaction.chartOfAccountOid !== 0
+                      && this.accountingTransaction.checkDate
+                      && this.accountingTransaction.checkNo
+                      && this.performAccountingTransactionsValidation()){
+                      this.onCreate();
+                  }
+              }else if(this.accountingTransaction.voucherType === 5 || this.accountingTransaction.voucherType === 6){
+                  if(this.accountingTransaction.chartOfAccountOid !== 0
+                      && this.performAccountingTransactionsValidation()){
+                      this.onCreate();
+                  }
+              }
+          }
+      },
+      onCreate(){
+          this.isNetworkOpStarted = true;
+          this.$axios.$post('/ais-entry',{
+              userInfo : {
+                  email : this.cookieUserInfo.email,
+                  sessionId: this.cookieUserInfo.sessionId,
+                  href : window.location.pathname
+              },
+              accountingTransaction : this.accountingTransaction,
+              accountingTransactions : this.accountingTransactions
+          }).then(res=>{
+              this.isNetworkOpStarted = false;
+              this.response.code = res.code;
+              this.response.msg = res.msg;
+          }).catch(err=>{
+              this.isNetworkOpStarted = false;
+              this.response.code = 404;
+              this.response.msg = "Something went wrong, please try again!";
+          }).finally(end=>{
+              this.isNetworkOpStarted = false;
+          });
+
+      },
+      addOrRemoveAccountingTransaction(flag){
+        if(flag === 1){
+          this.accountingTransactions.push({
+              amt : 0,
+              chartOfAccountOid : 0,
+              chartOfAccountRootOid : 0
+          });
+        }else {
+          this.accountingTransactions.pop();
         }
-      }).then(res=>{
-        this.isNetworkOpStarted = false;
-        this.response.code = res.code;
-        this.response.msg = res.msg;
-
-        this.chartOfAccounts = [];
-        res.chartOfAccounts.forEach(item=>{
-          if(item.parentTreeId !== 3){
-            this.chartOfAccounts.push(item);
+      },
+      onResetResponse(init){
+        this.response.code = 0;
+        this.response.msg = "";
+        this.response.init = init;
+      },
+      getInitialData(){
+        this.onResetResponse(1);
+        this.isNetworkOpStarted = true;
+        this.$axios.$post('/ais-entry/view-init',{
+          userInfo : {
+            email : this.cookieUserInfo.email,
+            sessionId: this.cookieUserInfo.sessionId,
+            href : window.location.pathname
           }
-        });
+        }).then(res=>{
+          this.isNetworkOpStarted = false;
+          this.response.code = res.code;
+          this.response.msg = res.msg;
 
-        this.bankAccounts = [];
-        res.chartOfAccounts.forEach(item=>{
-          if(item.parentTreeId === 3){
-            this.bankAccounts.push(item);
-          }
-        });
+          this.chartOfAccounts = [];
+          res.chartOfAccounts.forEach(item=>{
+            if(item.parentTreeId !== 3){
+              this.chartOfAccounts.push(item);
+            }
+          });
 
-      }).catch(err=>{
-        this.isNetworkOpStarted = false;
-        this.response.code = 404;
-        this.response.msg = "Something went wrong, please try again!";
-      }).finally(end=>{
-        this.isNetworkOpStarted = false;
-      });
-    },
+          this.bankAccounts = [];
+          res.chartOfAccounts.forEach(item=>{
+            if(item.parentTreeId === 3){
+              this.bankAccounts.push(item);
+            }
+          });
+
+        }).catch(err=>{
+          this.isNetworkOpStarted = false;
+          this.response.code = 404;
+          this.response.msg = "Something went wrong, please try again!";
+        }).finally(end=>{
+          this.isNetworkOpStarted = false;
+        });
+      },
   }
 }
 </script>

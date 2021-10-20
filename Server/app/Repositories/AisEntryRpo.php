@@ -74,17 +74,18 @@ class AisEntryRpo
                     $crAmt = $crAmt + $val['amt'];
 
                     $at = new AccountingTransaction();
-                    $at->insId = 101;
-                    $at->voucherNo = $maxVoucherNo;
-                    $at->voucherDate = $accountingTransaction['voucherDate'];
-                    $at->voucherType = $voucherType;
+                    $at->org_id = 101;
+                    $at->voucher_no = $maxVoucherNo;
+                    $at->voucher_date = $accountingTransaction['voucherDate'];
+                    $at->voucher_type = $voucherType;
                     $at->narration = $accountingTransaction['narration'];
-                    $at->drAmt = $val['amt'];
+                    $at->dr_amt = $val['amt'];
                     $at->srl = $srl;
-                    $at->chartOfAccountOid = $val['chartOfAccountOid'];
-                    $at->chartOfAccountRootOid = $val['chartOfAccountRootOid'];
+                    $at->chart_of_account_oid = $val['chartOfAccountOid'];
+                    $at->chart_of_account_root_oid = $val['chartOfAccountRootOid'];
                     $at->ip = $request->ip();
-                    $at->modifiedBy = $authInfo['id'];
+                    $at->created_at = now();
+                    $at->modified_by = $authInfo['id'];
                     $at->save();
 
                 }
@@ -93,20 +94,25 @@ class AisEntryRpo
 
                 $srl++;
                 $at = new AccountingTransaction();
-                $at->insId = 101;
-                $at->voucherNo = $maxVoucherNo;
-                $at->voucherDate = $accountingTransaction['voucherDate'];
-                $at->voucherType = $voucherType;
+                $at->org_id = 101;
+                $at->voucher_no = $maxVoucherNo;
+                $at->voucher_date = $accountingTransaction['voucherDate'];
+                $at->voucher_type = $voucherType;
                 $at->narration = $accountingTransaction['narration'];
-                $at->crAmt = $crAmt;
+                $at->cr_amt = $crAmt;
                 $at->srl = $srl;
-                $at->chartOfAccountOid = $chartOfAccountOidAndRootOidRes["chartOfAccountOid"];
-                $at->chartOfAccountRootOid = $chartOfAccountOidAndRootOidRes["chartOfAccountRootOid"];
+                $at->chart_of_account_oid = $chartOfAccountOidAndRootOidRes["chartOfAccountOid"];
+                $at->chart_of_account_root_oid = $chartOfAccountOidAndRootOidRes["chartOfAccountRootOid"];
                 $at->ip = $request->ip();
-                $at->modifiedBy = $authInfo['id'];
+                $at->created_at = now();
+                $at->modified_by = $authInfo['id'];
                 $at->save();
 
             }
+
+            DB::commit();
+            $res["msg"] = "Transaction save successfully";
+            $res["code"] = 200;
 
         }catch (\Exception $e) {
             $res['msg'] = $e->getMessage();
@@ -119,7 +125,7 @@ class AisEntryRpo
 
     private static function getMaxVoucherNumber($voucherName,$voucherType)
     {
-        return DB::select("SELECT IF(MAX(voucher_no) IS NULL,CONCAT('$voucherName','1'),CONCAT('$voucherName',SUBSTRING_INDEX(MAX(voucher_no),'-',-1)+1)) AS voucher_no FROM accounting_transactions WHERE insId = 101 AND voucherType = $voucherType")[0]->voucher_no;
+        return DB::select("SELECT IF(MAX(voucher_no) IS NULL,CONCAT('$voucherName','1'),CONCAT('$voucherName',SUBSTRING_INDEX(MAX(voucher_no),'-',-1)+1)) AS voucher_no FROM accounting_transactions WHERE org_id = 101 AND voucher_type = $voucherType")[0]->voucher_no;
     }
 
     private static function getChartOfAccountOidAndRootOid($accountName)
