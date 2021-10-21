@@ -15,7 +15,7 @@
             &nbsp;
             <span v-if="isNetworkOpStarted" >Loading...</span>
             <span v-else >{{response.msg}}</span>
-            <button v-on:click="onResetResponse" type="button" class="btn-close" aria-label="Close"></button>
+            <button v-on:click="onResetResponse(0)" type="button" class="btn-close" aria-label="Close"></button>
           </div>
           <div class="d-flex
             justify-content-between
@@ -131,7 +131,9 @@
             <tr  v-for="(t,i) in accountingTransactions" >
               <td>{{i+1}}</td>
               <td>
-                <select v-model="t.chartOfAccountOid" class="form-select">
+                <select v-model="t.chartOfAccountOid"
+                        class="form-select"
+                        v-on:change="onAccountingTransactionChange(t)" >
                   <option v-bind:value="0">--select--</option>
                   <option v-bind:value="c.oid" v-for="c in chartOfAccounts" >{{c.accountName}}</option>
                 </select>
@@ -186,6 +188,7 @@ export default {
           msg : "",
           init : 0
         },
+        cashChartOfAccount : {},
         chartOfAccounts : [],
         bankAccounts : [],
         accountingTransaction : {
@@ -212,9 +215,30 @@ export default {
     }
   },
   methods : {
+      onAccountingTransactionChange(obj){
+          let repeatCounter = 0;
+          this.accountingTransactions.forEach(function (item) {
+              if(item.chartOfAccountOid ===  obj.chartOfAccountOid){
+                  repeatCounter++;
+              }
+          });
+          if(repeatCounter>1){
+              let x = this.chartOfAccounts.find(item=>item.oid === obj.chartOfAccountOid);
+              this.response.code = 404;
+              this.response.init = 1;
+              this.response.msg = x.accountName + " already selected please choose another account!";
+              obj.chartOfAccountOid = 0;
+              obj.amt = 0;
+              obj.chartOfAccountRootOid = 0;
+          }
+      },
       onVoucherTypeChange(){
+          this.accountingTransactions = [];
           if (this.accountingTransaction.voucherType === 1 || this.accountingTransaction.voucherType === 2){
+              let oid = this.cashChartOfAccount.oid;
 
+          }else {
+            this.chartOfAccounts.push(JSON.parse(JSON.stringify(this.cashChartOfAccount)));
           }
       },
       performAccountingTransactionsValidation(){
@@ -295,11 +319,18 @@ export default {
       },
       addOrRemoveAccountingTransaction(flag){
         if(flag === 1){
-          this.accountingTransactions.push({
-              amt : 0,
-              chartOfAccountOid : 0,
-              chartOfAccountRootOid : 0
-          });
+            this.showValidation = true;
+            if(this.performAccountingTransactionsValidation()){
+                let chartOfAccountOid = this.accountingTransactions.lastItem.chartOfAccountOid;
+
+
+
+                this.accountingTransactions.push({
+                    amt : 0,
+                    chartOfAccountOid : 0,
+                    chartOfAccountRootOid : 0
+                });
+            }
         }else {
           this.accountingTransactions.pop();
         }
@@ -337,6 +368,8 @@ export default {
             }
           });
 
+          this.cashChartOfAccount = this.chartOfAccounts.find(item=>item.oid === res.cashChartOfAccount.oid);
+
         }).catch(err=>{
           this.isNetworkOpStarted = false;
           this.response.code = 404;
@@ -344,7 +377,7 @@ export default {
         }).finally(end=>{
           this.isNetworkOpStarted = false;
         });
-      },
+      }
   }
 }
 </script>

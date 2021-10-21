@@ -33,6 +33,13 @@ class AisEntryRpo
                 DB::raw("CONVERT(SUBSTRING_INDEX(path, ',', 1),UNSIGNED INTEGER) AS rootOid")
             )->where("is_ledger","=",1)->get();
 
+            $chartOfAccountOidAndRootOidRes = self::getChartOfAccountOidAndRootOid("cash");
+
+            $res["cashChartOfAccount"] = [
+                "oid" => $chartOfAccountOidAndRootOidRes["chartOfAccountOid"],
+                "rootOid" => $chartOfAccountOidAndRootOidRes["chartOfAccountRootOid"]
+            ];
+
             $res['msg'] = "Initial date fetched successfully!";
             $res['code'] = 200;
 

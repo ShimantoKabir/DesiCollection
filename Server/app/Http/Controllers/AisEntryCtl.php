@@ -3,14 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Repositories\AisEntryRpo;
-use App\Repositories\ChartOfAccountRpo;
 use App\Services\AdministrationService;
 use Illuminate\Http\Request;
 
 class AisEntryCtl extends Controller
 {
 
-    private static function createRequest(Request $request, $operation): Request
+    private static function createRequest(Request $request, $operation)
     {
         $userInfo = $request->userInfo;
         return new Request([
