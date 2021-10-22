@@ -207,7 +207,7 @@ export default {
         },
         accountingTransactions : [
           {
-            amt : 0,
+            amt : "",
             chartOfAccountOid : 0,
             chartOfAccountRootOid : 0
           }
@@ -228,17 +228,25 @@ export default {
               this.response.init = 1;
               this.response.msg = x.accountName + " already selected please choose another account!";
               obj.chartOfAccountOid = 0;
-              obj.amt = 0;
+              obj.amt = "";
               obj.chartOfAccountRootOid = 0;
           }
       },
       onVoucherTypeChange(){
-          this.accountingTransactions = [];
+          let oid = this.cashChartOfAccount.oid;
+          this.accountingTransactions = [{
+              amt : "",
+              chartOfAccountOid : 0,
+              chartOfAccountRootOid : 0
+          }];
           if (this.accountingTransaction.voucherType === 1 || this.accountingTransaction.voucherType === 2){
-              let oid = this.cashChartOfAccount.oid;
-
+              this.chartOfAccounts = this.chartOfAccounts.filter(function(item) {
+                  return item.oid !== oid
+              });
           }else {
-            this.chartOfAccounts.push(JSON.parse(JSON.stringify(this.cashChartOfAccount)));
+              if(!this.chartOfAccounts.find(item=>item.oid === oid)){
+                  this.chartOfAccounts.push(JSON.parse(JSON.stringify(this.cashChartOfAccount)));
+              }
           }
       },
       performAccountingTransactionsValidation(){
@@ -321,12 +329,8 @@ export default {
         if(flag === 1){
             this.showValidation = true;
             if(this.performAccountingTransactionsValidation()){
-                let chartOfAccountOid = this.accountingTransactions.lastItem.chartOfAccountOid;
-
-
-
                 this.accountingTransactions.push({
-                    amt : 0,
+                    amt : "",
                     chartOfAccountOid : 0,
                     chartOfAccountRootOid : 0
                 });

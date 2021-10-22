@@ -7,6 +7,7 @@
  */
 
 namespace Database\Factories;
+use App\Utilities\AppConstant;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 
@@ -33,7 +34,7 @@ class ChartOfAccountFactory extends Factory
                 "tree_id" => 2,
                 "is_ledger" => 1,
                 "is_editable" => 0,
-                "account_name" => "Cash",
+                "account_name" => AppConstant::$CASH_ACCOUNT_NAME,
                 "parent_tree_id" => 1,
             ],
             [
