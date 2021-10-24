@@ -5,17 +5,18 @@
       <div class="row">
         <AppSidebar/>
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 my-main">
-          <div v-show="response.code !== 200 && response.init === 1"
+          <div v-show="response.code === 1 || response.code === 200 || response.code === 404"
                class="alert alert-warning alert-dismissible fade show alert-top"
                role="alert">
             <strong>
-              <span v-if="isNetworkOpStarted" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-              <span v-else >ERROR!</span>
+              <span v-if="response.code === 1" class="spinner-border spinner-border-sm"></span>
+              <span v-else-if="response.code === 200" >SUCCESS!</span>
+              <span v-else-if="response.code === 404" >ERROR!</span>
+              <span v-else >Unknown</span>
             </strong>
             &nbsp;
-            <span v-if="isNetworkOpStarted" >Loading...</span>
-            <span v-else >{{response.msg}}</span>
-            <button v-on:click="onResetResponse(0)" type="button" class="btn-close" aria-label="Close"></button>
+            <span>{{response.msg}}</span>
+            <button v-on:click="onResetResponse(0,'')" type="button" class="btn-close"></button>
           </div>
           <div class="d-flex
             justify-content-between
@@ -70,7 +71,7 @@
                 <span class="input-group-text">Bank Account</span>
                 <select v-model="accountingTransaction.chartOfAccountOid" class="form-select">
                   <option v-bind:value="0">--select--</option>
-                  <option v-for="b in bankAccounts" >{{b.accountName}}</option>
+                  <option v-bind:value="b.oid" v-for="b in bankAccounts" >{{b.accountName}}</option>
                 </select>
                 <div v-show="showValidation && accountingTransaction.chartOfAccountOid === 0"
                      class="invalid-feedback open">
@@ -103,10 +104,14 @@
                class="row" >
             <div class="col" >
               <div class="input-group input-group-sm mb-3">
-                <span class="input-group-text">Account</span>
+                <span class="input-group-text">
+                  <span v-if="accountingTransaction.voucherType === 5" >Debit</span>
+                  <span v-else >Credit</span>
+                  &nbsp;Account
+                </span>
                 <select v-model="accountingTransaction.chartOfAccountOid" class="form-select">
                   <option v-bind:value="0">--select--</option>
-                  <option v-for="c in chartOfAccounts" >{{c.accountName}}</option>
+                  <option v-bind:value="c.oid" v-for="c in chartOfAccounts" >{{c.accountName}}</option>
                 </select>
                 <div v-show="showValidation && accountingTransaction.chartOfAccountOid === 0"
                      class="invalid-feedback open">
@@ -177,16 +182,17 @@ export default {
   },
   data(){
     return{
-        isNetworkOpStarted: false,
         cookieUserInfo : "",
         modalState : "close",
         dataBsDismiss : "",
         wasValidated : "",
         showValidation : false,
+        // code
+        // 0/1 === 1 show, 0 hide
+        // 3 === loading
         response : {
-          code : 0,
-          msg : "",
-          init : 0
+          code : 1,
+          msg : "Loading...",
         },
         cashChartOfAccount : {},
         chartOfAccounts : [],
@@ -199,6 +205,7 @@ export default {
             checkNo : "",
             checkDate : "",
             chartOfAccountOid : 0,
+            chartOfAccountRootOid : 0,
             narration : ""
         },
         accountingTransactionsValidation : {
@@ -224,15 +231,15 @@ export default {
           });
           if(repeatCounter>1){
               let x = this.chartOfAccounts.find(item=>item.oid === obj.chartOfAccountOid);
-              this.response.code = 404;
-              this.response.init = 1;
-              this.response.msg = x.accountName + " already selected please choose another account!";
+              this.onResetResponse(404,x.accountName + " already selected please choose another account!");
               obj.chartOfAccountOid = 0;
               obj.amt = "";
               obj.chartOfAccountRootOid = 0;
           }
       },
       onVoucherTypeChange(){
+          this.accountingTransaction.chartOfAccountOid = 0;
+          this.accountingTransaction.chartOfAccountRootOid = 0;
           let oid = this.cashChartOfAccount.oid;
           this.accountingTransactions = [{
               amt : "",
@@ -292,18 +299,22 @@ export default {
                       && this.accountingTransaction.checkDate
                       && this.accountingTransaction.checkNo
                       && this.performAccountingTransactionsValidation()){
+                      let coa = this.bankAccounts.find(item=>item.oid === this.accountingTransaction.chartOfAccountOid);
+                      this.accountingTransaction.chartOfAccountRootOid = coa.rootOid;
                       this.onCreate();
                   }
               }else if(this.accountingTransaction.voucherType === 5 || this.accountingTransaction.voucherType === 6){
                   if(this.accountingTransaction.chartOfAccountOid !== 0
                       && this.performAccountingTransactionsValidation()){
+                      let coa = this.chartOfAccounts.find(item=>item.oid === this.accountingTransaction.chartOfAccountOid);
+                      this.accountingTransaction.chartOfAccountRootOid = coa.rootOid;
                       this.onCreate();
                   }
               }
           }
       },
       onCreate(){
-          this.isNetworkOpStarted = true;
+          this.onResetResponse(1,"Loading...");
           this.$axios.$post('/ais-entry',{
               userInfo : {
                   email : this.cookieUserInfo.email,
@@ -313,17 +324,10 @@ export default {
               accountingTransaction : this.accountingTransaction,
               accountingTransactions : this.accountingTransactions
           }).then(res=>{
-              this.isNetworkOpStarted = false;
-              this.response.code = res.code;
-              this.response.msg = res.msg;
+              this.onResetResponse(res.code,res.msg);
           }).catch(err=>{
-              this.isNetworkOpStarted = false;
-              this.response.code = 404;
-              this.response.msg = "Something went wrong, please try again!";
-          }).finally(end=>{
-              this.isNetworkOpStarted = false;
+              this.onResetResponse(404,"Something went wrong, please try again!");
           });
-
       },
       addOrRemoveAccountingTransaction(flag){
         if(flag === 1){
@@ -336,17 +340,16 @@ export default {
                 });
             }
         }else {
-          this.accountingTransactions.pop();
+            if(this.accountingTransactions.length > 1){
+                this.accountingTransactions.pop();
+            }
         }
       },
-      onResetResponse(init){
-        this.response.code = 0;
-        this.response.msg = "";
-        this.response.init = init;
+      onResetResponse(code,msg){
+        this.response.code = code;
+        this.response.msg = msg;
       },
       getInitialData(){
-        this.onResetResponse(1);
-        this.isNetworkOpStarted = true;
         this.$axios.$post('/ais-entry/view-init',{
           userInfo : {
             email : this.cookieUserInfo.email,
@@ -354,7 +357,7 @@ export default {
             href : window.location.pathname
           }
         }).then(res=>{
-          this.isNetworkOpStarted = false;
+
           this.response.code = res.code;
           this.response.msg = res.msg;
 
@@ -372,14 +375,12 @@ export default {
             }
           });
 
+          console.log("ba = ",this.bankAccounts);
           this.cashChartOfAccount = this.chartOfAccounts.find(item=>item.oid === res.cashChartOfAccount.oid);
+          this.onResetResponse(0,"");
 
         }).catch(err=>{
-          this.isNetworkOpStarted = false;
-          this.response.code = 404;
-          this.response.msg = "Something went wrong, please try again!";
-        }).finally(end=>{
-          this.isNetworkOpStarted = false;
+            this.onResetResponse(404,"Something went wrong, please try again!");
         });
       }
   }

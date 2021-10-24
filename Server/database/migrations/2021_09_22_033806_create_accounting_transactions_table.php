@@ -15,7 +15,6 @@ class CreateAccountingTransactionsTable extends Migration
     {
         Schema::create('accounting_transactions', function (Blueprint $table) {
             $table->id();
-            $table->integer('srl');
             $table->integer('org_id');
             $table->double('dr_amt')->nullable();
             $table->double('cr_amt')->nullable();

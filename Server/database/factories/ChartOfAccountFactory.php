@@ -166,6 +166,26 @@ class ChartOfAccountFactory extends Factory
                 "is_editable" => 0,
                 "account_name" => "Revenue",
                 "parent_tree_id" => 0
+            ],
+            [
+                "oid" => 116,
+                "path" => "115,116",
+                "org_id" => 101,
+                "tree_id" => 16,
+                "is_ledger" => 1,
+                "is_editable" => 0,
+                "account_name" => "Online Sales",
+                "parent_tree_id" => 15
+            ],
+            [
+                "oid" => 117,
+                "path" => "115,117",
+                "org_id" => 101,
+                "tree_id" => 17,
+                "is_ledger" => 1,
+                "is_editable" => 0,
+                "account_name" => "In-Shop Sales",
+                "parent_tree_id" => 15
             ]
         ];
     }

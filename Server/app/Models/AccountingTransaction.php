@@ -10,7 +10,6 @@ class AccountingTransaction extends Model
     public $timestamps = false;
     protected $fillable = [
         'id',
-        'srl',
         'org_id',
         'dr_amt',
         'cr_amt',
