@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AisEntryCtl;
+use App\Http\Controllers\AisReportCtl;
 use App\Http\Controllers\ChartOfAccountCtl;
 use App\Http\Controllers\MenuPermissionForRoleCtl;
 use App\Http\Controllers\RoleCtl;
@@ -41,7 +42,10 @@ Route::put('/user-wise-permissions/{userInfoId}', [UserWisePermissionCtl::class,
 
 Route::post('/chart-of-account/view-init', [ChartOfAccountCtl::class, 'getInitialData']);
 
-Route::post('/ais-entry/view-init', [AisEntryCtl::class, 'getInitialData']);
-Route::post('/ais-entry', [AisEntryCtl::class, 'create']);
+Route::post('/ais/entries/view-init', [AisEntryCtl::class, 'getInitialData']);
+Route::post('/ais/entries', [AisEntryCtl::class, 'create']);
+Route::get('/ais/entries', [AisEntryCtl::class, 'read']);
+
+Route::post('/ais/report', [AisReportCtl::class, 'showReportByType']);
 
 

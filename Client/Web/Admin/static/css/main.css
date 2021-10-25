@@ -16,4 +16,10 @@
   z-index:9999;
   border-radius:0;
 }
+.mx-input{
+  border-radius: 0 !important;
+}
+.my-model-lg{
+  max-width: 1100px;
+}
 

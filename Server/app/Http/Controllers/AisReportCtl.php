@@ -1,12 +1,18 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: kabir
+ * Date: 10/25/2021
+ * Time: 9:17 AM
+ */
 
 namespace App\Http\Controllers;
 
-use App\Repositories\AisEntryRpo;
-use App\Services\AdministrationService;
+use App\Repositories\AisReportRpo;
 use Illuminate\Http\Request;
+use App\Services\AdministrationService;
 
-class AisEntryCtl extends Controller
+class AisReportCtl extends Controller
 {
 
     private static function createRequest(Request $request, $operation)
@@ -22,7 +28,7 @@ class AisEntryCtl extends Controller
         ]);
     }
 
-    public function getInitialData(Request $request)
+    public function showReportByType(Request $request)
     {
 
         $permissionRequest = self::createRequest($request,"R");
@@ -32,34 +38,10 @@ class AisEntryCtl extends Controller
             $request->request->add([
                 "authInfo" => $administrationRes["authInfo"]
             ]);
-            return AisEntryRpo::getInitialData($request);
+            return AisReportRpo::showReportByType($request);
         }else {
             return $administrationRes;
         }
-
-    }
-
-    public function create(Request $request)
-    {
-
-        $permissionRequest = self::createRequest($request,"C");
-        $administrationRes = AdministrationService::checkPermission($permissionRequest);
-
-        if($administrationRes["code"] == 200){
-            $request->request->add([
-                "authInfo" => $administrationRes["authInfo"]
-            ]);
-            return AisEntryRpo::create($request);
-        }else {
-            return $administrationRes;
-        }
-
-    }
-
-    public function read(Request $request)
-    {
-
-        return AisEntryRpo::read($request);
 
     }
 

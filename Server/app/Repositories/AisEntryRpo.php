@@ -369,4 +369,29 @@ class AisEntryRpo
         $at->modified_by =$array['modifiedBy'];
         $at->save();
     }
+
+    public static function read($request)
+    {
+
+        $res = [
+            'msg' => '',
+            'code' => ''
+        ];
+
+        if (!$request->has('start-date')) {
+            $res['code'] = 404;
+            $res['msg'] = "Start date required!";
+        }else if (!$request->has('end-date')) {
+            $res['code'] = 404;
+            $res['msg'] = "End date required!";
+        }else {
+
+            $startDate = $request->query('start-date');
+            $endDate = $request->query('end-date');
+
+
+
+        }
+    }
+
 }

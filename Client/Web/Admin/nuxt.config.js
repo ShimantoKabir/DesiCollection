@@ -28,13 +28,14 @@ export default {
   css: [
     '@/static/css/bootstrap.min.css',
     '@/static/css/fontawesome.min.css',
-    '@/static/css/main.css'
+    '@/static/css/main.css',
   ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     { src: '@/plugins/vuex-persist', ssr: false },
-    { src: '@/plugins/liquor-tree', ssr: false }
+    { src: '@/plugins/liquor-tree', ssr: false },
+    { src: '@/plugins/vue2-datepicker', ssr: false }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

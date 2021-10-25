@@ -5,6 +5,39 @@
       <div class="row">
         <AppSidebar/>
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 my-main">
+          <!--model-->
+          <div class="modal fade"
+               id="exampleModal"
+               tabindex="-1"
+               aria-labelledby="exampleModalLabel"
+               aria-hidden="true">
+            <div class="modal-dialog my-model-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">
+                    <span>Entries</span>
+                  </h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                  <date-picker v-model="accountingTransaction.dateRange"
+                               type="date"
+                               value-type="YYYY-MM-DD"
+                               format="YYYY-MM-DD"
+                               range></date-picker>
+                  <button type="submit"
+                          class="btn btn-primary"
+                          v-on:click="verifyInput('read')"
+                          :data-bs-dismiss="dataBsDismiss">
+                    Show
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
           <div v-show="response.code === 1 || response.code === 200 || response.code === 404"
                class="alert alert-warning alert-dismissible fade show alert-top"
                role="alert">
@@ -28,6 +61,18 @@
             mb-3
             border-bottom">
             <h1 class="h2">Ais Entry</h1>
+            <div class="btn-toolbar mb-2 mb-md-0">
+              <div class="btn-group me-2">
+                <button v-on:click="onModalOpen"
+                        ref="addRoleBtn"
+                        type="button"
+                        class="btn btn-sm btn-outline-secondary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#exampleModal">
+                  <i class="fas fa-plus" ></i>
+                </button>
+              </div>
+            </div>
           </div>
           <div class="row" >
             <div class="col" >
@@ -206,7 +251,8 @@ export default {
             checkDate : "",
             chartOfAccountOid : 0,
             chartOfAccountRootOid : 0,
-            narration : ""
+            narration : "",
+            dateRange: null
         },
         accountingTransactionsValidation : {
             code : 404,
@@ -222,6 +268,9 @@ export default {
     }
   },
   methods : {
+      onModalOpen(){
+
+      },
       onAccountingTransactionChange(obj){
           let repeatCounter = 0;
           this.accountingTransactions.forEach(function (item) {
@@ -311,11 +360,27 @@ export default {
                       this.onCreate();
                   }
               }
+          }else if (which === "read"){
+              if(this.accountingTransaction.dateRange === null){
+                  this.onResetResponse(404,"Please select the date range");
+              }else {
+                  this.onRead();
+              }
           }
+      },
+      onRead(){
+          this.onResetResponse(1,"Loading...");
+          let url = "/ais/entries?start-date="+this.accountingTransaction.dateRange[0]+"&end-date="+
+            this.accountingTransaction.dateRange[0];
+          this.$axios.$get(url).then(res=>{
+              this.onResetResponse(res.code,res.msg);
+          }).catch(err=>{
+              this.onResetResponse(404,"Something went wrong, please try again!");
+          });
       },
       onCreate(){
           this.onResetResponse(1,"Loading...");
-          this.$axios.$post('/ais-entry',{
+          this.$axios.$post('/ais/entries',{
               userInfo : {
                   email : this.cookieUserInfo.email,
                   sessionId: this.cookieUserInfo.sessionId,
@@ -350,7 +415,7 @@ export default {
         this.response.msg = msg;
       },
       getInitialData(){
-        this.$axios.$post('/ais-entry/view-init',{
+        this.$axios.$post('/ais/entries/view-init',{
           userInfo : {
             email : this.cookieUserInfo.email,
             sessionId: this.cookieUserInfo.sessionId,
