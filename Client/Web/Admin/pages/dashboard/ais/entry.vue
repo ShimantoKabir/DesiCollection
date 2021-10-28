@@ -87,16 +87,11 @@
             <div class="col" >
               <div class="input-group input-group-sm mb-3">
                 <span class="input-group-text">Voucher Type</span>
-                <select v-model="accountingTransaction.voucherType" class="form-select" v-on:change="onVoucherTypeChange" >
+                <select v-model="accountingTransaction.voucherTypeId" class="form-select" v-on:change="onVoucherTypeChange" >
                   <option v-bind:value="0">--select--</option>
-                  <option v-bind:value="1" >Cash payment voucher</option>
-                  <option v-bind:value="2" >Cash receive voucher</option>
-                  <option v-bind:value="3" >Bank payment voucher</option>
-                  <option v-bind:value="4" >Bank receive voucher</option>
-                  <option v-bind:value="5" >Journal voucher(Debit)</option>
-                  <option v-bind:value="6" >Journal voucher(Credit)</option>
+                  <option v-bind:value="v.typeId" v-for="v in voucherTypes" >{{v.typeName}}</option>
                 </select>
-                <div v-show="showValidation && accountingTransaction.voucherType === 0"
+                <div v-show="showValidation && accountingTransaction.voucherTypeId === 0"
                      class="invalid-feedback open">
                   Please select a voucher type!
                 </div>
@@ -109,7 +104,7 @@
               </div>
             </div>
           </div>
-          <div v-show="accountingTransaction.voucherType === 3 || accountingTransaction.voucherType === 4"
+          <div v-show="accountingTransaction.voucherTypeId === 3 || accountingTransaction.voucherTypeId === 4"
                class="row" >
             <div class="col" >
               <div class="input-group input-group-sm mb-3">
@@ -145,12 +140,12 @@
               </div>
             </div>
           </div>
-          <div v-show="accountingTransaction.voucherType === 5 || accountingTransaction.voucherType === 6"
+          <div v-show="accountingTransaction.voucherTypeId === 5 || accountingTransaction.voucherTypeId === 6"
                class="row" >
             <div class="col" >
               <div class="input-group input-group-sm mb-3">
                 <span class="input-group-text">
-                  <span v-if="accountingTransaction.voucherType === 5" >Debit</span>
+                  <span v-if="accountingTransaction.voucherTypeId === 5" >Debit</span>
                   <span v-else >Credit</span>
                   &nbsp;Account
                 </span>
@@ -242,10 +237,11 @@ export default {
         cashChartOfAccount : {},
         chartOfAccounts : [],
         bankAccounts : [],
+        voucherTypes : [],
         accountingTransaction : {
             accountName : "",
             voucherDate : "",
-            voucherType : 0,
+            voucherTypeId : 0,
             voucherNo : "",
             checkNo : "",
             checkDate : "",
@@ -295,7 +291,7 @@ export default {
               chartOfAccountOid : 0,
               chartOfAccountRootOid : 0
           }];
-          if (this.accountingTransaction.voucherType === 1 || this.accountingTransaction.voucherType === 2){
+          if (this.accountingTransaction.voucherTypeId === 1 || this.accountingTransaction.voucherTypeId === 2){
               this.chartOfAccounts = this.chartOfAccounts.filter(function(item) {
                   return item.oid !== oid
               });
@@ -339,11 +335,11 @@ export default {
       verifyInput(which){
           if(which === "create"){
               this.showValidation = true;
-              if(this.accountingTransaction.voucherType === 1 || this.accountingTransaction.voucherType === 2){
+              if(this.accountingTransaction.voucherTypeId === 1 || this.accountingTransaction.voucherTypeId === 2){
                   if(this.accountingTransaction.voucherDate && this.performAccountingTransactionsValidation()){
                       this.onCreate();
                   }
-              }else if(this.accountingTransaction.voucherType === 3 || this.accountingTransaction.voucherType === 4){
+              }else if(this.accountingTransaction.voucherTypeId === 3 || this.accountingTransaction.voucherTypeId === 4){
                   if(this.accountingTransaction.chartOfAccountOid !== 0
                       && this.accountingTransaction.checkDate
                       && this.accountingTransaction.checkNo
@@ -352,7 +348,7 @@ export default {
                       this.accountingTransaction.chartOfAccountRootOid = coa.rootOid;
                       this.onCreate();
                   }
-              }else if(this.accountingTransaction.voucherType === 5 || this.accountingTransaction.voucherType === 6){
+              }else if(this.accountingTransaction.voucherTypeId === 5 || this.accountingTransaction.voucherTypeId === 6){
                   if(this.accountingTransaction.chartOfAccountOid !== 0
                       && this.performAccountingTransactionsValidation()){
                       let coa = this.chartOfAccounts.find(item=>item.oid === this.accountingTransaction.chartOfAccountOid);
@@ -371,7 +367,7 @@ export default {
       onRead(){
           this.onResetResponse(1,"Loading...");
           let url = "/ais/entries?start-date="+this.accountingTransaction.dateRange[0]+"&end-date="+
-            this.accountingTransaction.dateRange[0];
+            this.accountingTransaction.dateRange[1];
           this.$axios.$get(url).then(res=>{
               this.onResetResponse(res.code,res.msg);
           }).catch(err=>{
@@ -425,6 +421,7 @@ export default {
 
           this.response.code = res.code;
           this.response.msg = res.msg;
+          this.voucherTypes = res.voucherTypes;
 
           this.chartOfAccounts = [];
           res.chartOfAccounts.forEach(item=>{

@@ -22,8 +22,8 @@ class CreateAccountingTransactionsTable extends Migration
             $table->date('chq_date')->nullable();
             $table->string('narration')->nullable();
             $table->string('voucher_no');
-            $table->tinyInteger('voucher_type')->comment("1 = cash payment, 2 = cash receive, 3 = bank payment, 4 = bank receive, 5 = journal receive");
             $table->date('voucher_date');
+            $table->tinyInteger('voucher_type_id');
             $table->string('reference_number')->nullable();
             $table->integer('chart_of_account_oid');
             $table->integer('chart_of_account_root_oid');
