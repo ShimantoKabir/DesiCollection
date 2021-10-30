@@ -398,19 +398,19 @@ class AisEntryRpo
                     ->orderBy('accounting_transactions.id')
                     ->get();
 
-                $res['accountingTransactions'][$vKey]=[
+                $res['accountingTransactionList'][$vKey]=[
                     'voucherNo'=>$vVal->voucher_no,
                     'voucherDate'=>$vVal->voucher_date,
                     'narration'=>$vVal->narration,
                     'voucherTypeId'=>$vVal->voucher_type_id,
                     'chqDate'=>$vVal->chq_date,
                     'chqNo'=>$vVal->chq_no,
-                    'accountingTransactions'=>[]
+                    'accountingTransactionList'=>[]
                 ];
 
                 foreach ($accountingTransactions as $tKey=>$tVal){
 
-                    $res['accountingTransactions'][$vKey]['accountingTransactions'][$tKey]=[
+                    $res['accountingTransactionList'][$vKey]['accountingTransactionList'][$tKey]=[
                         'id'=>$tVal->id,
                         'voucherNo'=>$vVal->voucher_no,
                         'voucherTypeId'=>$vVal->voucher_type_id,

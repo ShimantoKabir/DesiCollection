@@ -20,7 +20,68 @@
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-
+                  <table class="table table-bordered" >
+                    <thead>
+                      <tr>
+                        <th>SL</th>
+                        <th>Date</th>
+                        <th>Accounts</th>
+                        <th>Voucher Number</th>
+                        <th>Debit</th>
+                        <th>Credit</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="(v,i) in accountingTransactionList" >
+                      <td>{{i+1}}</td>
+                      <td>{{v.voucherDate}}</td>
+                      <td>
+                        <table>
+                          <tbody>
+                          <tr v-for="(t,j) in v.accountingTransactionList" >
+                            <td v-if="t.drAmt!==0" >{{t.accountName}}</td>
+                            <td v-else > &nbsp; &nbsp; {{t.accountName}}</td>
+                          </tr>
+                          <tr>
+                            <td style="font-style: italic;font-size:12px;color: darkgoldenrod" v-if="v.narration" >{{v.narration}}</td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                      <td>{{v.voucherNo}}</td>
+                      <td>
+                        <table>
+                          <tbody>
+                          <tr v-for="(t,j) in v.accountingTransactionList" >
+                            <td v-if="t.drAmt" >
+                              {{t.drAmt}}
+                            </td>
+                            <td v-else >
+                              -
+                            </td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                      <td>
+                        <table>
+                          <tbody>
+                          <tr v-for="(t,j) in v.accountingTransactionList" >
+                            <td v-if="t.crAmt" >
+                              {{t.crAmt}}
+                            </td>
+                            <td v-else >
+                              -
+                            </td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                      <td><i style="cursor: pointer" class="fas fa-edit" v-on:click="setUpdateDate(v)" ></i></td>
+                    </tr>
+                    </tbody>
+                  </table>
                 </div>
                 <div class="modal-footer">
                   <date-picker v-model="accountingTransaction.dateRange"
@@ -227,9 +288,6 @@ export default {
         dataBsDismiss : "",
         wasValidated : "",
         showValidation : false,
-        // code
-        // 0/1 === 1 show, 0 hide
-        // 3 === loading
         response : {
           code : 1,
           msg : "Loading...",
@@ -238,6 +296,7 @@ export default {
         chartOfAccounts : [],
         bankAccounts : [],
         voucherTypes : [],
+        accountingTransactionList : [],
         accountingTransaction : {
             accountName : "",
             voucherDate : "",
@@ -264,6 +323,14 @@ export default {
     }
   },
   methods : {
+      setUpdateDate(obj){
+        console.log("obj",JSON.stringify(obj));
+        this.accountingTransaction.voucherTypeId = obj.voucherTypeId;
+        this.accountingTransaction.voucherDate = obj.voucherDate;
+        if(obj.voucherTypeId === 2 || obj.voucherTypeId === 3){
+
+        }
+      },
       onModalOpen(){
 
       },
@@ -370,6 +437,7 @@ export default {
             this.accountingTransaction.dateRange[1];
           this.$axios.$get(url).then(res=>{
               this.onResetResponse(res.code,res.msg);
+              this.accountingTransactionList = res.accountingTransactionList
           }).catch(err=>{
               this.onResetResponse(404,"Something went wrong, please try again!");
           });

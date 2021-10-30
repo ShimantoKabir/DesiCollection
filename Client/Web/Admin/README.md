@@ -67,3 +67,6 @@ More information about the usage of this directory in [the documentation](https:
 This directory contains your Vuex store files. Creating a file in this directory automatically activates Vuex.
 
 More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/store).
+
+### `Netword Response Type`
+Code: 1 = show, 0 = hide, 3 = loading, 200 = success, 404 = error
