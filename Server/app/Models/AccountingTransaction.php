@@ -18,6 +18,7 @@ class AccountingTransaction extends Model
         'narration',
         'voucher_no',
         'voucher_date',
+        'is_countable',
         'voucher_type_id',
         'reference_number',
         'chart_of_account_oid',
