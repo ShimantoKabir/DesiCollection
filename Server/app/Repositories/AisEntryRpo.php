@@ -74,7 +74,7 @@ class AisEntryRpo
         try{
 
             if(!empty($accountingTransaction["voucherNo"]) || !is_null($accountingTransaction["voucherNo"])){
-                AccountingTransaction::where("voucherNo",$accountingTransaction["voucherNo"])
+                AccountingTransaction::where("voucher_no",$accountingTransaction["voucherNo"])
                 ->update([
                     'is_countable' => 0
                 ]);
@@ -433,69 +433,12 @@ class AisEntryRpo
                 )
                 ->whereBetween("voucher_date",[$startDate,$endDate])
                 ->where("is_countable",1)
+                ->orderBy('accounting_transactions.voucher_date')
                 ->orderBy('accounting_transactions.id')
                 ->get();
 
-//            $voucherDates = DB::table("accounting_transactions")
-//                ->select("voucher_date")
-//                ->whereBetween("voucher_date",[$startDate,$endDate])
-//                ->distinct("voucher_date")
-//                ->get();
-//
-//            foreach ($voucherDates as $dateKey=>$dateVal){
-//
-//                $voucherNumbers = DB::table("accounting_transactions")
-//                    ->select("voucher_no")
-//                    ->where("voucher_date",$dateVal->voucher_date)
-//                    ->distinct("voucher_no")
-//                    ->get();
-//
-//                $res["accountingTransactionList"][$dateKey]=[
-//                    'voucherDate'=>$dateVal->voucher_date,
-//                    'accountingTransactionList'=>[]
-//                ];
-//
-//                foreach ($voucherNumbers as $voucherNumberKey=>$voucherNumberVal){
-//                    $res["accountingTransactionList"][$dateKey]["accountingTransactionList"][$voucherNumberKey]=[
-//                        'voucherNo'=>$voucherNumberVal->voucher_no,
-//                        'accountingTransactionList'=>[]
-//                    ];
-//
-//                    $accountingTransactions = DB::table('accounting_transactions')
-//                        ->join('chart_of_accounts', 'chart_of_accounts.oId', '=',
-//                            'accounting_transactions.chart_of_account_oid')
-//                        ->select('accounting_transactions.*','chart_of_accounts.account_name')
-//                        ->where('accounting_transactions.voucher_no', '=',
-//                            $voucherNumberVal->voucher_no)
-//                        ->where('accounting_transactions.voucher_date', '=',
-//                            $dateVal->voucher_date)
-//                        ->orderBy('accounting_transactions.id')
-//                        ->get();
-//
-//                    foreach ($accountingTransactions as $tKey=>$tVal){
-//
-//                        $res['accountingTransactionList'][$dateKey]
-//                        ['accountingTransactionList'][$voucherNumberKey]
-//                        ['accountingTransactionList'][$tKey]
-//                            =[
-//                            'id'=>$tVal->id,
-//                            'voucherTypeId'=>$tVal->voucher_type_id,
-//                            'narration'=>$tVal->narration,
-//                            'drAmt'=>$tVal->dr_amt,
-//                            'crAmt'=>$tVal->cr_amt,
-//                            'chartOfAccountOid'=>$tVal->chart_of_account_oid,
-//                            'chartOfAccountRootOid'=>$tVal->chart_of_account_root_oid,
-//                            'accountName'=>$tVal->account_name
-//                        ];
-//
-//                    }
-//
-//                }
-//
-//            }
-
             $res["code"]= 200;
-            $res["msg"] = "Success";
+            $res["msg"] = "Transactions fetched successfully!";
 
         }
 

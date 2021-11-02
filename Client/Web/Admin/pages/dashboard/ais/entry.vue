@@ -32,22 +32,27 @@
                       <th>Edit</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody v-if="accountingTransactionList.length>0" >
                     <tr v-for="(d,i) in accountingTransactionList" >
                       <td>{{i+1}}</td>
                       <td v-bind:class="d.nbbfVoucherDate ? 'show-bottom-border' : 'hide-bottom-border'" >
-                        <span v-show="d.nbbfVoucherDate" >{{d.voucherDate}}</span>
+                        <span v-show="d.needToShowVoucherDate" >{{d.voucherDate}}</span>
                       </td>
                       <td v-bind:class="d.nbbfVoucherNo ? 'show-bottom-border' : 'hide-bottom-border'" >
-                        <span v-show="d.nbbfVoucherNo" >{{d.voucherNo}}</span>
+                        <span v-show="d.needToShowVoucherNo">{{d.voucherNo}}</span>
                       </td>
                       <td>{{d.accountName}}</td>
                       <td>{{d.drAmt}}</td>
                       <td>{{d.crAmt}}</td>
                       <td v-bind:class="d.nbbfVoucherNo ? 'show-bottom-border' : 'hide-bottom-border'" >
-                        <i v-on:click="setUpdateDate(d)" v-show="d.nbbfVoucherNo" class="fa fa-edit cp" ></i>
+                        <i data-bs-dismiss="modal" v-on:click="setUpdateDate(d)" v-show="d.needToShowVoucherNo" class="fas fa-edit cp" ></i>
                       </td>
                     </tr>
+                    </tbody>
+                    <tbody v-else >
+                      <tr class="text-center" >
+                        <td colspan="7" >No transaction found!</td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>
@@ -59,8 +64,7 @@
                      range></date-picker>
                   <button type="submit"
                     class="btn btn-primary"
-                    v-on:click="verifyInput('read')"
-                    :data-bs-dismiss="dataBsDismiss">
+                    v-on:click="verifyInput('read')">
                     Show
                   </button>
                 </div>
@@ -217,6 +221,16 @@
               </td>
             </tr>
             <tr>
+              <td colspan="3" class="text-center" >
+                <button v-on:click="addOrRemoveAccountingTransaction(1)" class="btn btn-outline-success" >
+                  <i class="fas fa-plus" ></i>
+                </button>
+                <button v-on:click="addOrRemoveAccountingTransaction(-1)" class="btn btn-danger" >
+                  <i class="fas fa-minus" ></i>
+                </button>
+              </td>
+            </tr>
+            <tr>
               <td colspan="3" >
                 <textarea v-model="accountingTransaction.narration" class="form-control" placeholder="Narration" ></textarea>
               </td>
@@ -228,12 +242,9 @@
                   <span v-else >Save</span>
                 </button>
               </td>
-              <td>
-                <button v-on:click="addOrRemoveAccountingTransaction(1)" class="btn btn-outline-success" >
-                  <i class="fas fa-plus" ></i>
-                </button>
-                <button v-on:click="addOrRemoveAccountingTransaction(-1)" class="btn btn-danger" >
-                  <i class="fas fa-minus" ></i>
+              <td class="text-end" >
+                <button v-on:click="onReset" class="btn btn-outline-dark" >
+                  Reset
                 </button>
               </td>
             </tr>
@@ -254,11 +265,7 @@ export default {
   },
   data(){
     return{
-
         cookieUserInfo : "",
-        modalState : "close",
-        dataBsDismiss : "",
-        wasValidated : "",
         showValidation : false,
         response : {
           code : 1,
@@ -360,7 +367,7 @@ export default {
 
       },
       onModalOpen(){
-
+        this.accountingTransactionList = [];
       },
       onAccountingTransactionChange(obj){
           let repeatCounter = 0;
@@ -470,7 +477,23 @@ export default {
               let initVoucherDate = this.accountingTransactionList[0].voucherDate;
               let initVoucherNo = this.accountingTransactionList[0].voucherNo;
 
+              let uniqueVoucherDates = [];
+              let uniqueVoucherNo = [];
               this.accountingTransactionList.forEach(function(item, index,list) {
+
+                  if(uniqueVoucherDates.indexOf(item.voucherDate) < 0) {
+                      uniqueVoucherDates.push(item.voucherDate);
+                      item.needToShowVoucherDate = true;
+                  } else {
+                      item.needToShowVoucherDate = false;
+                  }
+
+                  if(uniqueVoucherNo.indexOf(item.voucherNo) < 0) {
+                      uniqueVoucherNo.push(item.voucherNo);
+                      item.needToShowVoucherNo = true;
+                  } else {
+                      item.needToShowVoucherNo = false;
+                  }
 
                   if(initVoucherDate !== item.voucherDate){
                       list[index-1].nbbfVoucherDate = true;
@@ -567,6 +590,27 @@ export default {
         }).catch(err=>{
             this.onResetResponse(404,"Something went wrong, please try again!");
         });
+      },
+      onReset(){
+          this.accountingTransaction.accountName = "";
+          this.accountingTransaction.voucherDate = "";
+          this.accountingTransaction.voucherTypeId = 0;
+          this.accountingTransaction.voucherNo = "";
+          this.accountingTransaction.checkNo = "";
+          this.accountingTransaction.checkDate = "";
+          this.accountingTransaction.chartOfAccountOid = 0;
+          this.accountingTransaction.chartOfAccountRootOid = 0;
+          this.accountingTransaction.narration = "";
+          this.accountingTransaction.dateRange = null;
+          this.accountingTransaction.drAmt = 0;
+          this.accountingTransaction.crAmt = 0;
+
+          this.accountingTransactions = [];
+          this.accountingTransactions.push({
+              amt : "",
+              chartOfAccountOid : 0,
+              chartOfAccountRootOid : 0
+          });
       }
   }
 }
