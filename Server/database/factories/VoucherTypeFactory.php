@@ -35,13 +35,13 @@ class VoucherTypeFactory
         ],
         [
             "typeId" => 5,
-            "typeName" => "Journal Voucher(Debit)",
-            "preFix" => "DR-JV-"
+            "typeName" => "Journal Voucher(Credit)",
+            "preFix" => "CR-JV-"
         ],
         [
             "typeId" => 6,
-            "typeName" => "Journal Voucher(Credit)",
-            "preFix" => "CR-JV-"
+            "typeName" => "Journal Voucher(Debit)",
+            "preFix" => "DR-JV-"
         ]
     ];
 

@@ -22,77 +22,49 @@
                 <div class="modal-body">
                   <table class="table table-bordered" >
                     <thead>
-                      <tr>
-                        <th>SL</th>
-                        <th>Date</th>
-                        <th>Accounts</th>
-                        <th>Voucher Number</th>
-                        <th>Debit</th>
-                        <th>Credit</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                    <tr v-for="(v,i) in accountingTransactionList" >
-                      <td>{{i+1}}</td>
-                      <td>{{v.voucherDate}}</td>
-                      <td>
-                        <table>
-                          <tbody>
-                          <tr v-for="(t,j) in v.accountingTransactionList" >
-                            <td v-if="t.drAmt!==0" >{{t.accountName}}</td>
-                            <td v-else > &nbsp; &nbsp; {{t.accountName}}</td>
-                          </tr>
-                          <tr>
-                            <td style="font-style: italic;font-size:12px;color: darkgoldenrod" v-if="v.narration" >{{v.narration}}</td>
-                          </tr>
-                          </tbody>
-                        </table>
-                      </td>
-                      <td>{{v.voucherNo}}</td>
-                      <td>
-                        <table>
-                          <tbody>
-                          <tr v-for="(t,j) in v.accountingTransactionList" >
-                            <td v-if="t.drAmt" >
-                              {{t.drAmt}}
-                            </td>
-                            <td v-else >
-                              -
-                            </td>
-                          </tr>
-                          </tbody>
-                        </table>
-                      </td>
-                      <td>
-                        <table>
-                          <tbody>
-                          <tr v-for="(t,j) in v.accountingTransactionList" >
-                            <td v-if="t.crAmt" >
-                              {{t.crAmt}}
-                            </td>
-                            <td v-else >
-                              -
-                            </td>
-                          </tr>
-                          </tbody>
-                        </table>
-                      </td>
-                      <td><i style="cursor: pointer" class="fas fa-edit" v-on:click="setUpdateDate(v)" ></i></td>
+                    <tr>
+                      <th>SL</th>
+                      <th>Date</th>
+                      <th>Voucher No</th>
+                      <th>Account Name</th>
+                      <th>Debit</th>
+                      <th>Credit</th>
+                      <th>Edit</th>
                     </tr>
+                    </thead>
+                    <tbody v-if="accountingTransactionList.length>0" >
+                    <tr v-for="(d,i) in accountingTransactionList" >
+                      <td>{{i+1}}</td>
+                      <td v-bind:class="d.nbbfVoucherDate ? 'show-bottom-border' : 'hide-bottom-border'" >
+                        <span v-show="d.needToShowVoucherDate" >{{d.voucherDate}}</span>
+                      </td>
+                      <td v-bind:class="d.nbbfVoucherNo ? 'show-bottom-border' : 'hide-bottom-border'" >
+                        <span v-show="d.needToShowVoucherNo">{{d.voucherNo}}</span>
+                      </td>
+                      <td>{{d.accountName}}</td>
+                      <td>{{d.drAmt}}</td>
+                      <td>{{d.crAmt}}</td>
+                      <td v-bind:class="d.nbbfVoucherNo ? 'show-bottom-border' : 'hide-bottom-border'" >
+                        <i data-bs-dismiss="modal" v-on:click="setUpdateDate(d)" v-show="d.needToShowVoucherNo" class="fas fa-edit cp" ></i>
+                      </td>
+                    </tr>
+                    </tbody>
+                    <tbody v-else >
+                      <tr class="text-center" >
+                        <td colspan="7" >No transaction found!</td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>
                 <div class="modal-footer">
                   <date-picker v-model="accountingTransaction.dateRange"
-                               type="date"
-                               value-type="YYYY-MM-DD"
-                               format="YYYY-MM-DD"
-                               range></date-picker>
+                     type="date"
+                     value-type="YYYY-MM-DD"
+                     format="YYYY-MM-DD"
+                     range></date-picker>
                   <button type="submit"
-                          class="btn btn-primary"
-                          v-on:click="verifyInput('read')"
-                          :data-bs-dismiss="dataBsDismiss">
+                    class="btn btn-primary"
+                    v-on:click="verifyInput('read')">
                     Show
                   </button>
                 </div>
@@ -206,7 +178,7 @@
             <div class="col" >
               <div class="input-group input-group-sm mb-3">
                 <span class="input-group-text">
-                  <span v-if="accountingTransaction.voucherTypeId === 5" >Debit</span>
+                  <span v-if="accountingTransaction.voucherTypeId === 6" >Debit</span>
                   <span v-else >Credit</span>
                   &nbsp;Account
                 </span>
@@ -249,20 +221,30 @@
               </td>
             </tr>
             <tr>
+              <td colspan="3" class="text-center" >
+                <button v-on:click="addOrRemoveAccountingTransaction(1)" class="btn btn-outline-success" >
+                  <i class="fas fa-plus" ></i>
+                </button>
+                <button v-on:click="addOrRemoveAccountingTransaction(-1)" class="btn btn-danger" >
+                  <i class="fas fa-minus" ></i>
+                </button>
+              </td>
+            </tr>
+            <tr>
               <td colspan="3" >
                 <textarea v-model="accountingTransaction.narration" class="form-control" placeholder="Narration" ></textarea>
               </td>
             </tr>
             <tr>
               <td colspan="2" >
-                <button class="btn btn-success" v-on:click="verifyInput('create')" >Save</button>
-              </td>
-              <td>
-                <button v-on:click="addOrRemoveAccountingTransaction(1)" class="btn btn-outline-success" >
-                  <i class="fas fa-plus" ></i>
+                <button class="btn btn-success" v-on:click="verifyInput('create')" >
+                  <span v-if="accountingTransaction.voucherNo" >Update</span>
+                  <span v-else >Save</span>
                 </button>
-                <button v-on:click="addOrRemoveAccountingTransaction(-1)" class="btn btn-danger" >
-                  <i class="fas fa-minus" ></i>
+              </td>
+              <td class="text-end" >
+                <button v-on:click="onReset" class="btn btn-outline-dark" >
+                  Reset
                 </button>
               </td>
             </tr>
@@ -284,9 +266,6 @@ export default {
   data(){
     return{
         cookieUserInfo : "",
-        modalState : "close",
-        dataBsDismiss : "",
-        wasValidated : "",
         showValidation : false,
         response : {
           code : 1,
@@ -307,7 +286,9 @@ export default {
             chartOfAccountOid : 0,
             chartOfAccountRootOid : 0,
             narration : "",
-            dateRange: null
+            dateRange: null,
+            drAmt: 0,
+            crAmt: 0
         },
         accountingTransactionsValidation : {
             code : 404,
@@ -324,15 +305,69 @@ export default {
   },
   methods : {
       setUpdateDate(obj){
-        console.log("obj",JSON.stringify(obj));
-        this.accountingTransaction.voucherTypeId = obj.voucherTypeId;
-        this.accountingTransaction.voucherDate = obj.voucherDate;
-        if(obj.voucherTypeId === 2 || obj.voucherTypeId === 3){
 
-        }
+          let ats = [];
+          this.accountingTransactionList.forEach(function (item) {
+              if(item.voucherNo===obj.voucherNo){
+                  ats.push(item);
+              }
+          });
+
+          this.accountingTransaction.voucherDate = obj.voucherDate;
+          this.accountingTransaction.voucherTypeId = obj.voucherTypeId;
+          this.accountingTransaction.narration = obj.narration;
+
+          if(obj.voucherTypeId === 1 || obj.voucherTypeId === 3 || obj.voucherTypeId === 5){
+
+              let crAt = ats.find(item=>item.drAmt===null);
+              this.accountingTransaction.chartOfAccountOid = crAt.chartOfAccountOid;
+              this.accountingTransaction.chartOfAccountRootOid = crAt.chartOfAccountRootOid;
+              this.accountingTransaction.voucherNo = crAt.voucherNo;
+              if(obj.voucherTypeId === 3){
+                  this.accountingTransaction.checkNo = crAt.checkNo;
+                  this.accountingTransaction.checkDate = crAt.checkDate;
+              }
+
+              this.accountingTransactions = [];
+              let self = this;
+              ats.forEach(function (item) {
+                  if(item.crAmt===null){
+                      self.accountingTransactions.push({
+                          amt : item.drAmt,
+                          chartOfAccountOid : item.chartOfAccountOid,
+                          chartOfAccountRootOid : item.chartOfAccountRootOid
+                      });
+                  }
+              });
+
+          }else if(obj.voucherTypeId === 2 || obj.voucherTypeId === 4 || obj.voucherTypeId === 6){
+
+              let at = ats.find(item=>item.crAmt===null);
+              this.accountingTransaction.chartOfAccountOid = at.chartOfAccountOid;
+              this.accountingTransaction.chartOfAccountRootOid = at.chartOfAccountRootOid;
+              this.accountingTransaction.voucherNo = at.voucherNo;
+
+              if(obj.voucherTypeId === 4){
+                  this.accountingTransaction.checkNo = at.checkNo;
+                  this.accountingTransaction.checkDate = at.checkDate;
+              }
+
+              this.accountingTransactions = [];
+              let self = this;
+              ats.forEach(function (item) {
+                  if(item.drAmt===null){
+                      self.accountingTransactions.push({
+                          amt : item.crAmt,
+                          chartOfAccountOid : item.chartOfAccountOid,
+                          chartOfAccountRootOid : item.chartOfAccountRootOid
+                      });
+                  }
+              });
+          }
+
       },
       onModalOpen(){
-
+        this.accountingTransactionList = [];
       },
       onAccountingTransactionChange(obj){
           let repeatCounter = 0;
@@ -437,7 +472,50 @@ export default {
             this.accountingTransaction.dateRange[1];
           this.$axios.$get(url).then(res=>{
               this.onResetResponse(res.code,res.msg);
-              this.accountingTransactionList = res.accountingTransactionList
+              this.accountingTransactionList = res.accountingTransactionList;
+
+              let initVoucherDate = this.accountingTransactionList[0].voucherDate;
+              let initVoucherNo = this.accountingTransactionList[0].voucherNo;
+
+              let uniqueVoucherDates = [];
+              let uniqueVoucherNo = [];
+              this.accountingTransactionList.forEach(function(item, index,list) {
+
+                  if(uniqueVoucherDates.indexOf(item.voucherDate) < 0) {
+                      uniqueVoucherDates.push(item.voucherDate);
+                      item.needToShowVoucherDate = true;
+                  } else {
+                      item.needToShowVoucherDate = false;
+                  }
+
+                  if(uniqueVoucherNo.indexOf(item.voucherNo) < 0) {
+                      uniqueVoucherNo.push(item.voucherNo);
+                      item.needToShowVoucherNo = true;
+                  } else {
+                      item.needToShowVoucherNo = false;
+                  }
+
+                  if(initVoucherDate !== item.voucherDate){
+                      list[index-1].nbbfVoucherDate = true;
+                      list[index].nbbfVoucherDate = false;
+                  }else{
+                      list[index].nbbfVoucherDate = false;
+                  }
+                  initVoucherDate = item.voucherDate;
+
+                  if(initVoucherNo !== item.voucherNo){
+                      list[index-1].nbbfVoucherNo = true;
+                      list[index].nbbfVoucherNo = false;
+                  }else{
+                      list[index].nbbfVoucherNo = false;
+                  }
+                  initVoucherNo = item.voucherNo;
+
+              });
+
+              this.accountingTransactionList[this.accountingTransactionList.length - 1].nbbfVoucherDate = true;
+              this.accountingTransactionList[this.accountingTransactionList.length - 1].nbbfVoucherNo = true;
+
           }).catch(err=>{
               this.onResetResponse(404,"Something went wrong, please try again!");
           });
@@ -512,11 +590,37 @@ export default {
         }).catch(err=>{
             this.onResetResponse(404,"Something went wrong, please try again!");
         });
+      },
+      onReset(){
+          this.accountingTransaction.accountName = "";
+          this.accountingTransaction.voucherDate = "";
+          this.accountingTransaction.voucherTypeId = 0;
+          this.accountingTransaction.voucherNo = "";
+          this.accountingTransaction.checkNo = "";
+          this.accountingTransaction.checkDate = "";
+          this.accountingTransaction.chartOfAccountOid = 0;
+          this.accountingTransaction.chartOfAccountRootOid = 0;
+          this.accountingTransaction.narration = "";
+          this.accountingTransaction.dateRange = null;
+          this.accountingTransaction.drAmt = 0;
+          this.accountingTransaction.crAmt = 0;
+
+          this.accountingTransactions = [];
+          this.accountingTransactions.push({
+              amt : "",
+              chartOfAccountOid : 0,
+              chartOfAccountRootOid : 0
+          });
       }
   }
 }
 </script>
 
 <style scoped>
-
+  .hide-bottom-border{
+    border-bottom-style: hidden;
+  }
+  .show-bottom-border{
+    border-bottom-style: solid;
+  }
 </style>

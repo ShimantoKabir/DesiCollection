@@ -23,6 +23,7 @@ class CreateAccountingTransactionsTable extends Migration
             $table->string('narration')->nullable();
             $table->string('voucher_no');
             $table->date('voucher_date');
+            $table->tinyInteger('is_countable')->default(1);
             $table->tinyInteger('voucher_type_id');
             $table->string('reference_number')->nullable();
             $table->integer('chart_of_account_oid');

@@ -73,6 +73,13 @@ class AisEntryRpo
 
         try{
 
+            if(!empty($accountingTransaction["voucherNo"]) || !is_null($accountingTransaction["voucherNo"])){
+                AccountingTransaction::where("voucher_no",$accountingTransaction["voucherNo"])
+                ->update([
+                    'is_countable' => 0
+                ]);
+            }
+
                 // cash payment voucher
             if ($voucherTypeId==1){
 
@@ -90,6 +97,8 @@ class AisEntryRpo
                         "amt" => $val['amt'],
                         "chartOfAccountOid" => $val["chartOfAccountOid"],
                         "chartOfAccountRootOid" => $val["chartOfAccountRootOid"],
+                        "checkNo" => null,
+                        "checkDate" => null,
                         "ip" => $request->ip(),
                         "modifiedBy" => $authInfo['id']
                     ]);
@@ -104,6 +113,8 @@ class AisEntryRpo
                     "amt" => $crAmt,
                     "chartOfAccountOid" => $cashChartOfAccount["chartOfAccountOid"],
                     "chartOfAccountRootOid" => $cashChartOfAccount["chartOfAccountRootOid"],
+                    "checkNo" => null,
+                    "checkDate" => null,
                     "ip" => $request->ip(),
                     "modifiedBy" => $authInfo['id']
                 ]);
@@ -112,7 +123,7 @@ class AisEntryRpo
             }else if ($voucherTypeId==2){
 
                 $drAmt = 0;
-                $maxVoucherNo = self::getMaxVoucherNumber($voucherType["prefix"],$voucherTypeId);
+                $maxVoucherNo = self::getMaxVoucherNumber($voucherType["preFix"],$voucherTypeId);
 
                 foreach ($accountingTransactions as $key=>$val) {
                     $drAmt = $drAmt + $val['amt'];
@@ -127,6 +138,8 @@ class AisEntryRpo
                     "amt" => $drAmt,
                     "chartOfAccountOid" => $cashChartOfAccount["chartOfAccountOid"],
                     "chartOfAccountRootOid" => $cashChartOfAccount["chartOfAccountRootOid"],
+                    "checkNo" => null,
+                    "checkDate" => null,
                     "ip" => $request->ip(),
                     "modifiedBy" => $authInfo['id']
                 ]);
@@ -141,6 +154,8 @@ class AisEntryRpo
                         "amt" => $val['amt'],
                         "chartOfAccountOid" => $val["chartOfAccountOid"],
                         "chartOfAccountRootOid" => $val["chartOfAccountRootOid"],
+                        "checkNo" => null,
+                        "checkDate" => null,
                         "ip" => $request->ip(),
                         "modifiedBy" => $authInfo['id']
                     ]);
@@ -150,7 +165,7 @@ class AisEntryRpo
             }else if ($voucherTypeId==3){
 
                 $crAmt = 0;
-                $maxVoucherNo = self::getMaxVoucherNumber($voucherType["prefix"],$voucherTypeId);
+                $maxVoucherNo = self::getMaxVoucherNumber($voucherType["preFix"],$voucherTypeId);
 
                 foreach ($accountingTransactions as $key=>$val) {
                     $crAmt = $crAmt + $val['amt'];
@@ -163,6 +178,8 @@ class AisEntryRpo
                         "amt" => $val['amt'],
                         "chartOfAccountOid" => $val["chartOfAccountOid"],
                         "chartOfAccountRootOid" => $val["chartOfAccountRootOid"],
+                        "checkNo" => null,
+                        "checkDate" => null,
                         "ip" => $request->ip(),
                         "modifiedBy" => $authInfo['id']
                     ]);
@@ -177,6 +194,8 @@ class AisEntryRpo
                     "amt" => $crAmt,
                     "chartOfAccountOid" => $accountingTransaction['chartOfAccountOid'],
                     "chartOfAccountRootOid" =>$accountingTransaction['chartOfAccountRootOid'],
+                    "checkNo" => $accountingTransaction['checkNo'],
+                    "checkDate" => $accountingTransaction['checkDate'],
                     "ip" => $request->ip(),
                     "modifiedBy" => $authInfo['id']
                 ]);
@@ -185,7 +204,7 @@ class AisEntryRpo
             }else if ($voucherTypeId==4){
 
                 $drAmt = 0;
-                $maxVoucherNo = self::getMaxVoucherNumber($voucherType["prefix"],$voucherTypeId);
+                $maxVoucherNo = self::getMaxVoucherNumber($voucherType["preFix"],$voucherTypeId);
 
                 foreach ($accountingTransactions as $key=>$val) {
                     $drAmt = $drAmt + $val['amt'];
@@ -200,6 +219,8 @@ class AisEntryRpo
                     "amt" => $drAmt,
                     "chartOfAccountOid" => $accountingTransaction['chartOfAccountOid'],
                     "chartOfAccountRootOid" =>$accountingTransaction['chartOfAccountRootOid'],
+                    "checkNo" => $accountingTransaction['checkNo'],
+                    "checkDate" => $accountingTransaction['checkDate'],
                     "ip" => $request->ip(),
                     "modifiedBy" => $authInfo['id']
                 ]);
@@ -214,55 +235,19 @@ class AisEntryRpo
                         "amt" => $val['amt'],
                         "chartOfAccountOid" => $val["chartOfAccountOid"],
                         "chartOfAccountRootOid" => $val["chartOfAccountRootOid"],
+                        "checkNo" => null,
+                        "checkDate" => null,
                         "ip" => $request->ip(),
                         "modifiedBy" => $authInfo['id']
                     ]);
                 }
 
-                // journal voucher debit
+                // journal voucher credit
             }else if ($voucherTypeId==5){
 
-                $drAmt = 0;
-                $maxVoucherNo = self::getMaxVoucherNumber($voucherType["prefix"],$voucherTypeId);
-
-                foreach ($accountingTransactions as $key=>$val) {
-                    $drAmt = $drAmt + $val['amt'];
-                }
-
-                self::saveAccountingTransaction([
-                    "voucherNo" => $maxVoucherNo,
-                    "voucherDate" => $accountingTransaction['voucherDate'],
-                    "voucherTypeId" => $voucherTypeId,
-                    "narration" => $accountingTransaction['narration'],
-                    "amtType" => 'dr',
-                    "amt" => $drAmt,
-                    "chartOfAccountOid" => $accountingTransaction['chartOfAccountOid'],
-                    "chartOfAccountRootOid" =>$accountingTransaction['chartOfAccountRootOid'],
-                    "ip" => $request->ip(),
-                    "modifiedBy" => $authInfo['id']
-                ]);
-
-                foreach ($accountingTransactions as $key=>$val) {
-                    self::saveAccountingTransaction([
-                        "voucherNo" => $maxVoucherNo,
-                        "voucherDate" => $accountingTransaction['voucherDate'],
-                        "voucherTypeId" => $voucherTypeId,
-                        "narration" => $accountingTransaction['narration'],
-                        "amtType" => 'cr',
-                        "amt" => $val['amt'],
-                        "chartOfAccountOid" => $val["chartOfAccountOid"],
-                        "chartOfAccountRootOid" => $val["chartOfAccountRootOid"],
-                        "ip" => $request->ip(),
-                        "modifiedBy" => $authInfo['id']
-                    ]);
-                }
-                
-                // journal voucher credit
-            }else if ($voucherTypeId==6){
-
                 $crAmt = 0;
-                $maxVoucherNo = self::getMaxVoucherNumber($voucherType["prefix"],$voucherTypeId);
-                
+                $maxVoucherNo = self::getMaxVoucherNumber($voucherType["preFix"],$voucherTypeId);
+
                 foreach ($accountingTransactions as $key=>$val) {
                     $crAmt = $crAmt + $val['amt'];
                     self::saveAccountingTransaction([
@@ -274,6 +259,8 @@ class AisEntryRpo
                         "amt" => $val['amt'],
                         "chartOfAccountOid" => $val["chartOfAccountOid"],
                         "chartOfAccountRootOid" => $val["chartOfAccountRootOid"],
+                        "checkNo" => null,
+                        "checkDate" => null,
                         "ip" => $request->ip(),
                         "modifiedBy" => $authInfo['id']
                     ]);
@@ -289,9 +276,53 @@ class AisEntryRpo
                     "amt" => $crAmt,
                     "chartOfAccountOid" => $accountingTransaction['chartOfAccountOid'],
                     "chartOfAccountRootOid" =>$accountingTransaction['chartOfAccountRootOid'],
+                    "checkNo" => null,
+                    "checkDate" => null,
                     "ip" => $request->ip(),
                     "modifiedBy" => $authInfo['id']
                 ]);
+                
+                // journal voucher debit
+            }else if ($voucherTypeId==6){
+
+                $drAmt = 0;
+                $maxVoucherNo = self::getMaxVoucherNumber($voucherType["preFix"],$voucherTypeId);
+
+                foreach ($accountingTransactions as $key=>$val) {
+                    $drAmt = $drAmt + $val['amt'];
+                }
+
+                self::saveAccountingTransaction([
+                    "voucherNo" => $maxVoucherNo,
+                    "voucherDate" => $accountingTransaction['voucherDate'],
+                    "voucherTypeId" => $voucherTypeId,
+                    "narration" => $accountingTransaction['narration'],
+                    "amtType" => 'dr',
+                    "amt" => $drAmt,
+                    "chartOfAccountOid" => $accountingTransaction['chartOfAccountOid'],
+                    "chartOfAccountRootOid" =>$accountingTransaction['chartOfAccountRootOid'],
+                    "checkNo" => null,
+                    "checkDate" => null,
+                    "ip" => $request->ip(),
+                    "modifiedBy" => $authInfo['id']
+                ]);
+
+                foreach ($accountingTransactions as $key=>$val) {
+                    self::saveAccountingTransaction([
+                        "voucherNo" => $maxVoucherNo,
+                        "voucherDate" => $accountingTransaction['voucherDate'],
+                        "voucherTypeId" => $voucherTypeId,
+                        "narration" => $accountingTransaction['narration'],
+                        "amtType" => 'cr',
+                        "amt" => $val['amt'],
+                        "chartOfAccountOid" => $val["chartOfAccountOid"],
+                        "chartOfAccountRootOid" => $val["chartOfAccountRootOid"],
+                        "checkNo" => null,
+                        "checkDate" => null,
+                        "ip" => $request->ip(),
+                        "modifiedBy" => $authInfo['id']
+                    ]);
+                }
                 
             }else {
                 $res["msg"] = "Unknown voucher type!";
@@ -356,6 +387,8 @@ class AisEntryRpo
 
         $at->chart_of_account_oid = $array["chartOfAccountOid"];
         $at->chart_of_account_root_oid = $array["chartOfAccountRootOid"];
+        $at->chq_no = $array["checkNo"];
+        $at->chq_date = $array["checkDate"];
         $at->ip = $array['ip'];
         $at->created_at = now();
         $at->modified_by =$array['modifiedBy'];
@@ -381,54 +414,31 @@ class AisEntryRpo
             $startDate = $request->query('start-date');
             $endDate = $request->query('end-date');
 
-            $voucherNumbers = DB::table("accounting_transactions")
-                ->select("voucher_no","voucher_date","narration","voucher_type_id","chq_date","chq_no")
+            $res['accountingTransactionList'] = DB::table('accounting_transactions')
+                ->join('chart_of_accounts', 'chart_of_accounts.oId', '=',
+                    'accounting_transactions.chart_of_account_oid')
+                ->select(
+                    'accounting_transactions.id',
+                    'accounting_transactions.voucher_date AS voucherDate',
+                    'accounting_transactions.voucher_type_id AS voucherTypeId',
+                    'accounting_transactions.voucher_no AS voucherNo',
+                    'accounting_transactions.dr_amt AS drAmt',
+                    'accounting_transactions.cr_amt AS crAmt',
+                    'accounting_transactions.chart_of_account_oid AS chartOfAccountOid',
+                    'accounting_transactions.chart_of_account_root_oid AS chartOfAccountRootOid',
+                    'accounting_transactions.chq_no AS checkNo',
+                    'accounting_transactions.chq_date AS checkDate',
+                    'accounting_transactions.narration',
+                    'chart_of_accounts.account_name AS accountName'
+                )
                 ->whereBetween("voucher_date",[$startDate,$endDate])
-                ->distinct("voucher_no")
+                ->where("is_countable",1)
+                ->orderBy('accounting_transactions.voucher_date')
+                ->orderBy('accounting_transactions.id')
                 ->get();
 
-            $res["voucherNumbers"] = $voucherNumbers;
-
-            foreach ($voucherNumbers as $vKey=>$vVal){
-
-                $accountingTransactions = DB::table('accounting_transactions')
-                    ->join('chart_of_accounts', 'chart_of_accounts.oId', '=', 'accounting_transactions.chart_of_account_oid')
-                    ->select('accounting_transactions.*','chart_of_accounts.account_name')
-                    ->where('accounting_transactions.voucher_no', '=',$vVal->voucher_no)
-                    ->orderBy('accounting_transactions.id')
-                    ->get();
-
-                $res['accountingTransactionList'][$vKey]=[
-                    'voucherNo'=>$vVal->voucher_no,
-                    'voucherDate'=>$vVal->voucher_date,
-                    'narration'=>$vVal->narration,
-                    'voucherTypeId'=>$vVal->voucher_type_id,
-                    'chqDate'=>$vVal->chq_date,
-                    'chqNo'=>$vVal->chq_no,
-                    'accountingTransactionList'=>[]
-                ];
-
-                foreach ($accountingTransactions as $tKey=>$tVal){
-
-                    $res['accountingTransactionList'][$vKey]['accountingTransactionList'][$tKey]=[
-                        'id'=>$tVal->id,
-                        'voucherNo'=>$vVal->voucher_no,
-                        'voucherTypeId'=>$vVal->voucher_type_id,
-                        'narration'=>$vVal->narration,
-                        'drAmt'=>$tVal->dr_amt,
-                        'crAmt'=>$tVal->cr_amt,
-                        'chartOfAccountOid'=>$tVal->chart_of_account_oid,
-                        'chartOfAccountRootOid'=>$tVal->chart_of_account_root_oid,
-                        'accountName'=>$tVal->account_name,
-                        'voucherDate'=>$tVal->voucher_date
-                    ];
-
-                }
-
-            }
-
             $res["code"]= 200;
-            $res["msg"] = "Success";
+            $res["msg"] = "Transactions fetched successfully!";
 
         }
 
