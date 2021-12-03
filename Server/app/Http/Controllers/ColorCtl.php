@@ -46,5 +46,55 @@ class ColorCtl extends Controller
 
     }
 
+    public function create(Request $request)
+    {
+
+        $permissionRequest = self::createRequest($request,"C");
+        $administrationRes = AdministrationService::checkPermission($permissionRequest);
+
+        if($administrationRes["code"] == 200){
+            $request->request->add([
+                "authInfo" => $administrationRes["authInfo"]
+            ]);
+            return ColorRpo::create($request);
+        }else {
+            return $administrationRes;
+        }
+
+    }
+
+    public function update(Request $request)
+    {
+
+        $permissionRequest = self::createRequest($request,"U");
+        $administrationRes = AdministrationService::checkPermission($permissionRequest);
+
+        if($administrationRes["code"] == 200){
+            $request->request->add([
+                "authInfo" => $administrationRes["authInfo"]
+            ]);
+            return ColorRpo::update($request);
+        }else {
+            return $administrationRes;
+        }
+
+    }
+
+    public function delete(Request $request)
+    {
+
+        $permissionRequest = self::createRequest($request,"D");
+        $administrationRes = AdministrationService::checkPermission($permissionRequest);
+
+        if($administrationRes["code"] == 200){
+            $request->request->add([
+                "authInfo" => $administrationRes["authInfo"]
+            ]);
+            return ColorRpo::delete($request);
+        }else {
+            return $administrationRes;
+        }
+
+    }
 
 }

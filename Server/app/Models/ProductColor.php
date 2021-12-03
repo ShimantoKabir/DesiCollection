@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductColor extends Model
 {
-    protected $table = "ProductColor";
+    protected $table = "product_colors";
     public $timestamps = false;
     protected $fillable = [
         'id',
