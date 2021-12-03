@@ -79,7 +79,6 @@
                     let loginForm = document.querySelectorAll('.needs-validation');
                     loginForm.forEach(function (form) {
                         form.addEventListener('submit', function (event) {
-                            isFormValidate++;
                             event.preventDefault();
                             event.stopPropagation();
                             form.classList.add('was-validated');

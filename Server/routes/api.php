@@ -3,6 +3,7 @@
 use App\Http\Controllers\AisEntryCtl;
 use App\Http\Controllers\AisReportCtl;
 use App\Http\Controllers\ChartOfAccountCtl;
+use App\Http\Controllers\ColorCtl;
 use App\Http\Controllers\MenuPermissionForRoleCtl;
 use App\Http\Controllers\RoleCtl;
 use App\Http\Controllers\TestCtl;
@@ -47,5 +48,10 @@ Route::post('/ais/entries', [AisEntryCtl::class, 'create']);
 Route::get('/ais/entries', [AisEntryCtl::class, 'read']);
 
 Route::post('/ais/report', [AisReportCtl::class, 'showReportByType']);
+
+Route::post('/colors/view-init', [ColorCtl::class, 'getInitialData']);
+Route::post('/colors', [ColorCtl::class, 'create']);
+Route::put('/colors', [ColorCtl::class, 'update']);
+Route::delete('/colors', [ColorCtl::class, 'delete']);
 
 
