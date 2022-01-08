@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/test', [TestCtl::class, 'test']);
+Route::post('/web-hook', [TestCtl::class, 'webHook']);
 
 Route::post('/user-infos/login', [UserInfoCtl::class, 'login']);
 Route::post('/user-infos/reload', [UserInfoCtl::class, 'reload']);

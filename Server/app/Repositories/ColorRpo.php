@@ -163,6 +163,8 @@ class ColorRpo
 
             DB::commit();
 
+            ProductColor::all()->count();
+
             $res["productColorViewModel"]["productColors"] = ProductColor::select("id","color_name AS colorName")->get();
             $res["code"] = 200;
             $res["msg"] = "Product color deleted successfully!";
