@@ -35,7 +35,8 @@ export default {
   plugins: [
     { src: '@/plugins/vuex-persist', ssr: false },
     { src: '@/plugins/liquor-tree', ssr: false },
-    { src: '@/plugins/vue2-datepicker', ssr: false }
+    { src: '@/plugins/vue2-datepicker', ssr: false },
+    { src: '@/plugins/mixin', ssr: false }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
