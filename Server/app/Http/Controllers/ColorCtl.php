@@ -15,7 +15,7 @@ use App\Services\AdministrationService;
 class ColorCtl extends Controller
 {
 
-    private static function createRequest(Request $request, $operation)
+    private static function createRequest(Request $request, $operation): Request
     {
         $userInfo = $request->userInfo;
         return new Request([

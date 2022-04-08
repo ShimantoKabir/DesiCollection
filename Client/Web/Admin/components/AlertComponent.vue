@@ -2,25 +2,25 @@
   <div v-show="isModelVisible" class="modal open-model my-model">
     <div class="modal-dialog">
       <div class="modal-content">
-        <div v-show="isModelHeaderVisible" class="modal-header">
+        <div v-show="isModelHeaderVisible" class="modal-header my-model-header">
           <h5 v-if="title" class="modal-title">{{title}}</h5>
-          <h5 v-else-if="networkState === ns.LOADING" >Loading</h5>
-          <h5 v-else-if="networkState === ns.ERROR" >Error</h5>
-          <h5 v-else-if="networkState === ns.SUCCESS" >Success</h5>
+          <h5 v-else-if="opState === ns.LOADING" >Loading</h5>
+          <h5 v-else-if="opState === ns.ERROR" >Error</h5>
+          <h5 v-else-if="opState === ns.SUCCESS" >Success</h5>
           <h5 v-else >Unknown</h5>
           <button v-on:click="closeModel"  type="button" class="btn-close"></button>
         </div>
         <div class="modal-body">
-          <div v-if="networkState === ns.LOADING" class="my-model-body" >
+          <div v-if="opState === ns.LOADING" class="my-model-body" >
             <i class="fas fa-spinner fa-spin" ></i>
             <p>Loading, Please wait...!</p>
           </div>
-          <div v-else-if="networkState === ns.ERROR" class="my-model-body" >
+          <div v-else-if="opState === ns.ERROR" class="my-model-body" >
             <i class="fas fa-times-circle" ></i>
             <p v-if="bodyMsg" >{{bodyMsg}}</p>
             <p v-else >Error, Something went wrong please try again!</p>
           </div>
-          <div v-else-if="networkState === ns.SUCCESS" class="my-model-body" >
+          <div v-else-if="opState === ns.SUCCESS" class="my-model-body" >
             <i class="fas fa-check-circle" ></i>
             <p v-if="bodyMsg" >{{bodyMsg}}</p>
             <p v-else >Operation successful!</p>
@@ -56,11 +56,11 @@ export default {
       required: false,
       type: Function,
     },
-    onPositiveBtnClick: {
+    onRightBtnClick: {
       required: false,
       type: Function
     },
-    onNegativeBtnClick: {
+    onLeftBtnClick: {
       required: false,
       type: Function
     }
@@ -76,7 +76,7 @@ export default {
       positiveBtnTxt : "",
       negativeBtnTxt : "",
       ns: NetworkState.NetworkState,
-      networkState : NetworkState.NetworkState.NEUTRAL,
+      opState : NetworkState.NetworkState.NEUTRAL,
       bodyMsg : "",
       title: "",
       eventData: ""
@@ -84,22 +84,16 @@ export default {
   },
   methods: {
     modify(obj){
-      this.isModelVisible =  (obj.isVisible === true) ? true
-        : (obj.isVisible === false) ? false
-          : this.isModelVisible;
-      this.isModelFooterVisible =  (obj.needFooter === true) ? true
-        : (obj.needFooter === false) ? false
-          : this.isModelFooterVisible;
-      this.isModelHeaderVisible =  (obj.needHeader === true) ? true
-        : (obj.needHeader === false) ? false
-          : this.isModelHeaderVisible;
+      this.isModelVisible =  (obj.isVisible) ? (obj.isVisible === true) : false;
+      this.isModelFooterVisible =  (obj.needFooter) ? (obj.needFooter === true) : false;
+      this.isModelHeaderVisible =  (obj.needHeader) ? (obj.needHeader === true) : false;
       this.positiveBtnTxt  =  (obj.positiveBtnTxt) ? obj.positiveBtnTxt : this.positiveBtnTxt;
       this.negativeBtnTxt  =  (obj.negativeBtnTxt) ? obj.negativeBtnTxt : this.negativeBtnTxt;
-      this.networkState  =  (obj.networkState) ? obj.networkState : this.networkState;
+      this.opState  =  (obj.opState) ? obj.opState : this.opState;
       this.bodyMsg  =  (obj.bodyMsg) ? obj.bodyMsg : this.bodyMsg;
       this.title =  (obj.title) ? obj.title : this.title;
       this.eventData =  (obj.eventData) ? obj.eventData : this.eventData;
-      if(obj.alertAutoClose){
+      if(obj.autoDismiss){
         let self = this;
         setTimeout(function () {
           self.isModelVisible = false;
@@ -117,14 +111,14 @@ export default {
     },
     onNegativeClick(){
       this.isModelVisible = false;
-      if (this.onNegativeBtnClick) {
-        this.onNegativeBtnClick(this.eventData);
+      if (this.onLeftBtnClick) {
+        this.onLeftBtnClick(this.eventData);
       }
     },
     onPositiveClick(){
       this.isModelVisible = false;
-      if (this.onPositiveBtnClick) {
-        this.onPositiveBtnClick(this.eventData);
+      if (this.onRightBtnClick) {
+        this.onRightBtnClick(this.eventData);
       }
     }
   }
@@ -138,6 +132,9 @@ export default {
   }
   .open-model{
     display: block;
+  }
+  .my-model-header > h5{
+    margin: 0;
   }
   .my-model-body{
     display: flex;

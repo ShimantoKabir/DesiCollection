@@ -16,7 +16,7 @@ use Illuminate\Http\Request;
 class AdministrationService
 {
 
-    public static function checkPermission(Request $request)
+    public static function checkPermission(Request $request): array
     {
 
         $res = [

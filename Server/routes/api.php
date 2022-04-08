@@ -4,6 +4,7 @@ use App\Http\Controllers\AisEntryCtl;
 use App\Http\Controllers\AisReportCtl;
 use App\Http\Controllers\ChartOfAccountCtl;
 use App\Http\Controllers\ColorCtl;
+use App\Http\Controllers\FabricCtl;
 use App\Http\Controllers\MenuPermissionForRoleCtl;
 use App\Http\Controllers\RoleCtl;
 use App\Http\Controllers\TestCtl;
@@ -55,3 +56,7 @@ Route::put('/colors', [ColorCtl::class, 'update']);
 Route::delete('/colors', [ColorCtl::class, 'delete']);
 
 
+Route::post('/fabrics/index', [FabricCtl::class, 'index']);
+//Route::post('/fabrics', [FabricCtl::class, 'create']);
+//Route::put('/fabrics', [FabricCtl::class, 'update']);
+//Route::delete('/fabrics', [FabricCtl::class, 'delete']);

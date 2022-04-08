@@ -1,2 +1,2 @@
 # DesiCollection
-A conline lothing e-commerce application.
+A online lothing e-commerce application.

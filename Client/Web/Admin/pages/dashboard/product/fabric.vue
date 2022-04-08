@@ -3,8 +3,8 @@
     <AlertComponent
       ref="alert"
       :on-alert-close="onAlertClose"
-      :on-negative-btn-click="onNegativeBtnClick"
-      :on-positive-btn-click="onPositiveBtnClick" />
+      :on-left-btn-click="onLeftBtnClick"
+      :on-right-btn-click="onRightBtnClick" />
     <AppHeader/>
     <div class="container-fluid">
       <div class="row">
@@ -27,7 +27,7 @@
                 <div class="modal-body">
                   <form :class="formClassNames.join(' ')" novalidate>
                     <div class="mb-3">
-                      <label for="colorInput" class="form-label">Color</label>
+                      <label for="colorInput" class="form-label">Fabric</label>
                       <input v-model="productFabricViewModel.fabricName" type="text" class="form-control" id="colorInput" required>
                       <div class="invalid-feedback">
                         Please give fabric name!
@@ -42,13 +42,13 @@
                   <button v-if="productFabricViewModel.id === 0"
                           type="submit"
                           class="btn btn-primary"
-                          v-on:click="verifyInput('create')" >
+                          v-on:click="verifyInput(opState.CREATE)" >
                     Save
                   </button>
                   <button v-else
                           type="submit"
                           class="btn btn-warning"
-                          v-on:click="verifyInput('update')" >
+                          v-on:click="verifyInput(opState.UPDATE)" >
                     Update
                   </button>
                   <button v-on:click="onReset" class="btn btn-outline-dark" >Reset</button>
@@ -109,7 +109,7 @@
 export default {
   name: "fabric",
   mounted() {
-    console.log("userInfo=",this.cookieUserInfo);
+    this.getInitialData();
   },
   data(){
     return{
@@ -121,11 +121,29 @@ export default {
     }
   },
   methods: {
-    verifyInput(which){
-      this.$refs.alert.modify({
-        isVisible : true,
-        networkState : this.networkState.LOADING,
+    getInitialData(){
+      let x = '/fabrics/index';
+      console.log(x);
+      this.showLoader(this);
+      this.$axios.$post(x,{
+        userInfo : this.getAuthInfo()
+      }).then(res=>{
+        if(res.code === 200){
+          this.showSuccess(this,res.msg);
+        }else {
+          this.showError(this,this.opState.CREATE);
+        }
+      }).catch(err=>{
+        this.showError(this,this.opState.CREATE);
       });
+    },
+    verifyInput(which){
+      this.formClassNames.push("was-validated");
+      if(which === this.opState.CREATE || which === this.opState.UPDATE){
+        if(this.productFabricViewModel.fabricName){
+          which === this.opState.CREATE ? this.onCreate() : this.onUpdate();
+        }
+      }
     },
     onReset(){
 
@@ -133,13 +151,37 @@ export default {
     onAlertClose(eventData){
       console.log("eventDate=",eventData);
     },
-    onNegativeBtnClick(eventData){
+    onLeftBtnClick(eventData){
       console.log("eventDate=",eventData);
     },
-    onPositiveBtnClick(eventData){
-      console.log("eventDate=",eventData);
+    onRightBtnClick(eventData){
+      if (eventData === this.opState.CREATE){
+        this.getInitialData();
+      }
     },
     onModalOpen(){
+
+    },
+    onCreate(){
+      this.showLoader(this);
+      this.$axios.$post('/fabrics',{
+        userInfo : this.getAuthInfo(),
+        productColorViewModel : this.productColorViewModel
+      }).then(res=>{
+        if(res.code === 200){
+          this.showSuccess(this,res.msg);
+        }else {
+          this.showError(this,this.opState.CREATE);
+        }
+      }).catch(err=>{
+        this.showError(this,this.opState.CREATE);
+      });
+    },
+    onUpdate(){
+      this.$refs.alert.modify({
+        isVisible : true,
+        networkState : this.networkState.LOADING,
+      });
 
     },
     setFormData(fabric){
