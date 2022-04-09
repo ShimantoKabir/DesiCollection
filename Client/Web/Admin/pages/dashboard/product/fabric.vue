@@ -28,7 +28,7 @@
                   <form :class="formClassNames.join(' ')" novalidate>
                     <div class="mb-3">
                       <label for="colorInput" class="form-label">Fabric</label>
-                      <input v-model="productFabricViewModel.fabricName" type="text" class="form-control" id="colorInput" required>
+                      <input v-model="fabricViewModel.fabricName" type="text" class="form-control" id="colorInput" required>
                       <div class="invalid-feedback">
                         Please give fabric name!
                       </div>
@@ -39,7 +39,7 @@
                   </form>
                 </div>
                 <div class="modal-footer">
-                  <button v-if="productFabricViewModel.id === 0"
+                  <button v-if="fabricViewModel.id === 0"
                           type="submit"
                           class="btn btn-primary"
                           v-on:click="verifyInput(opState.CREATE)" >
@@ -91,7 +91,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr  v-for="(f,i) in productFabricViewModel.productFabrics" >
+            <tr  v-for="(f,i) in fabricViewModel.fabrics" >
               <td>{{i+1}}</td>
               <td>{{f.fabricName}}</td>
               <td><i class="fas fa-edit cp" v-on:click="setFormData(f)" ></i></td>
@@ -106,6 +106,8 @@
 </template>
 
 <script>
+import NetworkState from "~/enums/NetworkState";
+
 export default {
   name: "fabric",
   mounted() {
@@ -113,22 +115,20 @@ export default {
   },
   data(){
     return{
-      productFabricViewModel: {
+      fabricViewModel: {
         id: 0,
         fabricName : "",
-        productFabrics : []
+        fabrics : []
       },
     }
   },
   methods: {
     getInitialData(){
-      let x = '/fabrics/index';
-      console.log(x);
       this.showLoader(this);
-      this.$axios.$post(x,{
+      this.$axios.$post('/fabrics/index',{
         userInfo : this.getAuthInfo()
       }).then(res=>{
-        if(res.code === 200){
+        if(res.code === this.networkState.SUCCESS){
           this.showSuccess(this,res.msg);
         }else {
           this.showError(this,this.opState.CREATE);
@@ -140,13 +140,14 @@ export default {
     verifyInput(which){
       this.formClassNames.push("was-validated");
       if(which === this.opState.CREATE || which === this.opState.UPDATE){
-        if(this.productFabricViewModel.fabricName){
+        if(this.fabricViewModel.fabricName){
           which === this.opState.CREATE ? this.onCreate() : this.onUpdate();
         }
       }
     },
     onReset(){
-
+      this.fabricViewModel.fabricName = "";
+      this.fabricViewModel.id = 0;
     },
     onAlertClose(eventData){
       console.log("eventDate=",eventData);
@@ -166,7 +167,7 @@ export default {
       this.showLoader(this);
       this.$axios.$post('/fabrics',{
         userInfo : this.getAuthInfo(),
-        productColorViewModel : this.productColorViewModel
+        fabricViewModel : this.fabricViewModel
       }).then(res=>{
         if(res.code === 200){
           this.showSuccess(this,res.msg);

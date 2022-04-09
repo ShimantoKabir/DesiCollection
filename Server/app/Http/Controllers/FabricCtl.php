@@ -2,31 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CustomResponse;
-use App\UseCases\FabricUseCase;
+use App\ViewModels\FabricViewModel;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response as HttpResponseCodes;
 
 class FabricCtl extends Controller
 {
 
-    public FabricUseCase $fabricUseCase;
+    public FabricViewModel $fabricViewModel;
 
-    public function __construct(FabricUseCase $fabricUseCase)
+    public function __construct(Request $request,FabricViewModel $fabricViewModel)
     {
-        $this->fabricUseCase = $fabricUseCase;
+        $this->fabricViewModel = $fabricViewModel;
     }
 
     public function index(Request $request): JsonResponse
     {
-        $administrationRes = self::modifyRequest($request,"R");
-
-        if($administrationRes["code"] == 200){
-            $networkResponse = $this->fabricUseCase->getIndexData(self::mergeRequest($request,$administrationRes));
-        }else {
-            $networkResponse = $administrationRes;
-        }
-
-        return response()->json($networkResponse, 200);
+        return response()->json($this->fabricViewModel->getIndexData($request), HttpResponseCodes::HTTP_OK);
     }
+
+    public function save(Request $request) : JsonResponse
+    {
+        return response()->json($this->fabricViewModel->save($request), HttpResponseCodes::HTTP_OK);
+    }
+
 }

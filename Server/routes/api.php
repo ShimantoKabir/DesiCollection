@@ -57,6 +57,6 @@ Route::delete('/colors', [ColorCtl::class, 'delete']);
 
 
 Route::post('/fabrics/index', [FabricCtl::class, 'index']);
-//Route::post('/fabrics', [FabricCtl::class, 'create']);
+Route::post('/fabrics', [FabricCtl::class, 'save']);
 //Route::put('/fabrics', [FabricCtl::class, 'update']);
 //Route::delete('/fabrics', [FabricCtl::class, 'delete']);

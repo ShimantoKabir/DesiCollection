@@ -2,16 +2,19 @@
 
 namespace App\UseCases;
 
+use App\Models\CustomRequest;
 use App\Models\CustomResponse;
-use App\Models\ProductColor;
-use App\Repositories\FabricRepository;
-use Illuminate\Http\Request;
 
 class FabricUseCase extends BaseUseCase
 {
-
-    public function getIndexData(Request $request) : CustomResponse
+    public function getIndexData() : CustomResponse
     {
-        return $this->fabricRepository->getIndexData($request);
+        return $this->fabricRepository->getIndexData();
+    }
+
+    public function save(CustomRequest $customRequest) : CustomResponse
+    {
+        return $this->fabricRepository->create($customRequest);
+
     }
 }

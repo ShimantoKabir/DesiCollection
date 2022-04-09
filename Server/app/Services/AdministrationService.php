@@ -52,7 +52,7 @@ class AdministrationService
                 $menus = MenuRpo::getAuthorizedMenusByUserInfo($menuRequest);
                 $paths = $menus['paths'];
 
-                if (in_array($path, $paths))
+                if (in_array($path, (array) $paths))
                 {
                     if (str_contains($opAccess, $operation)) {
                         $res["msg"] = "All permission ok!";
