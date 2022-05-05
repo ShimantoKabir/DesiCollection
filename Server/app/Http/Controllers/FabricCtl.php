@@ -27,4 +27,14 @@ class FabricCtl extends Controller
         return response()->json($this->fabricViewModel->save($request), HttpResponseCodes::HTTP_OK);
     }
 
+    public function update(Request $request) : JsonResponse
+    {
+        return response()->json($this->fabricViewModel->update($request), HttpResponseCodes::HTTP_OK);
+    }
+
+    public function remove(Request $request) : JsonResponse
+    {
+        return response()->json($this->fabricViewModel->remove($request), HttpResponseCodes::HTTP_OK);
+    }
+
 }

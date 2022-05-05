@@ -16,4 +16,5 @@ class Fabric extends Model
         'updated_at',
         'modified_by'
     ];
+
 }

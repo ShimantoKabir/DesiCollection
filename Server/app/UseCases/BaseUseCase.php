@@ -3,18 +3,20 @@
 namespace App\UseCases;
 
 use App\Models\CustomRequest;
-use App\Repositories\FabricRepository;
+use App\Models\CustomResponse;
 use JetBrains\PhpStorm\Pure;
 
 class BaseUseCase
 {
-    public FabricRepository $fabricRepository;
     public CustomRequest $customRequest;
+    public CustomResponse $customResponse;
 
-    #[Pure] public function __construct(FabricRepository $fabricRepository,CustomRequest $customRequest)
+    #[Pure] public function __construct(
+        CustomRequest $customRequest,
+        CustomResponse $customResponse)
     {
-        $this->fabricRepository = $fabricRepository;
         $this->customRequest = $customRequest;
+        $this->customResponse = $customResponse;
     }
 
 }

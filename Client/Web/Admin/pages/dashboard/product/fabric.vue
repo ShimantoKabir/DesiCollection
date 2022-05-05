@@ -69,8 +69,8 @@
             <h1 class="h2">Fabric</h1>
             <div class="btn-toolbar mb-2 mb-md-0">
               <div class="btn-group me-2">
-                <button v-on:click="onModalOpen"
-                    ref="addColorBtn"
+                <button
+                    ref="addFabricBtn"
                     type="button"
                     class="btn btn-sm btn-outline-secondary"
                     data-bs-toggle="modal"
@@ -129,12 +129,13 @@ export default {
         userInfo : this.getAuthInfo()
       }).then(res=>{
         if(res.code === this.networkState.SUCCESS){
+          this.fabricViewModel.fabrics = res.fabrics;
           this.showSuccess(this,res.msg);
         }else {
-          this.showError(this,this.opState.CREATE);
+          this.showError(this,this.opState.READ);
         }
       }).catch(err=>{
-        this.showError(this,this.opState.CREATE);
+        this.showError(this,this.opState.READ);
       });
     },
     verifyInput(which){
@@ -156,12 +157,11 @@ export default {
       console.log("eventDate=",eventData);
     },
     onRightBtnClick(eventData){
-      if (eventData === this.opState.CREATE){
+      if (eventData === this.opState.READ){
         this.getInitialData();
+      }else if(eventData === this.opState.CREATE){
+        this.onCreate();
       }
-    },
-    onModalOpen(){
-
     },
     onCreate(){
       this.showLoader(this);
@@ -169,7 +169,11 @@ export default {
         userInfo : this.getAuthInfo(),
         fabricViewModel : this.fabricViewModel
       }).then(res=>{
-        if(res.code === 200){
+        if(res.code === this.networkState.SUCCESS){
+          this.fabricViewModel.fabrics.push({
+            id : res.id,
+            fabricName: res.fabricName
+          })
           this.showSuccess(this,res.msg);
         }else {
           this.showError(this,this.opState.CREATE);
@@ -179,14 +183,24 @@ export default {
       });
     },
     onUpdate(){
-      this.$refs.alert.modify({
-        isVisible : true,
-        networkState : this.networkState.LOADING,
+      this.showLoader(this);
+      this.$axios.$put('/fabrics',{
+        userInfo : this.getAuthInfo(),
+        fabricViewModel : this.fabricViewModel
+      }).then(res=>{
+        if(res.code === this.networkState.SUCCESS){
+          this.showSuccess(this,res.msg);
+        }else {
+          this.showError(this,this.opState.UPDATE);
+        }
+      }).catch(err=>{
+        this.showError(this,this.opState.UPDATE);
       });
-
     },
     setFormData(fabric){
-
+      this.fabricViewModel.id = fabric.id;
+      this.fabricViewModel.fabricName = fabric.fabricName;
+      this.$refs.addFabricBtn.click();
     },
     onDelete(fabric){
 
