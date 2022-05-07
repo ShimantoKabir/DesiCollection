@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFabricsTable extends Migration
+class CreateSizesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class CreateFabricsTable extends Migration
      */
     public function up()
     {
-        Schema::create('fabrics', function (Blueprint $table) {
+        Schema::create('sizes', function (Blueprint $table) {
             $table->id();
-            $table->string("fabricName");
+            $table->string("sizeName");
             $table->string("ip")->nullable();
             $table->dateTime("createdAt");
             $table->dateTime("updatedAt");
@@ -30,6 +30,6 @@ class CreateFabricsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('fabrics');
+        Schema::dropIfExists('sizes');
     }
 }

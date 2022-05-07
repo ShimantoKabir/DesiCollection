@@ -12,14 +12,14 @@
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 my-main">
           <!--model-->
           <div class="modal fade"
-               id="fabricFormModel"
+               id="sizeFormModel"
                tabindex="-1"
-               aria-labelledby="fabricModalLabel"
+               aria-labelledby="sizeModalLabel"
                aria-hidden="true">
             <div class="modal-dialog">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="fabricModalLabel">
+                  <h5 class="modal-title" id="sizeModalLabel">
                     <span>Entries</span>
                   </h5>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -27,10 +27,10 @@
                 <div class="modal-body">
                   <form :class="formClassNames.join(' ')" novalidate>
                     <div class="mb-3">
-                      <label for="colorInput" class="form-label">Fabric</label>
-                      <input v-model="fabricViewModel.fabricName" type="text" class="form-control" id="colorInput" required>
+                      <label for="colorInput" class="form-label">Size</label>
+                      <input v-model="sizeViewModel.sizeName" type="text" class="form-control" id="colorInput" required>
                       <div class="invalid-feedback">
-                        Please give fabric name!
+                        Please give size name!
                       </div>
                       <div class="valid-feedback">
                         Looks good!
@@ -39,7 +39,7 @@
                   </form>
                 </div>
                 <div class="modal-footer">
-                  <button v-if="fabricViewModel.id === 0"
+                  <button v-if="sizeViewModel.id === 0"
                           type="submit"
                           class="btn btn-primary"
                           v-on:click="verifyInput(opState.CREATE)" >
@@ -66,23 +66,23 @@
             pb-2
             mb-3
             border-bottom">
-            <h1 class="h2">Fabric</h1>
+            <h1 class="h2">Size</h1>
             <div class="btn-toolbar mb-2 mb-md-0">
               <div class="btn-group me-2">
                 <button
-                    v-on:click="onModelOpen"
-                    type="button"
-                    class="btn btn-sm btn-outline-secondary"
-                    data-bs-toggle="modal"
-                    data-bs-target="#fabricFormModel">
+                  v-on:click="onModelOpen"
+                  type="button"
+                  class="btn btn-sm btn-outline-secondary"
+                  data-bs-toggle="modal"
+                  data-bs-target="#sizeFormModel">
                   <i class="fas fa-plus" ></i>
                 </button>
                 <button
-                  ref="updateFabricBtn"
+                  ref="updateSizeBtn"
                   type="button"
-                  class="btn btn-sm btn-outline-secondary fabric-update-btn"
+                  class="btn btn-sm btn-outline-secondary size-update-btn"
                   data-bs-toggle="modal"
-                  data-bs-target="#fabricFormModel">
+                  data-bs-target="#sizeFormModel">
                   <i class="fas fa-plus" ></i>
                 </button>
               </div>
@@ -93,15 +93,15 @@
             <thead>
             <tr>
               <th>SL</th>
-              <th>Fabric Name</th>
+              <th>Size Name</th>
               <th>Edit</th>
               <th>Delete</th>
             </tr>
             </thead>
             <tbody>
-            <tr v-for="(f,i) in fabricViewModel.fabrics" >
+            <tr v-for="(f,i) in sizeViewModel.sizes" >
               <td>{{i+1}}</td>
-              <td>{{f.fabricName}}</td>
+              <td>{{f.sizeName}}</td>
               <td><i class="fas fa-edit cp" v-on:click="setFormData(f)" ></i></td>
               <td><i class="fas fa-trash cp" v-on:click="setDeleteData(f)" ></i></td>
             </tr>
@@ -115,27 +115,27 @@
 
 <script>
 export default {
-  name: "fabric",
+  name: "size",
   mounted() {
     this.getInitialData();
   },
   data(){
     return{
-      fabricViewModel: {
+      sizeViewModel: {
         id: 0,
-        fabricName : "",
-        fabrics : []
+        sizeName : "",
+        sizes : []
       },
     }
   },
   methods: {
     getInitialData(){
       this.showLoader(this);
-      this.$axios.$post('/fabrics/index',{
+      this.$axios.$post('/sizes/index',{
         userInfo : this.getAuthInfo()
       }).then(res=>{
         if(res.code === this.networkState.SUCCESS){
-          this.fabricViewModel.fabrics = res.fabrics;
+          this.sizeViewModel.sizes = res.sizes;
           this.showSuccess(this,res.msg);
         }else {
           this.showError(this,this.opState.READ);
@@ -147,14 +147,14 @@ export default {
     verifyInput(which){
       this.formClassNames.push("was-validated");
       if(which === this.opState.CREATE || which === this.opState.UPDATE){
-        if(this.fabricViewModel.fabricName){
+        if(this.sizeViewModel.sizeName){
           which === this.opState.CREATE ? this.onCreate() : this.onUpdate();
         }
       }
     },
     onReset(){
-      this.fabricViewModel.fabricName = "";
-      this.fabricViewModel.id = 0;
+      this.sizeViewModel.sizeName = "";
+      this.sizeViewModel.id = 0;
     },
     onAlertClose(eventData){
       console.log("eventDate=",eventData);
@@ -175,15 +175,14 @@ export default {
     },
     onCreate(){
       this.showLoader(this);
-      this.$axios.$post('/fabrics',{
+      this.$axios.$post('/sizes',{
         userInfo : this.getAuthInfo(),
-        fabricViewModel : this.fabricViewModel
+        sizeViewModel : this.sizeViewModel
       }).then(res=>{
         if(res.code === this.networkState.SUCCESS){
-          console.log("fabric = ", res);
-          this.fabricViewModel.fabrics.push({
+          this.sizeViewModel.sizes.push({
             id : res.model.id,
-            fabricName: res.model.fabricName
+            sizeName: res.model.sizeName
           })
           this.showSuccess(this,res.msg);
         }else {
@@ -195,14 +194,14 @@ export default {
     },
     onUpdate(){
       this.showLoader(this);
-      this.$axios.$put('/fabrics',{
+      this.$axios.$put('/sizes',{
         userInfo : this.getAuthInfo(),
-        fabricViewModel : this.fabricViewModel
+        sizeViewModel : this.sizeViewModel
       }).then(res=>{
         if(res.code === this.networkState.SUCCESS){
 
-          let objIndex = this.fabricViewModel.fabrics.findIndex((obj => obj.id === this.fabricViewModel.id));
-          this.fabricViewModel.fabrics[objIndex].fabricName = this.fabricViewModel.fabricName;
+          let objIndex = this.sizeViewModel.sizes.findIndex((obj => obj.id === this.sizeViewModel.id));
+          this.sizeViewModel.sizes[objIndex].sizeName = this.sizeViewModel.sizeName;
 
           this.showSuccess(this,res.msg);
         }else {
@@ -212,13 +211,13 @@ export default {
         this.showError(this,this.opState.UPDATE);
       });
     },
-    setFormData(fabric){
-      this.fabricViewModel.id = fabric.id;
-      this.fabricViewModel.fabricName = fabric.fabricName;
-      this.$refs.updateFabricBtn.click();
+    setFormData(size){
+      this.sizeViewModel.id = size.id;
+      this.sizeViewModel.sizeName = size.sizeName;
+      this.$refs.updateSizeBtn.click();
     },
-    setDeleteData(fabric){
-      this.fabricViewModel.id = fabric.id;
+    setDeleteData(size){
+      this.sizeViewModel.id = size.id;
       this.ask(this, this.opState.DELETE)
     },
     onDelete(){
@@ -229,15 +228,14 @@ export default {
             href : window.location.pathname,
             sessionId : this.cookieUserInfo.sessionId
           },
-          fabricViewModel : {
-            id : this.fabricViewModel.id
+          sizeViewModel : {
+            id : this.sizeViewModel.id
           }
         }
       };
-      this.$axios.$delete("/fabrics",config).then(res=>{
+      this.$axios.$delete("/sizes",config).then(res=>{
         if(res.code === this.networkState.SUCCESS){
-          this.fabricViewModel.fabrics = this.fabricViewModel
-            .fabrics.filter((item) => item.id !== this.fabricViewModel.id);
+          this.sizeViewModel.sizes = this.sizeViewModel.sizes.filter((item) => item.id !== this.sizeViewModel.id);
           this.showSuccess(this,res.msg);
         }else {
           this.showError(this,this.opState.DELETE);
@@ -254,7 +252,7 @@ export default {
 </script>
 
 <style scoped>
-  .fabric-update-btn{
+  .size-update-btn{
     display: none;
   }
 </style>

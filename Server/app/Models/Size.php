@@ -2,19 +2,19 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Fabric extends Model
+class Size extends Model
 {
-    protected $table = "fabrics";
+    protected $table = "sizes";
     public $timestamps = false;
     protected $fillable = [
         'id',
-        'fabricName',
+        'sizeName',
         'ip',
         'createdAt',
         'updatedAt',
         'modifiedBy'
     ];
-
 }

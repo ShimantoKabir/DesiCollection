@@ -6,30 +6,30 @@ use App\Enums\CustomResponseCode;
 use App\Enums\CustomResponseMsg;
 use App\Enums\OperationType;
 use App\Models\CustomResponse;
-use App\UseCases\FabricUseCase;
 use Illuminate\Http\Request;
+use App\UseCases\SizeUseCase;
 
-class FabricViewModel extends BaseViewModel
+class SizeViewModel extends BaseViewModel
 {
     public int $id;
-    public string $fabricName;
+    public string $sizeName;
     public string $ip;
     public int $modifiedBy;
-    public array $fabrics;
+    public array $sizes;
     public object $model;
-    public FabricUseCase $fabricUseCase;
+    public SizeUseCase $sizeUseCase;
 
-    public function __construct(FabricUseCase $fabricUseCase)
+    public function __construct(SizeUseCase $sizeUseCase)
     {
-        $this->fabricUseCase = $fabricUseCase;
+        $this->sizeUseCase = $sizeUseCase;
     }
 
     public function setId(int $id){
         $this->id = $id;
     }
 
-    public function setFabricName(string $fabricName){
-        $this->fabricName = $fabricName;
+    public function setSizeName(string $sizeName){
+        $this->sizeName = $sizeName;
     }
 
     public function setIp(string $ip){
@@ -48,7 +48,7 @@ class FabricViewModel extends BaseViewModel
             return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $authResponse);
         }
 
-        return $this->fabricUseCase->getIndexData();
+        return $this->sizeUseCase->getIndexData();
     }
 
     public function save(Request $request) : CustomResponse
@@ -59,19 +59,19 @@ class FabricViewModel extends BaseViewModel
             return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $authResponse);
         }
 
-        $inputValidationResponse = $this->checkInputValidation($request->fabricViewModel,[
-            'fabricName' => 'required|string'
+        $inputValidationResponse = $this->checkInputValidation($request->sizeViewModel,[
+            'sizeName' => 'required|string'
         ]);
 
         if($inputValidationResponse != CustomResponseMsg::OK->value){
             return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $inputValidationResponse);
         }
 
-        $this->setFabricName($request->fabricViewModel["fabricName"]);
+        $this->setSizeName($request->sizeViewModel["sizeName"]);
         $this->setIp($request->ip());
         $this->setModifiedBy(0);
 
-        return $this->fabricUseCase->save($this);
+        return $this->sizeUseCase->save($this);
 
     }
 
@@ -83,20 +83,20 @@ class FabricViewModel extends BaseViewModel
             return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $authResponse);
         }
 
-        $inputValidationResponse = $this->checkInputValidation($request->fabricViewModel,[
-            'fabricName' => 'required|string'
+        $inputValidationResponse = $this->checkInputValidation($request->sizeViewModel,[
+            'sizeName' => 'required|string'
         ]);
 
         if($inputValidationResponse != CustomResponseMsg::OK->value){
             return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $inputValidationResponse);
         }
 
-        $this->setId($request->fabricViewModel["id"]);
-        $this->setFabricName($request->fabricViewModel["fabricName"]);
+        $this->setId($request->sizeViewModel["id"]);
+        $this->setsizeName($request->sizeViewModel["sizeName"]);
         $this->setIp($request->ip());
         $this->setModifiedBy(0);
 
-        return $this->fabricUseCase->update($this);
+        return $this->sizeUseCase->update($this);
     }
 
     public function remove(Request $request) : CustomResponse
@@ -108,7 +108,7 @@ class FabricViewModel extends BaseViewModel
             return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $authResponse);
         }
 
-        $inputValidationResponse = $this->checkInputValidation($request->fabricViewModel,[
+        $inputValidationResponse = $this->checkInputValidation($request->sizeViewModel,[
             'id' => 'required|int'
         ]);
 
@@ -116,8 +116,7 @@ class FabricViewModel extends BaseViewModel
             return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $inputValidationResponse);
         }
 
-        $this->setId($request->fabricViewModel["id"]);
-        return $this->fabricUseCase->remove($this);
+        $this->setId($request->sizeViewModel["id"]);
+        return $this->sizeUseCase->remove($this);
     }
-
 }

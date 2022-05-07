@@ -5,12 +5,12 @@ namespace App\Repositories;
 use App\Enums\CustomResponseCode;
 use App\Enums\CustomResponseMsg;
 use App\Models\CustomResponse;
-use App\Models\Fabric;
-use App\Repositories\Interfaces\IFabricRepository;
-use App\ViewModels\FabricViewModel;
+use App\Models\Size;
+use App\Repositories\Interfaces\ISizeRepository;
+use App\ViewModels\SizeViewModel;
 use Illuminate\Support\Facades\DB;
 
-class FabricRepository extends BaseRepository implements IFabricRepository
+class SizeRepository extends BaseRepository implements ISizeRepository
 {
 
     public function getIndexData() : CustomResponse
@@ -18,22 +18,24 @@ class FabricRepository extends BaseRepository implements IFabricRepository
         $res = new CustomResponse();
         $res->setCode(CustomResponseCode::SUCCESS->value);
         $res->setMsg(CustomResponseMsg::INIT_SUCCESS->value);
-        $res->setFabrics($this->read());
+        $res->setSizes($this->read());
         return $res;
     }
 
-    public function create(FabricViewModel $fabricViewModel) : CustomResponse
+    public function create(SizeViewModel $sizeViewModel) : CustomResponse
     {
+
+        $date = $this->getCurrentDate();
         $res = new CustomResponse();
         DB::beginTransaction();
         try{
 
-            $model = new Fabric();
-            $model->fabricName = $fabricViewModel->fabricName;
-            $model->ip = $fabricViewModel->ip;
-            $model->modifiedBy = $fabricViewModel->modifiedBy;
-            $model->createdAt = date('Y-m-d H:i:s');
-            $model->updatedAt = date('Y-m-d H:i:s');
+            $model = new Size();
+            $model->sizeName = $sizeViewModel->sizeName;
+            $model->ip = $sizeViewModel->ip;
+            $model->modifiedBy = $sizeViewModel->modifiedBy;
+            $model->createdAt = $date;
+            $model->updatedAt = $date;
             $model->save();
 
             $res->setModel($model);
@@ -52,20 +54,21 @@ class FabricRepository extends BaseRepository implements IFabricRepository
 
     public function read() : array
     {
-        return Fabric::select("id","fabricName")->get()->toArray();
+        return Size::select("id","sizeName AS sizeName")->get()->toArray();
     }
 
-    public function update(FabricViewModel $fabricViewModel) : CustomResponse
+    public function update(SizeViewModel $sizeViewModel) : CustomResponse
     {
+        $date = $this->getCurrentDate();
         $res = new CustomResponse();
         DB::beginTransaction();
         try{
 
-            Fabric::where('id',$fabricViewModel->id)
-            ->update([
-                'fabricName'=>$fabricViewModel->fabricName,
-                'updatedAt' => date('Y-m-d H:i:s')
-            ]);
+            Size::where('id',$sizeViewModel->id)
+                ->update([
+                    'sizeName' => $sizeViewModel->sizeName,
+                    'updatedAt' => $date
+                ]);
 
             DB::commit();
             $res->setCode(CustomResponseCode::SUCCESS->value);
@@ -79,15 +82,15 @@ class FabricRepository extends BaseRepository implements IFabricRepository
         return $res;
     }
 
-    public function isFabricNameExist($fabricName) : CustomResponse
+    public function isSizeNameExist($sizeName) : CustomResponse
     {
 
         $res = new CustomResponse();
-        $isExist = Fabric::where('fabricName',$fabricName)->exists();
+        $isExist = Size::where('sizeName',$sizeName)->exists();
 
         if($isExist){
             $res->setCode(CustomResponseCode::ERROR->value);
-            $res->setMsg(CustomResponseMsg::FABRIC_NAME_EXIST->value);
+            $res->setMsg(CustomResponseMsg::SIZE_NAME_EXIST->value);
         }else{
             $res->setCode(CustomResponseCode::SUCCESS->value);
             $res->setMsg(CustomResponseMsg::SUCCESS->value);
@@ -97,13 +100,13 @@ class FabricRepository extends BaseRepository implements IFabricRepository
 
     }
 
-    public function delete(FabricViewModel $fabricViewModel) : CustomResponse
+    public function delete(SizeViewModel $sizeViewModel) : CustomResponse
     {
         $res = new CustomResponse();
         DB::beginTransaction();
         try{
 
-            Fabric::where('id',$fabricViewModel->id)->delete();
+            Size::where('id',$sizeViewModel->id)->delete();
             DB::commit();
 
             $res->setCode(CustomResponseCode::SUCCESS->value);
