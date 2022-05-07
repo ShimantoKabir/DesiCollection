@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use phpDocumentor\Reflection\Project;
-
 class CustomResponse
 {
     public int $code;
@@ -11,6 +9,13 @@ class CustomResponse
     public array $fabrics;
     public int $modifiedBy;
     public object $model;
+
+    public function setResponse(int $code, string $msg) : CustomResponse
+    {
+        $this->code = $code;
+        $this->msg = $msg;
+        return $this;
+    }
 
     public function setCode(int $code){
         $this->code = $code;

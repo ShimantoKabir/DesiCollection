@@ -7,7 +7,7 @@ use App\Enums\CustomResponseMsg;
 use App\Enums\OperationType;
 use App\Models\CustomResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use JetBrains\PhpStorm\Pure;
 
 class FabricViewModel extends BaseViewModel
 {
@@ -47,140 +47,84 @@ class FabricViewModel extends BaseViewModel
         return $this->model;
     }
 
-    public function getIndexData(Request $request) : FabricViewModel
+    public function getIndexData(Request $request) : CustomResponse
     {
         $authResponse = $this->checkAuthValidation($request,OperationType::READ);
 
-        if($authResponse->code == CustomResponseCode::ERROR->value){
-            $this->setMsg($authResponse->msg);
-            $this->setCode($authResponse->code);
-        }else{
-            $data = $this->fabricUseCase->getIndexData();
-            $this->setCode($data->code);
-            $this->setMsg($data->msg);
-            $this->setFabrics($data->fabrics);
+        if($authResponse != CustomResponseMsg::OK->value){
+            return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $authResponse);
         }
 
-        return $this;
+        return $this->fabricUseCase->getIndexData();
     }
 
-    public function save(Request $request) : FabricViewModel
+    public function save(Request $request) : CustomResponse
     {
         $authResponse = $this->checkAuthValidation($request,OperationType::CREATE);
 
-        if($authResponse->code == CustomResponseCode::ERROR->value){
-            $this->msg = $authResponse->msg;
-            $this->code = $authResponse->code;
-        }else{
-
-            $inputValidationResponse = $this->checkInputValidation($request,[
-                'fabricName' => 'required|string'
-            ]);
-
-            if($inputValidationResponse->code == CustomResponseCode::ERROR->value){
-
-                $this->setMsg($inputValidationResponse->code);
-                $this->setCode($inputValidationResponse->msg);
-
-            }else{
-
-                $this->setFabricName($request->fabricViewModel["fabricName"]);
-                $this->setIp($request->ip());
-                $this->setModifiedBy($authResponse->modifiedBy);
-
-                $data = $this->fabricUseCase->save($this);
-
-                $this->setModel($data->getModel());
-                $this->setCode($data->code);
-                $this->setMsg($data->msg);
-
-            }
+        if($authResponse != CustomResponseMsg::OK->value){
+            return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $authResponse);
         }
 
-        return $this;
+        $inputValidationResponse = $this->checkInputValidation($request->fabricViewModel,[
+            'fabricName' => 'required|string'
+        ]);
+
+        if($inputValidationResponse != CustomResponseMsg::OK->value){
+            return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $inputValidationResponse);
+        }
+
+        $this->setFabricName($request->fabricViewModel["fabricName"]);
+        $this->setIp($request->ip());
+        $this->setModifiedBy(0);
+
+        return $this->fabricUseCase->save($this);
 
     }
 
-    public function update(Request $request) : FabricViewModel
+    public function update(Request $request) : CustomResponse
     {
+        $authResponse = $this->checkAuthValidation($request,OperationType::CREATE);
 
-        $authResponse = $this->checkAuthValidation($request,OperationType::UPDATE);
-
-        if($authResponse->code == CustomResponseCode::ERROR->value){
-            $this->setMsg($authResponse->msg);
-            $this->setCode($authResponse->code);
-        }else{
-
-            $inputValidationResponse = $this->checkInputValidation($request,[
-                'fabricName' => 'required|string',
-            ]);
-
-            if($inputValidationResponse->code == CustomResponseCode::ERROR->value){
-
-                $this->setMsg($inputValidationResponse->code);
-                $this->setCode($inputValidationResponse->msg);
-
-            }else{
-
-                $this->setId($request->fabricViewModel["id"]);
-                $this->setFabricName($request->fabricViewModel["fabricName"]);
-                $this->setIp($request->ip());
-                $this->setModifiedBy($authResponse->modifiedBy);
-
-                $data = $this->fabricUseCase->update($this);
-
-                $this->setCode($data->code);
-                $this->setMsg($data->msg);
-            }
+        if($authResponse != CustomResponseMsg::OK->value){
+            return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $authResponse);
         }
 
-        return $this;
+        $inputValidationResponse = $this->checkInputValidation($request->fabricViewModel,[
+            'fabricName' => 'required|string'
+        ]);
+
+        if($inputValidationResponse != CustomResponseMsg::OK->value){
+            return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $inputValidationResponse);
+        }
+
+        $this->setId($request->fabricViewModel["id"]);
+        $this->setFabricName($request->fabricViewModel["fabricName"]);
+        $this->setIp($request->ip());
+        $this->setModifiedBy(0);
+
+        return $this->fabricUseCase->update($this);
     }
 
-    public function remove(Request $request) : FabricViewModel
+    public function remove(Request $request) : CustomResponse
     {
 
-        $authResponse = $this->checkAuthValidation($request,OperationType::DELETE);
+        $authResponse = $this->checkAuthValidation($request,OperationType::CREATE);
 
-        if($authResponse->code == CustomResponseCode::ERROR->value){
-            $this->setMsg($authResponse->msg);
-            $this->setCode($authResponse->code);
-        }else{
-
-            $inputValidationResponse = $this->checkInputValidation($request,[
-                'id' => 'required|int',
-            ]);
-
-            if($inputValidationResponse->code == CustomResponseCode::ERROR->value){
-
-                $this->setMsg($inputValidationResponse->code);
-                $this->setCode($inputValidationResponse->msg);
-
-            }else{
-
-                $data = $this->fabricUseCase->remove($this);
-                $this->setCode($data->code);
-                $this->setMsg($data->msg);
-            }
+        if($authResponse != CustomResponseMsg::OK->value){
+            return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $authResponse);
         }
 
-        return $this;
-    }
+        $inputValidationResponse = $this->checkInputValidation($request->fabricViewModel,[
+            'id' => 'required|int'
+        ]);
 
-    protected function checkInputValidation(Request $request, array $rules) : CustomResponse
-    {
-
-        $validator = Validator::make($request->fabricViewModel, $rules);
-
-        if($validator->fails()){
-            $this->customResponse->setCode(CustomResponseCode::ERROR->value);
-            $this->customResponse->setMsg($validator->errors()->first());
-        }else{
-            $this->customResponse->setCode(CustomResponseCode::SUCCESS->value);
-            $this->customResponse->setMsg(CustomResponseMsg::SUCCESS->value);
+        if($inputValidationResponse != CustomResponseMsg::OK->value){
+            return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $inputValidationResponse);
         }
 
-        return $this->customResponse;
+        $this->setId($request->fabricViewModel["id"]);
+        return $this->fabricUseCase->remove($this);
     }
 
 }

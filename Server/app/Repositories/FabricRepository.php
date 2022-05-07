@@ -15,15 +15,16 @@ class FabricRepository extends BaseRepository implements IFabricRepository
 
     public function getIndexData() : CustomResponse
     {
-        $this->customResponse->setCode(CustomResponseCode::SUCCESS->value);
-        $this->customResponse->setMsg(CustomResponseMsg::INIT_SUCCESS->value);
-        $this->customResponse->setFabrics(Fabric::select("id","fabric_name AS fabricName")->get()->toArray());
-
-        return $this->customResponse;
+        $res = new CustomResponse();
+        $res->setCode(CustomResponseCode::SUCCESS->value);
+        $res->setMsg(CustomResponseMsg::INIT_SUCCESS->value);
+        $res->setFabrics(Fabric::select("id","fabric_name AS fabricName")->get()->toArray());
+        return $res;
     }
 
     public function create(FabricViewModel $fabricViewModel) : CustomResponse
     {
+        $res = new CustomResponse();
         DB::beginTransaction();
         try{
 
@@ -34,28 +35,29 @@ class FabricRepository extends BaseRepository implements IFabricRepository
             $model->created_at = date('Y-m-d H:i:s');
             $model->save();
 
-            $this->customResponse->setModel($model);
-            $this->customResponse->setCode(CustomResponseCode::SUCCESS->value);
-            $this->customResponse->setMsg(CustomResponseMsg::SUCCESS->value);
+            $res->setModel($model);
+            $res->setCode(CustomResponseCode::SUCCESS->value);
+            $res->setMsg(CustomResponseMsg::SUCCESS->value);
 
             DB::commit();
 
         }catch (\Exception $e){
-            $this->customResponse->setCode(CustomResponseCode::ERROR->value);
-            $this->customResponse->setMsg($e->getMessage());
+            $res->setCode(CustomResponseCode::ERROR->value);
+            $res->setMsg($e->getMessage());
         }
 
-        return $this->customResponse;
+        return $res;
     }
 
     public function read(FabricViewModel $fabricViewModel) : CustomResponse
     {
-        // TODO: Implement read() method.
-        return $this->customResponse;
+        $res = new CustomResponse();
+        return $res;
     }
 
     public function update(FabricViewModel $fabricViewModel) : CustomResponse
     {
+        $res = new CustomResponse();
         DB::beginTransaction();
         try{
 
@@ -65,46 +67,52 @@ class FabricRepository extends BaseRepository implements IFabricRepository
             ]);
 
             DB::commit();
+            $res->setCode(CustomResponseCode::SUCCESS->value);
+            $res->setMsg(CustomResponseMsg::SUCCESS->value);
 
         }catch (\Exception $e){
-            $this->customResponse->setCode(CustomResponseCode::ERROR->value);
-            $this->customResponse->setMsg($e->getMessage());
+            $res->setCode(CustomResponseCode::ERROR->value);
+            $res->setMsg($e->getMessage());
         }
 
-        return $this->customResponse;
+        return $res;
     }
 
     public function isFabricNameExist($fabricName) : CustomResponse
     {
 
+        $res = new CustomResponse();
         $isExist = Fabric::where('fabric_name',$fabricName)->exists();
 
         if($isExist){
-            $this->customResponse->setCode(CustomResponseCode::ERROR->value);
-            $this->customResponse->setMsg(CustomResponseMsg::FABRIC_NAME_EXIST->value);
+            $res->setCode(CustomResponseCode::ERROR->value);
+            $res->setMsg(CustomResponseMsg::FABRIC_NAME_EXIST->value);
         }else{
-            $this->customResponse->setCode(CustomResponseCode::SUCCESS->value);
-            $this->customResponse->setMsg(CustomResponseMsg::SUCCESS->value);
+            $res->setCode(CustomResponseCode::SUCCESS->value);
+            $res->setMsg(CustomResponseMsg::SUCCESS->value);
         }
 
-        return $this->customResponse;
+        return $res;
 
     }
 
     public function delete(FabricViewModel $fabricViewModel) : CustomResponse
     {
+        $res = new CustomResponse();
         DB::beginTransaction();
         try{
 
             Fabric::where('id',$fabricViewModel->id)->delete();
-
             DB::commit();
 
+            $res->setCode(CustomResponseCode::SUCCESS->value);
+            $res->setMsg(CustomResponseMsg::SUCCESS->value);
+
         }catch (\Exception $e){
-            $this->customResponse->setCode(CustomResponseCode::ERROR->value);
-            $this->customResponse->setMsg($e->getMessage());
+            $res->setCode(CustomResponseCode::ERROR->value);
+            $res->setMsg($e->getMessage());
         }
 
-        return $this->customResponse;
+        return $res;
     }
 }

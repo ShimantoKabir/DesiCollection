@@ -15,7 +15,8 @@ let mixin = {
         CREATE: 1,
         READ: 2,
         UPDATE: 3,
-        DELETE: 4
+        DELETE: 4,
+        ASK : 5
       }
     }
   },
@@ -51,6 +52,17 @@ let mixin = {
         opState: this.networkState.ERROR,
         bodyMsg: "Something went wrong please try again!",
         eventData: event
+      });
+    },
+    ask(ctx, event){
+      ctx.$refs.alert.modify({
+        isVisible: true,
+        needHeader: true,
+        needFooter: true,
+        opState: this.networkState.ERROR,
+        bodyMsg: "Are you sure want to delete?",
+        eventData: event,
+        autoDismiss: false
       });
     }
   }

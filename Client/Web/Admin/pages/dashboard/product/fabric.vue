@@ -12,14 +12,14 @@
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 my-main">
           <!--model-->
           <div class="modal fade"
-               id="exampleModal"
+               id="fabricFormModel"
                tabindex="-1"
-               aria-labelledby="exampleModalLabel"
+               aria-labelledby="fabricModalLabel"
                aria-hidden="true">
             <div class="modal-dialog">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">
+                  <h5 class="modal-title" id="fabricModalLabel">
                     <span>Entries</span>
                   </h5>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -70,11 +70,19 @@
             <div class="btn-toolbar mb-2 mb-md-0">
               <div class="btn-group me-2">
                 <button
-                    ref="addFabricBtn"
+                    v-on:click="onModelOpen"
                     type="button"
                     class="btn btn-sm btn-outline-secondary"
                     data-bs-toggle="modal"
-                    data-bs-target="#exampleModal">
+                    data-bs-target="#fabricFormModel">
+                  <i class="fas fa-plus" ></i>
+                </button>
+                <button
+                  ref="updateFabricBtn"
+                  type="button"
+                  class="btn btn-sm btn-outline-secondary fabric-update-btn"
+                  data-bs-toggle="modal"
+                  data-bs-target="#fabricFormModel">
                   <i class="fas fa-plus" ></i>
                 </button>
               </div>
@@ -91,11 +99,11 @@
             </tr>
             </thead>
             <tbody>
-            <tr  v-for="(f,i) in fabricViewModel.fabrics" >
+            <tr v-for="(f,i) in fabricViewModel.fabrics" >
               <td>{{i+1}}</td>
               <td>{{f.fabricName}}</td>
               <td><i class="fas fa-edit cp" v-on:click="setFormData(f)" ></i></td>
-              <td><i class="fas fa-trash cp" v-on:click="onDelete(f)" ></i></td>
+              <td><i class="fas fa-trash cp" v-on:click="setDeleteData(f)" ></i></td>
             </tr>
             </tbody>
           </table>
@@ -161,6 +169,10 @@ export default {
         this.getInitialData();
       }else if(eventData === this.opState.CREATE){
         this.onCreate();
+      }else if (eventData === this.opState.DELETE){
+        this.onDelete();
+      }else if (eventData === this.opState.UPDATE){
+        this.onUpdate();
       }
     },
     onCreate(){
@@ -189,6 +201,10 @@ export default {
         fabricViewModel : this.fabricViewModel
       }).then(res=>{
         if(res.code === this.networkState.SUCCESS){
+
+          let objIndex = this.fabricViewModel.fabrics.findIndex((obj => obj.id === this.fabricViewModel.id));
+          this.fabricViewModel.fabrics[objIndex].fabricName = this.fabricViewModel.fabricName;
+
           this.showSuccess(this,res.msg);
         }else {
           this.showError(this,this.opState.UPDATE);
@@ -200,15 +216,45 @@ export default {
     setFormData(fabric){
       this.fabricViewModel.id = fabric.id;
       this.fabricViewModel.fabricName = fabric.fabricName;
-      this.$refs.addFabricBtn.click();
+      this.$refs.updateFabricBtn.click();
     },
-    onDelete(fabric){
-
+    setDeleteData(fabric){
+      this.fabricViewModel.id = fabric.id;
+      this.ask(this, this.opState.DELETE)
+    },
+    onDelete(){
+      let config = {
+        data: {
+          userInfo : {
+            email : this.cookieUserInfo.email,
+            href : window.location.pathname,
+            sessionId : this.cookieUserInfo.sessionId
+          },
+          fabricViewModel : {
+            id : this.fabricViewModel.id
+          }
+        }
+      };
+      this.$axios.$delete("/fabrics",config).then(res=>{
+        if(res.code === this.networkState.SUCCESS){
+          this.fabricViewModel.fabrics = this.fabricViewModel.fabrics.filter((item) => item.id !== this.fabricViewModel.id);
+          this.showSuccess(this,res.msg);
+        }else {
+          this.showError(this,this.opState.DELETE);
+        }
+      }).catch(err=>{
+        this.showError(this,this.opState.DELETE);
+      });
+    },
+    onModelOpen(){
+      this.onReset();
     }
   }
 }
 </script>
 
 <style scoped>
-
+  .fabric-update-btn{
+    display: none;
+  }
 </style>

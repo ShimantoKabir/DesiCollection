@@ -10,4 +10,5 @@ enum CustomResponseMsg : string
     case AUTH_SUCCESS = "Authentication successful!";
     case AUTH_ERROR = "Authentication failed!";
     case FABRIC_NAME_EXIST = "Fabric name already exist!";
+    case OK = "OK";
 }

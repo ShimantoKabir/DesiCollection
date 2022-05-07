@@ -13,17 +13,10 @@ use JetBrains\PhpStorm\Pure;
 
 class FabricUseCase extends BaseUseCase
 {
-
     private FabricRepository $fabricRepository;
 
-    #[Pure]
-    public function __construct(
-        CustomRequest $customRequest,
-        CustomResponse $customResponse,
-        FabricRepository $fabricRepository
-    )
+    public function __construct(FabricRepository $fabricRepository)
     {
-        parent::__construct($customRequest, $customResponse);
         $this->fabricRepository = $fabricRepository;
     }
 

@@ -22,14 +22,9 @@ class BaseViewModel
     public string $ip;
     public array $data;
 
-    public function __construct(
-        CustomResponse $customResponse,
-        FabricUseCase $fabricUseCase,
-        CustomRequest $customRequest)
+    public function __construct(FabricUseCase $fabricUseCase)
     {
-        $this->customResponse = $customResponse;
         $this->fabricUseCase = $fabricUseCase;
-        $this->customRequest = $customRequest;
     }
 
     public function setCode(int $code){
@@ -44,8 +39,9 @@ class BaseViewModel
         $this->data = $data;
     }
 
-    public function checkAuthValidation(Request $request,OperationType $opType) : CustomResponse
+    public function checkAuthValidation(Request $request,OperationType $opType) : string
     {
+        $authMsg = CustomResponseMsg::OK->value;
 
         $validator = Validator::make($request->userInfo,[
             'email' => 'required|email',
@@ -54,17 +50,24 @@ class BaseViewModel
         ]);
 
         if($validator->fails()){
-            $this->customResponse->setCode(CustomResponseCode::ERROR->value);
-            $this->customResponse->setMsg($validator->errors()->first());
-
-        }else{
-            $this->customResponse->setCode(CustomResponseCode::SUCCESS->value);
-            $this->customResponse->setMsg(CustomResponseMsg::SUCCESS->value);
-            $this->customResponse->setModifiedBy(0);
+            $authMsg = $validator->errors()->first();
         }
 
-        return $this->customResponse;
+        return $authMsg;
     }
 
+    public function checkInputValidation($viewModel, array $rules) : string
+    {
+
+        $validationMsg = CustomResponseMsg::OK->value;
+
+        $validator = Validator::make($viewModel, $rules);
+
+        if($validator->fails()){
+            $validationMsg = $validator->errors()->first();
+        }
+
+        return $validationMsg;
+    }
 
 }
