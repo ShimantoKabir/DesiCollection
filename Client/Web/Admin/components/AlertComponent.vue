@@ -4,26 +4,38 @@
       <div class="modal-content">
         <div v-show="isModelHeaderVisible" class="modal-header my-model-header">
           <h5 v-if="title" class="modal-title">{{title}}</h5>
-          <h5 v-else-if="opState === ns.LOADING" >Loading</h5>
-          <h5 v-else-if="opState === ns.ERROR" >Error</h5>
-          <h5 v-else-if="opState === ns.SUCCESS" >Success</h5>
+          <h5 v-else-if="alertOpState === ns.LOADING" >Loading</h5>
+          <h5 v-else-if="alertOpState === ns.ERROR" >Error</h5>
+          <h5 v-else-if="alertOpState === ns.SUCCESS" >Success</h5>
+          <h5 v-else-if="alertOpState === opState.ASK" >Permission</h5>
+          <h5 v-else-if="alertOpState === opState.WARNING" >Warning</h5>
           <h5 v-else >Unknown</h5>
           <button v-on:click="closeModel"  type="button" class="btn-close"></button>
         </div>
         <div class="modal-body">
-          <div v-if="opState === ns.LOADING" class="my-model-body" >
+          <div v-if="alertOpState === ns.LOADING" class="my-model-body" >
             <i class="fas fa-spinner fa-spin" ></i>
             <p>Loading, Please wait...!</p>
           </div>
-          <div v-else-if="opState === ns.ERROR" class="my-model-body" >
+          <div v-else-if="alertOpState === ns.ERROR" class="my-model-body" >
             <i class="fas fa-times-circle" ></i>
             <p v-if="bodyMsg" >{{bodyMsg}}</p>
             <p v-else >Error, Something went wrong please try again!</p>
           </div>
-          <div v-else-if="opState === ns.SUCCESS" class="my-model-body" >
+          <div v-else-if="alertOpState === ns.SUCCESS" class="my-model-body" >
             <i class="fas fa-check-circle" ></i>
             <p v-if="bodyMsg" >{{bodyMsg}}</p>
             <p v-else >Operation successful!</p>
+          </div>
+          <div v-else-if="alertOpState === opState.ASK" class="my-model-body" >
+            <i class="fas fa-question-circle" ></i>
+            <p v-if="bodyMsg" >{{bodyMsg}}</p>
+            <p v-else >Would you like to give permission for this operation?</p>
+          </div>
+          <div v-else-if="alertOpState === opState.WARNING" class="my-model-body" >
+            <i class="fas fa-exclamation-circle" ></i>
+            <p v-if="bodyMsg" >{{bodyMsg}}</p>
+            <p v-else >This operation may harmful!</p>
           </div>
           <div v-else class="my-model-body" >
             <i class="fas fa-blind" ></i>
@@ -66,7 +78,7 @@ export default {
     }
   },
   mounted() {
-
+    console.log("alertOpState", this.opState);
   },
   data(){
     return{
@@ -76,7 +88,7 @@ export default {
       positiveBtnTxt : "",
       negativeBtnTxt : "",
       ns: NetworkState.NetworkState,
-      opState : NetworkState.NetworkState.NEUTRAL,
+      alertOpState : NetworkState.NetworkState.NEUTRAL,
       bodyMsg : "",
       title: "",
       eventData: ""
@@ -89,7 +101,7 @@ export default {
       this.isModelHeaderVisible =  (obj.needHeader) ? (obj.needHeader === true) : false;
       this.positiveBtnTxt  =  (obj.positiveBtnTxt) ? obj.positiveBtnTxt : this.positiveBtnTxt;
       this.negativeBtnTxt  =  (obj.negativeBtnTxt) ? obj.negativeBtnTxt : this.negativeBtnTxt;
-      this.opState  =  (obj.opState) ? obj.opState : this.opState;
+      this.alertOpState  =  (obj.alertOpState) ? obj.alertOpState : this.alertOpState;
       this.bodyMsg  =  (obj.bodyMsg) ? obj.bodyMsg : this.bodyMsg;
       this.title =  (obj.title) ? obj.title : this.title;
       this.eventData =  (obj.eventData) ? obj.eventData : this.eventData;

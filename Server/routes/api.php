@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AgeCtl;
 use App\Http\Controllers\AisEntryCtl;
 use App\Http\Controllers\AisReportCtl;
 use App\Http\Controllers\ChartOfAccountCtl;
@@ -65,3 +66,8 @@ Route::post('/sizes/index', [SizeCtl::class, 'index']);
 Route::post('/sizes', [SizeCtl::class, 'save']);
 Route::put('/sizes', [SizeCtl::class, 'update']);
 Route::delete('/sizes', [SizeCtl::class, 'remove']);
+
+Route::post('/ages/index', [AgeCtl::class, 'index']);
+Route::post('/ages', [AgeCtl::class, 'save']);
+Route::put('/ages', [AgeCtl::class, 'update']);
+Route::delete('/ages', [AgeCtl::class, 'remove']);

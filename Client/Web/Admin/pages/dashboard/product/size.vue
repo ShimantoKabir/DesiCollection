@@ -218,7 +218,7 @@ export default {
     },
     setDeleteData(size){
       this.sizeViewModel.id = size.id;
-      this.ask(this, this.opState.DELETE)
+      this.delete(this, this.opState.DELETE)
     },
     onDelete(){
       let config = {

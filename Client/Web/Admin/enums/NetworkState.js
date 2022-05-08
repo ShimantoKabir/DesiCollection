@@ -3,6 +3,6 @@ export default{
     NEUTRAL: 0,
     LOADING: 1,
     ERROR: 2,
-    SUCCESS: 3
+    SUCCESS: 3,
   }
 }

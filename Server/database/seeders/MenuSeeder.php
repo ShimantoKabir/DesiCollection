@@ -134,83 +134,93 @@ class MenuSeeder extends Seeder
             ],
             [
                 "oid" => 112,
+                "href" => "/dashboard/product/age",
+                "icon" => "fas fa-weight",
+                "tree_id" => 12,
+                "for_whom" => 1,
+                "menu_name" => "Manage Age",
+                "is_active" => 1,
+                "parent_tree_id" => 8
+            ],
+            [
+                "oid" => 113,
                 "href" => "/dashboard/product/brand",
                 "icon" => null,
-                "tree_id" => 12,
+                "tree_id" => 13,
                 "for_whom" => 1,
                 "menu_name" => "Manage Brand",
                 "is_active" => 1,
                 "parent_tree_id" => 8
             ],
             [
-                "oid" => 113,
+                "oid" => 114,
                 "href" => "/dashboard/product/type",
                 "icon" => null,
-                "tree_id" => 13,
+                "tree_id" => 14,
                 "for_whom" => 1,
                 "menu_name" => "Product Type",
                 "is_active" => 1,
                 "parent_tree_id" => 8
             ],
             [
-                "oid" => 114,
+                "oid" => 115,
                 "href" => "/dashboard/product/user-type",
                 "icon" => null,
-                "tree_id" => 14,
+                "tree_id" => 15,
                 "for_whom" => 1,
                 "menu_name" => "Product User Type",
                 "is_active" => 1,
                 "parent_tree_id" => 8
             ],
             [
-                "oid" => 115,
+                "oid" => 116,
                 "href" => "/dashboard/product/manage",
                 "icon" => null,
-                "tree_id" => 15,
+                "tree_id" => 16,
                 "for_whom" => 1,
                 "menu_name" => "Manage Product",
                 "is_active" => 1,
                 "parent_tree_id" => 8
             ],
             [
-                "oid" => 116,
+                "oid" => 117,
                 "href" => null,
                 "icon" => "fas fa-book",
-                "tree_id" => 16,
+                "tree_id" => 17,
                 "for_whom" => 1,
                 "menu_name" => "AIS",
                 "is_active" => 1,
                 "parent_tree_id" => 0
             ],
             [
-                "oid" => 117,
-                "href" => "/dashboard/ais/chart-of-account",
-                "icon" => null,
-                "tree_id" => 17,
-                "for_whom" => 1,
-                "menu_name" => "Chart of Account",
-                "is_active" => 1,
-                "parent_tree_id" => 16
-            ],
-            [
                 "oid" => 118,
-                "href" => "/dashboard/ais/entry",
+                "href" => "/dashboard/ais/chart-of-account",
                 "icon" => null,
                 "tree_id" => 18,
                 "for_whom" => 1,
-                "menu_name" => "Entry",
+                "menu_name" => "Chart of Account",
                 "is_active" => 1,
-                "parent_tree_id" => 16
+                "parent_tree_id" => 17
             ],
             [
                 "oid" => 119,
-                "href" => "/dashboard/ais/report",
+                "href" => "/dashboard/ais/entry",
                 "icon" => null,
                 "tree_id" => 19,
                 "for_whom" => 1,
+                "menu_name" => "Entry",
+                "is_active" => 1,
+                "parent_tree_id" => 17
+            ],
+            [
+                "oid" => 120,
+                "href" => "/dashboard/ais/report",
+                "icon" => null,
+                "tree_id" => 20,
+                "for_whom" => 1,
                 "menu_name" => "Report",
                 "is_active" => 1,
-                "parent_tree_id" => 16
+                "parent_tree_id" => 17
             ]
         ];
 

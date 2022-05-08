@@ -8,6 +8,7 @@ class CustomResponse
     public string $msg;
     public array $fabrics;
     public array $sizes;
+    public array $ages;
     public int $modifiedBy;
     public object $model;
 
@@ -36,6 +37,10 @@ class CustomResponse
 
     public function setSizes(array $sizes){
         $this->sizes = $sizes;
+    }
+
+    public function setAges(array $ages){
+        $this->ages = $ages;
     }
 
     public function setModifiedBy(int $modifiedBy){

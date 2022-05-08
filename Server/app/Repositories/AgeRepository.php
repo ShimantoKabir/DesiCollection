@@ -5,35 +5,36 @@ namespace App\Repositories;
 use App\Enums\CustomResponseCode;
 use App\Enums\CustomResponseMsg;
 use App\Models\CustomResponse;
-use App\Models\Size;
-use App\Repositories\Interfaces\ISizeRepository;
-use App\ViewModels\SizeViewModel;
+use App\Models\ProductUserAge;
+use App\Repositories\Interfaces\IAgeRepository;
+use App\ViewModels\AgeViewModel;
 use Illuminate\Support\Facades\DB;
 
-class SizeRepository extends BaseRepository implements ISizeRepository
+class AgeRepository extends BaseRepository implements IAgeRepository
 {
 
-    public function getIndexData() : CustomResponse
+    public function getIndexData(): CustomResponse
     {
         $res = new CustomResponse();
         $res->setCode(CustomResponseCode::SUCCESS->value);
         $res->setMsg(CustomResponseMsg::INIT_SUCCESS->value);
-        $res->setSizes($this->read());
+        $res->setAges($this->read());
         return $res;
     }
 
-    public function create(SizeViewModel $sizeViewModel) : CustomResponse
+    public function create(AgeViewModel $ageViewModel): CustomResponse
     {
-
         $date = $this->getCurrentDate();
         $res = new CustomResponse();
         DB::beginTransaction();
         try{
 
-            $model = new Size();
-            $model->sizeName = $sizeViewModel->sizeName;
-            $model->ip = $sizeViewModel->ip;
-            $model->modifiedBy = $sizeViewModel->modifiedBy;
+            $model = new ProductUserAge();
+            $model->minAge = $ageViewModel->minAge;
+            $model->maxAge = $ageViewModel->maxAge;
+            $model->fixedAge = $ageViewModel->fixedAge;
+            $model->ip = $ageViewModel->ip;
+            $model->modifiedBy = $ageViewModel->modifiedBy;
             $model->createdAt = $date;
             $model->updatedAt = $date;
             $model->save();
@@ -52,21 +53,18 @@ class SizeRepository extends BaseRepository implements ISizeRepository
         return $res;
     }
 
-    public function read() : array
-    {
-        return Size::select("id","sizeName")->get()->toArray();
-    }
-
-    public function update(SizeViewModel $sizeViewModel) : CustomResponse
+    public function update(AgeViewModel $ageViewModel): CustomResponse
     {
         $date = $this->getCurrentDate();
         $res = new CustomResponse();
         DB::beginTransaction();
         try{
 
-            Size::where('id',$sizeViewModel->id)
+            ProductUserAge::where('id',$ageViewModel->id)
                 ->update([
-                    'sizeName' => $sizeViewModel->sizeName,
+                    'minAge' => $ageViewModel->minAge,
+                    'maxAge' => $ageViewModel->maxAge,
+                    'fixedAge' => $ageViewModel->fixedAge,
                     'updatedAt' => $date
                 ]);
 
@@ -82,31 +80,13 @@ class SizeRepository extends BaseRepository implements ISizeRepository
         return $res;
     }
 
-    public function isSizeNameExist($sizeName) : CustomResponse
-    {
-
-        $res = new CustomResponse();
-        $isExist = Size::where('sizeName',$sizeName)->exists();
-
-        if($isExist){
-            $res->setCode(CustomResponseCode::ERROR->value);
-            $res->setMsg(CustomResponseMsg::SIZE_NAME_EXIST->value);
-        }else{
-            $res->setCode(CustomResponseCode::SUCCESS->value);
-            $res->setMsg(CustomResponseMsg::SUCCESS->value);
-        }
-
-        return $res;
-
-    }
-
-    public function delete(SizeViewModel $sizeViewModel) : CustomResponse
+    public function delete(AgeViewModel $ageViewModel): CustomResponse
     {
         $res = new CustomResponse();
         DB::beginTransaction();
         try{
 
-            Size::where('id',$sizeViewModel->id)->delete();
+            ProductUserAge::where('id',$ageViewModel->id)->delete();
             DB::commit();
 
             $res->setCode(CustomResponseCode::SUCCESS->value);
@@ -119,4 +99,29 @@ class SizeRepository extends BaseRepository implements ISizeRepository
 
         return $res;
     }
+
+    public function read(): array
+    {
+        return ProductUserAge::select("id","minAge","maxAge","fixedAge")->get()->toArray();
+    }
+
+    public function isAgeExist(int $minAge, int $maxAge, int $fixedAge) : CustomResponse
+    {
+        $res = new CustomResponse();
+        $isExist = ProductUserAge::where('minAge',$minAge)
+            ->where('maxAge',$maxAge)
+            ->where('fixedAge',$fixedAge)
+            ->exists();
+
+        if($isExist){
+            $res->setCode(CustomResponseCode::ERROR->value);
+            $res->setMsg(CustomResponseMsg::AGE_EXIST->value);
+        }else{
+            $res->setCode(CustomResponseCode::SUCCESS->value);
+            $res->setMsg(CustomResponseMsg::SUCCESS->value);
+        }
+
+        return $res;
+    }
+
 }

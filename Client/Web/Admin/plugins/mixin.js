@@ -12,11 +12,12 @@ let mixin = {
       formClassNames: ["needs-validation"],
       showValidation: false,
       opState: {
-        CREATE: 1,
-        READ: 2,
-        UPDATE: 3,
-        DELETE: 4,
-        ASK : 5
+        CREATE: 4,
+        READ: 5,
+        UPDATE: 6,
+        DELETE: 7,
+        ASK : 8,
+        WARNING : 9
       }
     }
   },
@@ -31,7 +32,7 @@ let mixin = {
     showLoader(ctx) {
       ctx.$refs.alert.modify({
         isVisible: true,
-        opState: this.networkState.LOADING,
+        alertOpState: this.networkState.LOADING,
       });
     },
     showSuccess(ctx, msg) {
@@ -39,7 +40,7 @@ let mixin = {
         isVisible: true,
         needHeader: true,
         needFooter: false,
-        opState: this.networkState.SUCCESS,
+        alertOpState: this.networkState.SUCCESS,
         bodyMsg: msg,
         autoDismiss: true
       });
@@ -49,17 +50,29 @@ let mixin = {
         isVisible: true,
         needHeader: true,
         needFooter: true,
-        opState: this.networkState.ERROR,
+        alertOpState: this.networkState.ERROR,
         bodyMsg: "Something went wrong please try again!",
-        eventData: event
+        eventData: event,
+        autoDismiss: true
       });
     },
-    ask(ctx, event){
+    showErrorMsg(ctx, event, msg) {
       ctx.$refs.alert.modify({
         isVisible: true,
         needHeader: true,
         needFooter: true,
-        opState: this.networkState.ERROR,
+        alertOpState: this.networkState.ERROR,
+        bodyMsg: msg,
+        eventData: event,
+        autoDismiss: true
+      });
+    },
+    delete(ctx, event){
+      ctx.$refs.alert.modify({
+        isVisible: true,
+        needHeader: true,
+        needFooter: true,
+        alertOpState: this.opState.ASK,
         bodyMsg: "Are you sure want to delete?",
         eventData: event,
         autoDismiss: false

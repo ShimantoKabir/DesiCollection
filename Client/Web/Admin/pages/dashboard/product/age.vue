@@ -12,26 +12,50 @@
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 my-main">
           <!--model-->
           <div class="modal fade"
-               id="fabricFormModel"
+               id="ageFormModel"
                tabindex="-1"
-               aria-labelledby="fabricModalLabel"
+               aria-labelledby="ageModalLabel"
                aria-hidden="true">
             <div class="modal-dialog">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="fabricModalLabel">
+                  <h5 class="modal-title" id="ageModalLabel">
                     <span>Entries</span>
                   </h5>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                   <form :class="formClassNames.join(' ')" novalidate>
-                    <div class="mb-3">
-                      <label for="colorInput" class="form-label">Fabric</label>
-                      <input v-model="fabricViewModel.fabricName" type="text" class="form-control" id="colorInput" required>
-                      <div class="invalid-feedback">
-                        Please give fabric name!
+                    <div v-show="!isFixedAgeEnable" class="mb-3">
+                      <label for="minAgeInput" class="form-label">Min Age</label>
+                      <input v-model="ageViewModel.minAge" type="number" class="form-control" id="minAgeInput" min="0">
+                      <div class="valid-feedback">
+                        Looks good!
                       </div>
+                    </div>
+                    <div v-show="!isFixedAgeEnable" class="mb-3">
+                      <label for="maxAgeInput" class="form-label">Max Age</label>
+                      <input v-model="ageViewModel.maxAge" type="number" class="form-control" id="maxAgeInput" min="0">
+                      <div class="valid-feedback">
+                        Looks good!
+                      </div>
+                    </div>
+                    <div class="mb-3" >
+                      <div class="form-check form-switch" v-on:click="onEnableFixedAge" >
+                        <input class="form-check-input" type="checkbox" id="fixedAgeCheckbox">
+                        <label class="form-check-label" for="fixedAgeCheckbox">
+                          <span v-if="isFixedAgeEnable" >Enable fixed age</span>
+                          <span v-else >Disable fixed age</span>
+                        </label>
+                      </div>
+                    </div>
+                    <div v-show="isFixedAgeEnable" class="mb-3">
+                      <label for="fixedAgeInput" class="form-label">Fixed Age</label>
+                      <input v-model="ageViewModel.fixedAge"
+                             type="number"
+                             class="form-control"
+                             id="fixedAgeInput"
+                             min="0">
                       <div class="valid-feedback">
                         Looks good!
                       </div>
@@ -39,7 +63,7 @@
                   </form>
                 </div>
                 <div class="modal-footer">
-                  <button v-if="fabricViewModel.id === 0"
+                  <button v-if="ageViewModel.id === 0"
                           type="submit"
                           class="btn btn-primary"
                           v-on:click="verifyInput(opState.CREATE)" >
@@ -66,23 +90,23 @@
             pb-2
             mb-3
             border-bottom">
-            <h1 class="h2">Fabric</h1>
+            <h1 class="h2">Age</h1>
             <div class="btn-toolbar mb-2 mb-md-0">
               <div class="btn-group me-2">
                 <button
-                    v-on:click="onModelOpen"
-                    type="button"
-                    class="btn btn-sm btn-outline-secondary"
-                    data-bs-toggle="modal"
-                    data-bs-target="#fabricFormModel">
+                  v-on:click="onModelOpen"
+                  type="button"
+                  class="btn btn-sm btn-outline-secondary"
+                  data-bs-toggle="modal"
+                  data-bs-target="#ageFormModel">
                   <i class="fas fa-plus" ></i>
                 </button>
                 <button
-                  ref="updateFabricBtn"
+                  ref="updateAgeBtn"
                   type="button"
-                  class="btn btn-sm btn-outline-secondary fabric-update-btn"
+                  class="btn btn-sm btn-outline-secondary age-update-btn"
                   data-bs-toggle="modal"
-                  data-bs-target="#fabricFormModel">
+                  data-bs-target="#ageFormModel">
                   <i class="fas fa-plus" ></i>
                 </button>
               </div>
@@ -93,15 +117,19 @@
             <thead>
             <tr>
               <th>SL</th>
-              <th>Fabric Name</th>
+              <th>Min Age</th>
+              <th>Max Age</th>
+              <th>Fixed Age</th>
               <th>Edit</th>
               <th>Delete</th>
             </tr>
             </thead>
             <tbody>
-            <tr v-for="(f,i) in fabricViewModel.fabrics" >
+            <tr v-for="(f,i) in ageViewModel.ages" >
               <td>{{i+1}}</td>
-              <td>{{f.fabricName}}</td>
+              <td>{{f.minAge}}</td>
+              <td>{{f.maxAge}}</td>
+              <td>{{f.fixedAge}}</td>
               <td><i class="fas fa-edit cp" v-on:click="setFormData(f)" ></i></td>
               <td><i class="fas fa-trash cp" v-on:click="setDeleteData(f)" ></i></td>
             </tr>
@@ -115,27 +143,33 @@
 
 <script>
 export default {
-  name: "fabric",
+  name: "age",
   mounted() {
     this.getInitialData();
   },
   data(){
     return{
-      fabricViewModel: {
+      isFixedAgeEnable : false,
+      ageViewModel: {
         id: 0,
-        fabricName : "",
-        fabrics : []
+        minAge : 0,
+        maxAge : 0,
+        fixedAge : 0,
+        ages : []
       },
     }
   },
   methods: {
+    onEnableFixedAge(){
+      this.isFixedAgeEnable = document.getElementById("fixedAgeCheckbox").checked;
+    },
     getInitialData(){
       this.showLoader(this);
-      this.$axios.$post('/fabrics/index',{
+      this.$axios.$post('/ages/index',{
         userInfo : this.getAuthInfo()
       }).then(res=>{
         if(res.code === this.networkState.SUCCESS){
-          this.fabricViewModel.fabrics = res.fabrics;
+          this.ageViewModel.ages = res.ages;
           this.showSuccess(this,res.msg);
         }else {
           this.showError(this,this.opState.READ);
@@ -147,14 +181,25 @@ export default {
     verifyInput(which){
       this.formClassNames.push("was-validated");
       if(which === this.opState.CREATE || which === this.opState.UPDATE){
-        if(this.fabricViewModel.fabricName){
+        if(this.ageViewModel.minAge || this.ageViewModel.maxAge || this.ageViewModel.fixedAge){
           which === this.opState.CREATE ? this.onCreate() : this.onUpdate();
+        }else {
+          this.$refs.alert.modify({
+            isVisible: true,
+            needHeader: true,
+            needFooter: true,
+            opState: this.opState.WARNING,
+            bodyMsg: "Please fill up at least one age!",
+            eventData: this.opState.WARNING
+          });
         }
       }
     },
     onReset(){
-      this.fabricViewModel.fabricName = "";
-      this.fabricViewModel.id = 0;
+      this.ageViewModel.minAge = 0;
+      this.ageViewModel.maxAge = 0;
+      this.ageViewModel.fixedAge = 0;
+      this.ageViewModel.id = 0;
     },
     onAlertClose(eventData){
       console.log("eventDate=",eventData);
@@ -175,19 +220,20 @@ export default {
     },
     onCreate(){
       this.showLoader(this);
-      this.$axios.$post('/fabrics',{
+      this.$axios.$post('/ages',{
         userInfo : this.getAuthInfo(),
-        fabricViewModel : this.fabricViewModel
+        ageViewModel : this.ageViewModel
       }).then(res=>{
         if(res.code === this.networkState.SUCCESS){
-          console.log("fabric = ", res);
-          this.fabricViewModel.fabrics.push({
+          this.ageViewModel.ages.push({
             id : res.model.id,
-            fabricName: res.model.fabricName
+            minAge: res.model.minAge,
+            maxAge: res.model.maxAge,
+            fixedAge: res.model.fixedAge
           })
           this.showSuccess(this,res.msg);
         }else {
-          this.showError(this,this.opState.CREATE);
+          this.showErrorMsg(this,this.opState.CREATE, res.msg);
         }
       }).catch(err=>{
         this.showError(this,this.opState.CREATE);
@@ -195,14 +241,16 @@ export default {
     },
     onUpdate(){
       this.showLoader(this);
-      this.$axios.$put('/fabrics',{
+      this.$axios.$put('/ages',{
         userInfo : this.getAuthInfo(),
-        fabricViewModel : this.fabricViewModel
+        ageViewModel : this.ageViewModel
       }).then(res=>{
         if(res.code === this.networkState.SUCCESS){
 
-          let objIndex = this.fabricViewModel.fabrics.findIndex((obj => obj.id === this.fabricViewModel.id));
-          this.fabricViewModel.fabrics[objIndex].fabricName = this.fabricViewModel.fabricName;
+          let objIndex = this.ageViewModel.ages.findIndex((obj => obj.id === this.ageViewModel.id));
+          this.ageViewModel.ages[objIndex].minAge = this.ageViewModel.minAge;
+          this.ageViewModel.ages[objIndex].maxAge = this.ageViewModel.maxAge;
+          this.ageViewModel.ages[objIndex].fixedAge = this.ageViewModel.fixedAge;
 
           this.showSuccess(this,res.msg);
         }else {
@@ -212,13 +260,15 @@ export default {
         this.showError(this,this.opState.UPDATE);
       });
     },
-    setFormData(fabric){
-      this.fabricViewModel.id = fabric.id;
-      this.fabricViewModel.fabricName = fabric.fabricName;
-      this.$refs.updateFabricBtn.click();
+    setFormData(age){
+      this.ageViewModel.id = age.id;
+      this.ageViewModel.minAge = age.minAge;
+      this.ageViewModel.maxAge = age.maxAge;
+      this.ageViewModel.fixedAge = age.fixedAge;
+      this.$refs.updateAgeBtn.click();
     },
-    setDeleteData(fabric){
-      this.fabricViewModel.id = fabric.id;
+    setDeleteData(age){
+      this.ageViewModel.id = age.id;
       this.delete(this, this.opState.DELETE)
     },
     onDelete(){
@@ -229,15 +279,17 @@ export default {
             href : window.location.pathname,
             sessionId : this.cookieUserInfo.sessionId
           },
-          fabricViewModel : {
-            id : this.fabricViewModel.id
+          ageViewModel : {
+            id : this.ageViewModel.id,
+            minAge : this.ageViewModel.minAge,
+            maxAge : this.ageViewModel.maxAge,
+            fixedAge : this.ageViewModel.fixedAge
           }
         }
       };
-      this.$axios.$delete("/fabrics",config).then(res=>{
+      this.$axios.$delete("/sizes",config).then(res=>{
         if(res.code === this.networkState.SUCCESS){
-          this.fabricViewModel.fabrics = this.fabricViewModel
-            .fabrics.filter((item) => item.id !== this.fabricViewModel.id);
+          this.ageViewModel.ages = this.ageViewModel.ages.filter((item) => item.id !== this.ageViewModel.id);
           this.showSuccess(this,res.msg);
         }else {
           this.showError(this,this.opState.DELETE);
@@ -254,7 +306,7 @@ export default {
 </script>
 
 <style scoped>
-  .fabric-update-btn{
+  .age-update-btn{
     display: none;
   }
 </style>
