@@ -29,6 +29,7 @@ class AgeUseCase extends BaseUseCase
         if($existResponse->code == CustomResponseCode::ERROR->value){
             return $existResponse;
         }else{
+            $this->configureFixedAgeEnable($ageViewModel);
             return $this->ageRepository->create($ageViewModel);
         }
     }
@@ -41,6 +42,7 @@ class AgeUseCase extends BaseUseCase
         if($existResponse->code == CustomResponseCode::ERROR->value){
             return $existResponse;
         }else{
+            $this->configureFixedAgeEnable($ageViewModel);
             return $this->ageRepository->update($ageViewModel);
         }
     }
@@ -48,5 +50,14 @@ class AgeUseCase extends BaseUseCase
     public function remove(AgeViewModel $ageViewModel) : CustomResponse
     {
         return $this->ageRepository->delete($ageViewModel);
+    }
+
+    public function configureFixedAgeEnable(AgeViewModel $ageViewModel){
+        if($ageViewModel->getFixedAgeEnableStatus() == true){
+            $ageViewModel->setMinAge(null);
+            $ageViewModel->setMaxAge(null);
+        }else{
+            $ageViewModel->setFixedAge(null);
+        }
     }
 }

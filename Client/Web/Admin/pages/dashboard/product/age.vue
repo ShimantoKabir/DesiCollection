@@ -26,14 +26,14 @@
                 </div>
                 <div class="modal-body">
                   <form :class="formClassNames.join(' ')" novalidate>
-                    <div v-show="!isFixedAgeEnable" class="mb-3">
+                    <div v-show="!ageViewModel.isFixedAgeEnable" class="mb-3">
                       <label for="minAgeInput" class="form-label">Min Age</label>
                       <input v-model="ageViewModel.minAge" type="number" class="form-control" id="minAgeInput" min="0">
                       <div class="valid-feedback">
                         Looks good!
                       </div>
                     </div>
-                    <div v-show="!isFixedAgeEnable" class="mb-3">
+                    <div v-show="!ageViewModel.isFixedAgeEnable" class="mb-3">
                       <label for="maxAgeInput" class="form-label">Max Age</label>
                       <input v-model="ageViewModel.maxAge" type="number" class="form-control" id="maxAgeInput" min="0">
                       <div class="valid-feedback">
@@ -44,12 +44,12 @@
                       <div class="form-check form-switch" v-on:click="onEnableFixedAge" >
                         <input class="form-check-input" type="checkbox" id="fixedAgeCheckbox">
                         <label class="form-check-label" for="fixedAgeCheckbox">
-                          <span v-if="isFixedAgeEnable" >Enable fixed age</span>
-                          <span v-else >Disable fixed age</span>
+                          <span v-if="ageViewModel.isFixedAgeEnable" >Disable fixed age</span>
+                          <span v-else >Enable fixed age</span>
                         </label>
                       </div>
                     </div>
-                    <div v-show="isFixedAgeEnable" class="mb-3">
+                    <div v-show="ageViewModel.isFixedAgeEnable" class="mb-3">
                       <label for="fixedAgeInput" class="form-label">Fixed Age</label>
                       <input v-model="ageViewModel.fixedAge"
                              type="number"
@@ -127,9 +127,18 @@
             <tbody>
             <tr v-for="(f,i) in ageViewModel.ages" >
               <td>{{i+1}}</td>
-              <td>{{f.minAge}}</td>
-              <td>{{f.maxAge}}</td>
-              <td>{{f.fixedAge}}</td>
+              <td>
+                <span v-if="f.minAge === null" >N/A</span>
+                <span>{{f.minAge}}</span>
+              </td>
+              <td>
+                <span v-if="f.maxAge === null" >N/A</span>
+                <span>{{f.maxAge}}</span>
+              </td>
+              <td>
+                <span v-if="f.fixedAge === null" >N/A</span>
+                <span>{{f.fixedAge}}</span>
+              </td>
               <td><i class="fas fa-edit cp" v-on:click="setFormData(f)" ></i></td>
               <td><i class="fas fa-trash cp" v-on:click="setDeleteData(f)" ></i></td>
             </tr>
@@ -149,19 +158,19 @@ export default {
   },
   data(){
     return{
-      isFixedAgeEnable : false,
       ageViewModel: {
         id: 0,
         minAge : 0,
         maxAge : 0,
         fixedAge : 0,
-        ages : []
+        ages : [],
+        isFixedAgeEnable : false
       },
     }
   },
   methods: {
     onEnableFixedAge(){
-      this.isFixedAgeEnable = document.getElementById("fixedAgeCheckbox").checked;
+      this.ageViewModel.isFixedAgeEnable = document.getElementById("fixedAgeCheckbox").checked;
     },
     getInitialData(){
       this.showLoader(this);
@@ -187,7 +196,7 @@ export default {
           this.$refs.alert.modify({
             isVisible: true,
             needHeader: true,
-            needFooter: true,
+            needFooter: false,
             opState: this.opState.WARNING,
             bodyMsg: "Please fill up at least one age!",
             eventData: this.opState.WARNING
@@ -248,9 +257,16 @@ export default {
         if(res.code === this.networkState.SUCCESS){
 
           let objIndex = this.ageViewModel.ages.findIndex((obj => obj.id === this.ageViewModel.id));
-          this.ageViewModel.ages[objIndex].minAge = this.ageViewModel.minAge;
-          this.ageViewModel.ages[objIndex].maxAge = this.ageViewModel.maxAge;
-          this.ageViewModel.ages[objIndex].fixedAge = this.ageViewModel.fixedAge;
+
+          if(this.ageViewModel.isFixedAgeEnable){
+            this.ageViewModel.ages[objIndex].minAge = null;
+            this.ageViewModel.ages[objIndex].maxAge = null;
+            this.ageViewModel.ages[objIndex].fixedAge = this.ageViewModel.fixedAge;
+          }else {
+            this.ageViewModel.ages[objIndex].minAge = this.ageViewModel.minAge;
+            this.ageViewModel.ages[objIndex].maxAge = this.ageViewModel.maxAge;
+            this.ageViewModel.ages[objIndex].fixedAge = null;
+          }
 
           this.showSuccess(this,res.msg);
         }else {
@@ -262,9 +278,9 @@ export default {
     },
     setFormData(age){
       this.ageViewModel.id = age.id;
-      this.ageViewModel.minAge = age.minAge;
-      this.ageViewModel.maxAge = age.maxAge;
-      this.ageViewModel.fixedAge = age.fixedAge;
+      this.ageViewModel.minAge = age.minAge === null ? 0 : age.minAge;
+      this.ageViewModel.maxAge = age.maxAge === null ? 0 : age.maxAge;
+      this.ageViewModel.fixedAge = age.fixedAge === null ? 0 : age.fixedAge;
       this.$refs.updateAgeBtn.click();
     },
     setDeleteData(age){
@@ -287,7 +303,7 @@ export default {
           }
         }
       };
-      this.$axios.$delete("/sizes",config).then(res=>{
+      this.$axios.$delete("/ages",config).then(res=>{
         if(res.code === this.networkState.SUCCESS){
           this.ageViewModel.ages = this.ageViewModel.ages.filter((item) => item.id !== this.ageViewModel.id);
           this.showSuccess(this,res.msg);

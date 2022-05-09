@@ -12,13 +12,14 @@ use Illuminate\Http\Request;
 class AgeViewModel extends BaseViewModel
 {
     public int $id;
-    public int $minAge;
-    public int $maxAge;
-    public int $fixedAge;
+    public ?int $minAge;
+    public ?int $maxAge;
+    public ?int $fixedAge;
     public string $ip;
     public int $modifiedBy;
     public array $ages;
     public object $model;
+    public bool $isFixedAgeEnable;
     public AgeUseCase $ageUseCase;
 
     public function __construct(AgeUseCase $ageUseCase)
@@ -30,16 +31,25 @@ class AgeViewModel extends BaseViewModel
         $this->id = $id;
     }
 
-    public function setMinAge(int $minAge){
+    public function setMinAge(?int $minAge){
         $this->minAge = $minAge;
     }
 
-    public function setMaxAge(int $maxAge){
+    public function setMaxAge(?int $maxAge){
         $this->maxAge = $maxAge;
     }
 
-    public function setFixedAge(int $fixedAge){
+    public function setFixedAge(?int $fixedAge){
         $this->fixedAge = $fixedAge;
+    }
+
+    public function setFixedAgeEnableStatus(?int $isFixedAgeEnable){
+        $this->isFixedAgeEnable = $isFixedAgeEnable;
+    }
+
+    public function getFixedAgeEnableStatus() : bool
+    {
+        return $this->isFixedAgeEnable;
     }
 
     public function setIp(string $ip){
@@ -82,6 +92,8 @@ class AgeViewModel extends BaseViewModel
         $this->setMinAge($request->ageViewModel["minAge"]);
         $this->setMaxAge($request->ageViewModel["maxAge"]);
         $this->setFixedAge($request->ageViewModel["fixedAge"]);
+        $this->setFixedAgeEnableStatus($request->ageViewModel["isFixedAgeEnable"]);
+
         $this->setIp($request->ip());
         $this->setModifiedBy(0);
 
@@ -111,6 +123,7 @@ class AgeViewModel extends BaseViewModel
         $this->setMinAge($request->ageViewModel["minAge"]);
         $this->setMaxAge($request->ageViewModel["maxAge"]);
         $this->setFixedAge($request->ageViewModel["fixedAge"]);
+        $this->setFixedAgeEnableStatus($request->ageViewModel["isFixedAgeEnable"]);
         $this->setIp($request->ip());
         $this->setModifiedBy(0);
 

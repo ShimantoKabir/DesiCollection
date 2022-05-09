@@ -105,7 +105,7 @@ class AgeRepository extends BaseRepository implements IAgeRepository
         return ProductUserAge::select("id","minAge","maxAge","fixedAge")->get()->toArray();
     }
 
-    public function isAgeExist(int $minAge, int $maxAge, int $fixedAge) : CustomResponse
+    public function isAgeExist(?int $minAge, ?int $maxAge, ?int $fixedAge) : CustomResponse
     {
         $res = new CustomResponse();
         $isExist = ProductUserAge::where('minAge',$minAge)
