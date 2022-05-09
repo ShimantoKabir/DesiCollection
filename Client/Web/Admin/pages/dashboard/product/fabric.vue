@@ -138,7 +138,7 @@ export default {
           this.fabricViewModel.fabrics = res.fabrics;
           this.showSuccess(this,res.msg);
         }else {
-          this.showError(this,this.opState.READ);
+          this.showErrorMsg(this,this.opState.READ,res.msg);
         }
       }).catch(err=>{
         this.showError(this,this.opState.READ);
@@ -187,7 +187,7 @@ export default {
           })
           this.showSuccess(this,res.msg);
         }else {
-          this.showError(this,this.opState.CREATE);
+          this.showErrorMsg(this,this.opState.CREATE,res.msg);
         }
       }).catch(err=>{
         this.showError(this,this.opState.CREATE);
@@ -206,7 +206,7 @@ export default {
 
           this.showSuccess(this,res.msg);
         }else {
-          this.showError(this,this.opState.UPDATE);
+          this.showErrorMsg(this,this.opState.UPDATE,this,res.msg);
         }
       }).catch(err=>{
         this.showError(this,this.opState.UPDATE);
@@ -240,7 +240,7 @@ export default {
             .fabrics.filter((item) => item.id !== this.fabricViewModel.id);
           this.showSuccess(this,res.msg);
         }else {
-          this.showError(this,this.opState.DELETE);
+          this.showErrorMsg(this,this.opState.DELETE,res.msg);
         }
       }).catch(err=>{
         this.showError(this,this.opState.DELETE);

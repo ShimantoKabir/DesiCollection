@@ -138,7 +138,7 @@ export default {
           this.sizeViewModel.sizes = res.sizes;
           this.showSuccess(this,res.msg);
         }else {
-          this.showError(this,this.opState.READ);
+          this.showErrorMsg(this,this.opState.READ,res.msg);
         }
       }).catch(err=>{
         this.showError(this,this.opState.READ);
@@ -186,7 +186,7 @@ export default {
           })
           this.showSuccess(this,res.msg);
         }else {
-          this.showError(this,this.opState.CREATE);
+          this.showErrorMsg(this,this.opState.CREATE,res.msg);
         }
       }).catch(err=>{
         this.showError(this,this.opState.CREATE);
@@ -205,7 +205,7 @@ export default {
 
           this.showSuccess(this,res.msg);
         }else {
-          this.showError(this,this.opState.UPDATE);
+          this.showErrorMsg(this,this.opState.UPDATE,res.msg);
         }
       }).catch(err=>{
         this.showError(this,this.opState.UPDATE);
@@ -238,7 +238,7 @@ export default {
           this.sizeViewModel.sizes = this.sizeViewModel.sizes.filter((item) => item.id !== this.sizeViewModel.id);
           this.showSuccess(this,res.msg);
         }else {
-          this.showError(this,this.opState.DELETE);
+          this.showErrorMsg(this,this.opState.DELETE,res.msg);
         }
       }).catch(err=>{
         this.showError(this,this.opState.DELETE);
