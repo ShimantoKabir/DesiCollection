@@ -3,6 +3,7 @@
 use App\Http\Controllers\AgeCtl;
 use App\Http\Controllers\AisEntryCtl;
 use App\Http\Controllers\AisReportCtl;
+use App\Http\Controllers\BrandCtl;
 use App\Http\Controllers\ChartOfAccountCtl;
 use App\Http\Controllers\ColorCtl;
 use App\Http\Controllers\FabricCtl;
@@ -71,3 +72,8 @@ Route::post('/ages/index', [AgeCtl::class, 'index']);
 Route::post('/ages', [AgeCtl::class, 'save']);
 Route::put('/ages', [AgeCtl::class, 'update']);
 Route::delete('/ages', [AgeCtl::class, 'remove']);
+
+Route::post('/brands/index', [BrandCtl::class, 'index']);
+Route::post('/brands', [BrandCtl::class, 'save']);
+Route::put('/brands', [BrandCtl::class, 'update']);
+Route::delete('/brands', [BrandCtl::class, 'remove']);
