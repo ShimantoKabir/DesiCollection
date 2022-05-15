@@ -47,6 +47,10 @@
                         Looks good!
                       </div>
                     </div>
+                    <div v-show="brandViewModel.id !== 0" class="mb-3">
+                      <span v-if="brandViewModel.imageName === null" >N/A</span>
+                      <img v-else class="update-brand-logo rounded" :src="brandViewModel.imagePath" alt="logo">
+                    </div>
                   </form>
                 </div>
                 <div class="modal-footer">
@@ -104,7 +108,8 @@
             <thead>
             <tr>
               <th>SL</th>
-              <th>Brand Name</th>
+              <th>Name</th>
+              <th>Logo</th>
               <th>Edit</th>
               <th>Delete</th>
             </tr>
@@ -113,6 +118,10 @@
             <tr v-for="(f,i) in brandViewModel.brands" >
               <td>{{i+1}}</td>
               <td>{{f.brandName}}</td>
+              <td>
+                <span v-if="f.imageName === null" >N/A</span>
+                <img v-else class="brand-logo rounded" :src="f.imagePath" alt="logo">
+              </td>
               <td><i class="fas fa-edit cp" v-on:click="setFormData(f)" ></i></td>
               <td><i class="fas fa-trash cp" v-on:click="setDeleteData(f)" ></i></td>
             </tr>
@@ -135,7 +144,8 @@ export default {
       brandViewModel: {
         id: 0,
         brandName : "",
-        brandImage : null,
+        imageName : "",
+        imagePath : "",
         brands : []
       },
     }
@@ -200,7 +210,9 @@ export default {
         if(res.code === this.networkState.SUCCESS){
           this.brandViewModel.brands.push({
             id : res.model.id,
-            brandName: res.model.brandName
+            brandName: res.model.brandName,
+            imageName: res.model.imageName,
+            imagePath: res.model.imagePath
           })
           this.showSuccess(this,res.msg);
         }else {
@@ -211,15 +223,25 @@ export default {
       });
     },
     onUpdate(){
+
+      const formData = new FormData();
+      formData.append('brandImage', this.brandViewModel.brandImage);
+      formData.append("brandViewModel",JSON.stringify(this.brandViewModel));
+      formData.append("userInfo",JSON.stringify(this.getAuthInfo()))
+      formData.append('_method', 'PUT');
+      const headers = { 'Content-Type': 'multipart/form-data' };
+
       this.showLoader(this);
-      this.$axios.$put('/brands',{
-        userInfo : this.getAuthInfo(),
-        brandViewModel : this.brandViewModel
-      }).then(res=>{
+      this.$axios.$post('/brands',formData,{ headers }).then(res=>{
         if(res.code === this.networkState.SUCCESS){
 
           let objIndex = this.brandViewModel.brands.findIndex((obj => obj.id === this.brandViewModel.id));
           this.brandViewModel.brands[objIndex].brandName = this.brandViewModel.brandName;
+          this.brandViewModel.brands[objIndex].imageName = res.model.imageName;
+          this.brandViewModel.brands[objIndex].imagePath = res.model.imagePath;
+
+          this.brandViewModel.imagePath = res.model.imagePath;
+          this.brandViewModel.imageName = res.model.imageName;
 
           this.showSuccess(this,res.msg);
         }else {
@@ -232,10 +254,13 @@ export default {
     setFormData(brand){
       this.brandViewModel.id = brand.id;
       this.brandViewModel.brandName = brand.brandName;
+      this.brandViewModel.imagePath = brand.imagePath;
+      this.brandViewModel.imageName = brand.imageName;
       this.$refs.updateBrandBtn.click();
     },
     setDeleteData(brand){
       this.brandViewModel.id = brand.id;
+      this.brandViewModel.imageName = brand.imageName;
       this.delete(this, this.opState.DELETE)
     },
     onDelete(){
@@ -247,7 +272,8 @@ export default {
             sessionId : this.cookieUserInfo.sessionId
           },
           brandViewModel : {
-            id : this.brandViewModel.id
+            id : this.brandViewModel.id,
+            imageName : this.brandViewModel.imageName
           }
         }
       };
@@ -275,5 +301,12 @@ export default {
 <style scoped>
   .brand-update-btn{
     display: none;
+  }
+  .brand-logo{
+    height: 30px;
+    width: 50px;
+  }
+  .update-brand-logo{
+    width: 100%;
   }
 </style>

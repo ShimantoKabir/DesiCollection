@@ -21,7 +21,24 @@ class BaseViewModel
         $validator = Validator::make($request->userInfo,[
             'email' => 'required|email',
             'href' => 'required|string',
-            'sessionId' => 'required|string',
+            'sessionId' => 'required|string'
+        ]);
+
+        if($validator->fails()){
+            $authMsg = $validator->errors()->first();
+        }
+
+        return $authMsg;
+    }
+
+    public function checkAuthObjValidation($userInfo,OperationType $opType) : string
+    {
+        $authMsg = CustomResponseMsg::OK->value;
+
+        $validator = Validator::make($userInfo,[
+            'email' => 'required|email',
+            'href' => 'required|string',
+            'sessionId' => 'required|string'
         ]);
 
         if($validator->fails()){
