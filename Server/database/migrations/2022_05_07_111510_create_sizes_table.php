@@ -18,7 +18,7 @@ class CreateSizesTable extends Migration
             $table->string("sizeName");
             $table->string("ip")->nullable();
             $table->dateTime("createdAt");
-            $table->dateTime("updatedAt");
+            $table->dateTime("updatedAt")->nullable();
             $table->integer("modifiedBy")->nullable();
         });
     }

@@ -10,6 +10,7 @@ class CustomResponse
     public array $sizes;
     public array $ages;
     public array $brands;
+    public array $types;
     public int $modifiedBy;
     public object $model;
 
@@ -53,13 +54,17 @@ class CustomResponse
         return $this->ages;
     }
 
-    public function setModifiedBy(int $modifiedBy)
-    {
-        $this->modifiedBy = $modifiedBy;
-    }
-
     public function getModel() : object
     {
         return $this->model;
+    }
+
+    public function setTypes(array $types){
+        $this->types = $types;
+    }
+
+    public function getTypes() : array
+    {
+        return $this->types;
     }
 }

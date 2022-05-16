@@ -11,6 +11,7 @@ use App\Http\Controllers\MenuPermissionForRoleCtl;
 use App\Http\Controllers\RoleCtl;
 use App\Http\Controllers\SizeCtl;
 use App\Http\Controllers\TestCtl;
+use App\Http\Controllers\TypeCtl;
 use App\Http\Controllers\UserInfoCtl;
 use App\Http\Controllers\UserWisePermissionCtl;
 use Illuminate\Support\Facades\Route;
@@ -77,3 +78,9 @@ Route::post('/brands/index', [BrandCtl::class, 'index']);
 Route::post('/brands', [BrandCtl::class, 'save']);
 Route::put('/brands', [BrandCtl::class, 'update']);
 Route::delete('/brands', [BrandCtl::class, 'remove']);
+
+Route::post('/types/index', [TypeCtl::class, 'index']);
+Route::post('/types', [TypeCtl::class, 'save']);
+Route::put('/types', [TypeCtl::class, 'update']);
+Route::delete('/types', [TypeCtl::class, 'remove']);
+
