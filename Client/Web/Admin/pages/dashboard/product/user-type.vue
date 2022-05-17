@@ -12,14 +12,14 @@
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 my-main">
           <!--model-->
           <div class="modal fade"
-               id="typeFormModel"
+               id="userTypeFormModel"
                tabindex="-1"
-               aria-labelledby="typeModalLabel"
+               aria-labelledby="userTypeModalLabel"
                aria-hidden="true">
             <div class="modal-dialog">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="typeModalLabel">
+                  <h5 class="modal-title" id="userTypeModalLabel">
                     <span>Entries</span>
                   </h5>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -27,10 +27,18 @@
                 <div class="modal-body">
                   <form :class="formClassNames.join(' ')" novalidate>
                     <div class="mb-3">
-                      <label for="colorInput" class="form-label">Product Type</label>
-                      <input v-model="typeViewModel.typeName" type="text" class="form-control" id="colorInput" required>
+                      <label for="userTypeSelection" class="form-label">User Type</label>
+                      <select v-model="userTypeViewModel.userTypeName"
+                              class="form-select"
+                              id="userTypeSelection"
+                              required>
+                        <option selected disabled value="">Choose...</option>
+                        <option value="Male" >Male</option>
+                        <option value="Female" >Female</option>
+                        <option value="Child" >Child</option>
+                      </select>
                       <div class="invalid-feedback">
-                        Please give type name!
+                        Please select a user type!
                       </div>
                       <div class="valid-feedback">
                         Looks good!
@@ -39,7 +47,7 @@
                   </form>
                 </div>
                 <div class="modal-footer">
-                  <button v-if="typeViewModel.id === 0"
+                  <button v-if="userTypeViewModel.id === 0"
                           type="submit"
                           class="btn btn-primary"
                           v-on:click="verifyInput(opState.CREATE)" >
@@ -66,7 +74,7 @@
             pb-2
             mb-3
             border-bottom">
-            <h1 class="h2">Product Type</h1>
+            <h1 class="h2">Product User Type</h1>
             <div class="btn-toolbar mb-2 mb-md-0">
               <div class="btn-group me-2">
                 <button
@@ -74,15 +82,15 @@
                   type="button"
                   class="btn btn-sm btn-outline-secondary"
                   data-bs-toggle="modal"
-                  data-bs-target="#typeFormModel">
+                  data-bs-target="#userTypeFormModel">
                   <i class="fas fa-plus" ></i>
                 </button>
                 <button
-                  ref="updateTypeBtn"
+                  ref="updateUserTypeBtn"
                   type="button"
-                  class="btn btn-sm btn-outline-secondary type-update-btn"
+                  class="btn btn-sm btn-outline-secondary user-type-update-btn"
                   data-bs-toggle="modal"
-                  data-bs-target="#typeFormModel">
+                  data-bs-target="#userTypeFormModel">
                   <i class="fas fa-plus" ></i>
                 </button>
               </div>
@@ -93,15 +101,15 @@
             <thead>
             <tr>
               <th>SL</th>
-              <th>Type Name</th>
+              <th>User Type</th>
               <th>Edit</th>
               <th>Delete</th>
             </tr>
             </thead>
             <tbody>
-            <tr v-for="(f,i) in typeViewModel.types" >
+            <tr v-for="(f,i) in userTypeViewModel.userTypes" >
               <td>{{i+1}}</td>
-              <td>{{f.typeName}}</td>
+              <td>{{f.userTypeName}}</td>
               <td><i class="fas fa-edit cp" v-on:click="setFormData(f)" ></i></td>
               <td><i class="fas fa-trash cp" v-on:click="setDeleteData(f)" ></i></td>
             </tr>
@@ -115,27 +123,27 @@
 
 <script>
 export default {
-  name: "type",
+  name: "user-type",
   mounted() {
     this.getInitialData();
   },
   data(){
     return{
-      typeViewModel: {
+      userTypeViewModel: {
         id: 0,
-        typeName : "",
-        types : []
+        userTypeName : "",
+        userTypes : []
       },
     }
   },
   methods: {
     getInitialData(){
       this.showLoader(this);
-      this.$axios.$post('/types/index',{
+      this.$axios.$post('/user-types/index',{
         userInfo : this.getAuthInfo()
       }).then(res=>{
         if(res.code === this.networkState.SUCCESS){
-          this.typeViewModel.types = res.types;
+          this.userTypeViewModel.userTypes = res.userTypes;
           this.showSuccess(this,res.msg);
         }else {
           this.showErrorMsg(this,this.opState.READ,res.msg);
@@ -147,14 +155,14 @@ export default {
     verifyInput(which){
       this.formClassNames.push("was-validated");
       if(which === this.opState.CREATE || which === this.opState.UPDATE){
-        if(this.typeViewModel.typeName){
+        if(this.userTypeViewModel.userTypeName){
           which === this.opState.CREATE ? this.onCreate() : this.onUpdate();
         }
       }
     },
     onReset(){
-      this.typeViewModel.typeName = "";
-      this.typeViewModel.id = 0;
+      this.userTypeViewModel.userTypeName = "";
+      this.userTypeViewModel.id = 0;
     },
     onAlertClose(eventData){
       console.log("eventDate=",eventData);
@@ -175,14 +183,14 @@ export default {
     },
     onCreate(){
       this.showLoader(this);
-      this.$axios.$post('/types',{
+      this.$axios.$post('/user-types',{
         userInfo : this.getAuthInfo(),
-        typeViewModel : this.typeViewModel
+        userTypeViewModel : this.userTypeViewModel
       }).then(res=>{
         if(res.code === this.networkState.SUCCESS){
-          this.typeViewModel.types.push({
+          this.userTypeViewModel.userTypes.push({
             id : res.model.id,
-            typeName: res.model.typeName
+            userTypeName: res.model.userTypeName
           })
           this.showSuccess(this,res.msg);
         }else {
@@ -194,14 +202,14 @@ export default {
     },
     onUpdate(){
       this.showLoader(this);
-      this.$axios.$put('/types',{
+      this.$axios.$put('/user-types',{
         userInfo : this.getAuthInfo(),
-        typeViewModel : this.typeViewModel
+        userTypeViewModel : this.userTypeViewModel
       }).then(res=>{
         if(res.code === this.networkState.SUCCESS){
 
-          let objIndex = this.typeViewModel.types.findIndex((obj => obj.id === this.typeViewModel.id));
-          this.typeViewModel.types[objIndex].typeName = this.typeViewModel.typeName;
+          let objIndex = this.userTypeViewModel.userTypes.findIndex((obj => obj.id === this.userTypeViewModel.id));
+          this.userTypeViewModel.userTypes[objIndex].userTypeName = this.userTypeViewModel.userTypeName;
 
           this.showSuccess(this,res.msg);
         }else {
@@ -211,13 +219,13 @@ export default {
         this.showError(this,this.opState.UPDATE);
       });
     },
-    setFormData(type){
-      this.typeViewModel.id = type.id;
-      this.typeViewModel.typeName = type.typeName;
-      this.$refs.updateTypeBtn.click();
+    setFormData(userType){
+      this.userTypeViewModel.id = userType.id;
+      this.userTypeViewModel.userTypeName = userType.userTypeName;
+      this.$refs.updateUserTypeBtn.click();
     },
-    setDeleteData(type){
-      this.typeViewModel.id = type.id;
+    setDeleteData(userType){
+      this.userTypeViewModel.id = userType.id;
       this.delete(this, this.opState.DELETE)
     },
     onDelete(){
@@ -228,14 +236,14 @@ export default {
             href : window.location.pathname,
             sessionId : this.cookieUserInfo.sessionId
           },
-          typeViewModel : {
-            id : this.typeViewModel.id
+          userTypeViewModel : {
+            id : this.userTypeViewModel.id
           }
         }
       };
-      this.$axios.$delete("/types",config).then(res=>{
+      this.$axios.$delete("/user-types",config).then(res=>{
         if(res.code === this.networkState.SUCCESS){
-          this.typeViewModel.types = this.typeViewModel.types.filter((item) => item.id !== this.typeViewModel.id);
+          this.userTypeViewModel.userTypes = this.userTypeViewModel.userTypes.filter((item) => item.id !== this.userTypeViewModel.id);
           this.showSuccess(this,res.msg);
         }else {
           this.showErrorMsg(this,this.opState.DELETE,res.msg);
@@ -252,7 +260,7 @@ export default {
 </script>
 
 <style scoped>
-  .type-update-btn{
+  .user-type-update-btn{
     display: none;
   }
 </style>

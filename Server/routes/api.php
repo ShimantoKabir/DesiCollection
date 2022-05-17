@@ -8,6 +8,7 @@ use App\Http\Controllers\ChartOfAccountCtl;
 use App\Http\Controllers\ColorCtl;
 use App\Http\Controllers\FabricCtl;
 use App\Http\Controllers\MenuPermissionForRoleCtl;
+use App\Http\Controllers\ProductUserTypeCtl;
 use App\Http\Controllers\RoleCtl;
 use App\Http\Controllers\SizeCtl;
 use App\Http\Controllers\TestCtl;
@@ -83,4 +84,9 @@ Route::post('/types/index', [TypeCtl::class, 'index']);
 Route::post('/types', [TypeCtl::class, 'save']);
 Route::put('/types', [TypeCtl::class, 'update']);
 Route::delete('/types', [TypeCtl::class, 'remove']);
+
+Route::post('/user-types/index', [ProductUserTypeCtl::class, 'index']);
+Route::post('/user-types', [ProductUserTypeCtl::class, 'save']);
+Route::put('/user-types', [ProductUserTypeCtl::class, 'update']);
+Route::delete('/user-types', [ProductUserTypeCtl::class, 'remove']);
 

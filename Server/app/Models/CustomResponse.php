@@ -11,6 +11,7 @@ class CustomResponse
     public array $ages;
     public array $brands;
     public array $types;
+    public array $userTypes;
     public int $modifiedBy;
     public object $model;
 
@@ -66,5 +67,14 @@ class CustomResponse
     public function getTypes() : array
     {
         return $this->types;
+    }
+
+    public function setUserTypes(array $userTypes){
+        $this->userTypes = $userTypes;
+    }
+
+    public function getUserTypes() : array
+    {
+        return $this->userTypes;
     }
 }

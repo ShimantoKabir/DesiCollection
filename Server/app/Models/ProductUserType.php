@@ -6,14 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductUserType extends Model
 {
-    protected $table = "ProductUserType";
+    protected $table = "product_user_types";
     public $timestamps = false;
     protected $fillable = [
         'id',
-        'user_type_name',
+        'userTypeName',
         'ip',
-        'created_at',
-        'updated_at',
-        'modified_by'
+        'createdAt',
+        'updatedAt',
+        'modifiedBy'
     ];
 }
