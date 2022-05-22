@@ -8,7 +8,7 @@
 
 namespace App\Repositories;
 
-use App\Models\ProductColor;
+use App\Models\Color;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -28,7 +28,7 @@ class ColorRpo
 
         try {
 
-            $res["productColorViewModel"]["productColors"] = ProductColor::select("id","color_name AS colorName")
+            $res["productColorViewModel"]["productColors"] = Color::select("id","colorName")
                 ->get();
             $res["code"] = 200;
             $res["msg"] = "Initial data fetched successfully!";
@@ -59,7 +59,7 @@ class ColorRpo
         DB::beginTransaction();
         try {
 
-            $isColorNameExist = ProductColor::where("color_name",$productColorViewModel["colorName"])->exists();
+            $isColorNameExist = Color::where("colorName",$productColorViewModel["colorName"])->exists();
 
             if ($isColorNameExist){
 
@@ -68,16 +68,16 @@ class ColorRpo
 
             }else{
 
-                $r = new ProductColor();
-                $r->color_name = $productColorViewModel["colorName"];
-                $r->created_at = date('Y-m-d H:i:s');
-                $r->modified_by = $authInfo['id'];
+                $r = new Color();
+                $r->colorName = $productColorViewModel["colorName"];
+                $r->createdAt = date('Y-m-d H:i:s');
+                $r->modifiedBy = $authInfo['id'];
                 $r->ip = $request->ip();
                 $r->save();
 
                 DB::commit();
 
-                $res["productColorViewModel"]["productColors"] = ProductColor::select("id","color_name AS colorName")
+                $res["productColorViewModel"]["productColors"] = Color::select("id","colorName")
                     ->get();
                 $res["code"] = 200;
                 $res["msg"] = "Product color save successfully!";
@@ -109,7 +109,7 @@ class ColorRpo
         DB::beginTransaction();
         try {
 
-            $isColorNameExist = ProductColor::where("color_name",$productColorViewModel["colorName"])->exists();
+            $isColorNameExist = Color::where("colorName",$productColorViewModel["colorName"])->exists();
 
             if ($isColorNameExist){
 
@@ -118,17 +118,17 @@ class ColorRpo
 
             }else{
 
-                ProductColor::where("id",$productColorViewModel["id"])
+                Color::where("id",$productColorViewModel["id"])
                     ->update([
-                        "color_name" => $productColorViewModel["colorName"],
-                        "modified_by" => $authInfo["id"],
-                        "updated_at" => date('Y-m-d H:i:s'),
+                        "colorName" => $productColorViewModel["colorName"],
+                        "modifiedBy" => $authInfo["id"],
+                        "updatedAt" => date('Y-m-d H:i:s'),
                         "ip" => $request->ip()
                     ]);
 
                 DB::commit();
 
-                $res["productColorViewModel"]["productColors"] = ProductColor::select("id","color_name AS colorName")
+                $res["productColorViewModel"]["productColors"] = Color::select("id","colorName")
                     ->get();
                 $res["code"] = 200;
                 $res["msg"] = "Product color updated successfully!";
@@ -159,11 +159,11 @@ class ColorRpo
         DB::beginTransaction();
         try {
 
-            ProductColor::where("id",$productColorViewModel["id"])->delete();
+            Color::where("id",$productColorViewModel["id"])->delete();
 
             DB::commit();
 
-            $res["productColorViewModel"]["productColors"] = ProductColor::select("id","color_name AS colorName")->get();
+            $res["productColorViewModel"]["productColors"] = Color::select("id","colorName")->get();
             $res["code"] = 200;
             $res["msg"] = "Product color deleted successfully!";
 

@@ -14,6 +14,9 @@ class CustomResponse
     public array $userTypes;
     public int $modifiedBy;
     public object $model;
+    public array $products;
+    public array $colors;
+    public array $supplierBills;
 
     public function setResponse(int $code, string $msg) : CustomResponse
     {
@@ -77,4 +80,109 @@ class CustomResponse
     {
         return $this->userTypes;
     }
+
+    /**
+     * @return array
+     */
+    public function getProducts(): array
+    {
+        return $this->products;
+    }
+
+    /**
+     * @param array $products
+     */
+    public function setProducts(array $products): void
+    {
+        $this->products = $products;
+    }
+
+    /**
+     * @param array $colors
+     */
+    public function setColors(array $colors): void
+    {
+        $this->colors = $colors;
+    }
+
+    /**
+     * @return array
+     */
+    public function getColors(): array
+    {
+        return $this->colors;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCode(): int
+    {
+        return $this->code;
+    }
+
+    /**
+     * @param int $modifiedBy
+     */
+    public function setModifiedBy(int $modifiedBy): void
+    {
+        $this->modifiedBy = $modifiedBy;
+    }
+
+    /**
+     * @return int
+     */
+    public function getModifiedBy(): int
+    {
+        return $this->modifiedBy;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAges(): array
+    {
+        return $this->ages;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFabrics(): array
+    {
+        return $this->fabrics;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMsg(): string
+    {
+        return $this->msg;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSizes(): array
+    {
+        return $this->sizes;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSupplierBills(): array
+    {
+        return $this->supplierBills;
+    }
+
+    /**
+     * @param array $supplierBills
+     */
+    public function setSupplierBills(array $supplierBills): void
+    {
+        $this->supplierBills = $supplierBills;
+    }
+
 }

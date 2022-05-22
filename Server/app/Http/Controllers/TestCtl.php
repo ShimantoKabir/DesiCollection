@@ -14,9 +14,19 @@ class TestCtl extends Controller
 {
     public function test(Request $request)
     {
+
+        $x = $request->all();
+
+        $y = 2;
+        $z = 4;
+
+        $l = $y + $z;
+
+
         return [
             'request'=>$request->all(),
-            'stats'=>'working ....!'
+            'stats'=>'working ....!',
+            'res' => $l
         ];
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Repositories\Interfaces;
 
-use App\Models\CustomRequest;
 use App\Models\CustomResponse;
 use App\ViewModels\FabricViewModel;
 

@@ -15,21 +15,25 @@ class CreateProductsTable extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->integer("size_id");
-            $table->integer("color_id");
-            $table->integer("brand_id");
-            $table->integer("quantity");
-            $table->integer("fabric_id");
-            $table->integer("bill_number");
-            $table->integer("user_type_id");
-            $table->integer("purchased_price");
-            $table->integer("product_type_id");
-            $table->integer("offer_percentage");
-            $table->integer("profit_percentage");
-            $table->integer("available_quantity");
+            $table->string("code");
+            $table->integer("typeId");
+            $table->integer("sizeId");
+            $table->integer("colorId");
+            $table->integer("brandId");
+            $table->integer("fabricId");
+            $table->integer("userAgeId");
+            $table->integer("billNumber");
+            $table->integer("userTypeId");
+            $table->integer("totalQuantity");
+            $table->integer("availableQuantity");
+            $table->integer("maxOfferPercentage");
+            $table->integer("maxProfitPercentage");
+            $table->integer("singlePurchasePrice");
+            $table->json("imageIds");
             $table->string("ip")->nullable();
-            $table->timestamps();
-            $table->integer("modified_by")->nullable();
+            $table->dateTime("createdAt");
+            $table->dateTime("updatedAt")->nullable();
+            $table->integer("modifiedBy")->nullable();
         });
     }
 

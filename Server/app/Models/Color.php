@@ -4,16 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ProductColor extends Model
+class Color extends Model
 {
-    protected $table = "product_colors";
+    protected $table = "colors";
     public $timestamps = false;
     protected $fillable = [
         'id',
-        'color_name',
+        'colorName',
         'ip',
-        'created_at',
-        'updated_at',
-        'modified_by'
+        'createdAt',
+        'updatedAt',
+        'modifiedBy'
     ];
 }

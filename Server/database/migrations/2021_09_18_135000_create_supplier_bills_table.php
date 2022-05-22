@@ -15,15 +15,16 @@ class CreateSupplierBillsTable extends Migration
     {
         Schema::create('supplier_bills', function (Blueprint $table) {
             $table->id();
-            $table->integer("supplier_id");
-            $table->integer("bill_number");
-            $table->date("billing_date");
-            $table->bigInteger("debit_amount")->comment("Total price of cloth");
+            $table->integer("supplierId");
+            $table->integer("billNumber");
+            $table->date("billingDate");
+            $table->bigInteger("debitAmount")->comment("Total price of cloth");
             $table->bigInteger("credit_amount")->comment("Given amount/deposit amount");
-            $table->integer("total_quantity");
+            $table->integer("totalQuantity");
             $table->string("ip")->nullable();
-            $table->timestamps();
-            $table->integer("modified_by")->nullable();
+            $table->dateTime("createdAt");
+            $table->dateTime("updatedAt")->nullable();
+            $table->integer("modifiedBy")->nullable();
         });
     }
 
