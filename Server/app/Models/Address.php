@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Address extends Model
 {
-    protected $table = "Address";
+    protected $table = "addresses";
     public $timestamps = false;
     protected $fillable = [
         'id',
@@ -14,14 +14,14 @@ class Address extends Model
         'email',
         'detail',
         'country',
-        'zip_code',
-        'link_up_id',
-        'address_type',
-        'first_mobile_no',
-        'second_mobile_no',
+        'zipCode',
+        'linkUpId',
+        'addressType',
+        'firstMobileNo',
+        'secondMobileNo',
         'ip',
-        'created_at',
-        'updated_at',
-        'modified_by'
+        'createdAt',
+        'updatedAt',
+        'modifiedBy'
     ];
 }

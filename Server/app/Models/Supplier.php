@@ -6,15 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Supplier extends Model
 {
-    protected $table = "Supplier";
+    protected $table = "suppliers";
     public $timestamps = false;
     protected $fillable = [
         'id',
-        'supplier_id',
-        'supplier_name',
+        'supplierName',
         'ip',
-        'created_at',
-        'updated_at',
-        'modified_by'
+        'createdAt',
+        'updatedAt',
+        'modifiedBy'
     ];
 }

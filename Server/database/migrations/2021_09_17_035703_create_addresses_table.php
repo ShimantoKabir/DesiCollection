@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\AddressType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -19,15 +20,22 @@ class CreateAddressesTable extends Migration
             $table->string("email")->nullable();
             $table->string("detail");
             $table->string("country");
-            $table->string("zip_code")
-                ->comment("1 = supplier, 2 -> delivery, 3 -> billing, 4 -> user");
-            $table->tinyInteger("address_type");
-            $table->bigInteger("link_up_id");
-            $table->string("first_mobile_no");
-            $table->string("second_mobile_no")->nullable();
+            $table->string("zipCode");
+            $table->enum('addressType',
+                [
+                    AddressType::SUPPLIER->value,
+                    AddressType::DELIVERY->value,
+                    AddressType::BILLING->value,
+                    AddressType::USER->value
+                ]
+            );
+            $table->bigInteger("linkUpId");
+            $table->string("firstMobileNo");
+            $table->string("secondMobileNo")->nullable();
             $table->string("ip")->nullable();
-            $table->timestamps();
-            $table->integer("modified_by")->nullable();
+            $table->dateTime("createdAt");
+            $table->dateTime("updatedAt")->nullable();
+            $table->integer("modifiedBy")->nullable();
         });
     }
 

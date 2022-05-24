@@ -130,7 +130,7 @@ export default {
         fabricName : "",
         sizeId : 0,
         sizeName : "",
-        ageId : 0,
+        userAgeId : 0,
         minAge : "",
         maxAge : "",
         fixedAge : "",
@@ -145,7 +145,9 @@ export default {
         singlePurchasePrice : 0,
         maxOfferPercentage : 0,
         maxProfitPercentage : 0,
-        products : []
+        products : [],
+        startDate : '',
+        endDate: ''
       },
     }
   },
@@ -153,7 +155,8 @@ export default {
     getInitialData(){
       this.showLoader(this);
       this.$axios.$post('/products/index',{
-        userInfo : this.getAuthInfo()
+        userInfo : this.getAuthInfo(),
+        productViewModel: this.productViewModel
       }).then(res=>{
         if(res.code === this.networkState.SUCCESS){
           this.productViewModel.products = res.products;
@@ -273,5 +276,7 @@ export default {
 </script>
 
 <style scoped>
-
+  .product-update-btn{
+    display: none;
+  }
 </style>

@@ -4,18 +4,22 @@ namespace App\Repositories;
 
 use App\Enums\CustomResponseCode;
 use App\Enums\CustomResponseMsg;
+use App\Models\Address;
 use App\Models\CustomResponse;
 use App\Models\ProductType;
-use App\Repositories\Interfaces\ITypeRepository;
-use App\ViewModels\TypeViewModel;
+use App\Models\Supplier;
+use App\ViewModels\SupplierViewModel;
 use Illuminate\Support\Facades\DB;
 
-class TypeRepository extends BaseRepository implements ITypeRepository
+class SupplierRepository extends BaseRepository implements Interfaces\ISupplierRepository
 {
 
     public function read(): array
     {
-        return ProductType::select("id","typeName")->get()->toArray();
+        return Supplier::select(
+            'id',
+            'supplierName',
+        )->get()->toArray();
     }
 
     public function getIndexData(): CustomResponse
@@ -27,17 +31,17 @@ class TypeRepository extends BaseRepository implements ITypeRepository
         return $res;
     }
 
-    public function create(TypeViewModel $typeViewModel): CustomResponse
+    public function create(SupplierViewModel $supplierViewModel): CustomResponse
     {
         $date = $this->getCurrentDate();
         $res = new CustomResponse();
         DB::beginTransaction();
         try{
 
-            $model = new ProductType();
-            $model->typeName = $typeViewModel->getTypeName();
-            $model->ip = $typeViewModel->getIp();
-            $model->modifiedBy = $typeViewModel->getModifiedBy();
+            $model = new Supplier();
+            $model->supplierName = $supplierViewModel->getSupplierName();
+            $model->ip = $supplierViewModel->getIp();
+            $model->modifiedBy = $supplierViewModel->getModifiedBy();
             $model->createdAt = $date;
             $model->save();
 
@@ -55,17 +59,18 @@ class TypeRepository extends BaseRepository implements ITypeRepository
         return $res;
     }
 
-    public function update(TypeViewModel $typeViewModel): CustomResponse
+    public function update(SupplierViewModel $supplierViewModel): CustomResponse
     {
         $date = $this->getCurrentDate();
         $res = new CustomResponse();
         DB::beginTransaction();
         try{
 
-            ProductType::where('id',$typeViewModel->getId())
+            Supplier::where('id',$supplierViewModel->getId())
                 ->update([
-                    'typeName' => $typeViewModel->getTypeName(),
-                    'updatedAt' => $date
+                    'supplierName' => $supplierViewModel->getSupplierName(),
+                    'updatedAt' => $date,
+                    'modifiedBy' => $supplierViewModel->getModifiedBy()
                 ]);
 
             DB::commit();
@@ -80,13 +85,13 @@ class TypeRepository extends BaseRepository implements ITypeRepository
         return $res;
     }
 
-    public function delete(TypeViewModel $typeViewModel): CustomResponse
+    public function delete(SupplierViewModel $supplierViewModel): CustomResponse
     {
         $res = new CustomResponse();
         DB::beginTransaction();
         try{
 
-            ProductType::where('id',$typeViewModel->getId())->delete();
+            Supplier::where('id',$supplierViewModel->getId())->delete();
             DB::commit();
 
             $res->setCode(CustomResponseCode::SUCCESS->value);
@@ -100,10 +105,10 @@ class TypeRepository extends BaseRepository implements ITypeRepository
         return $res;
     }
 
-    public function isTypeExist(TypeViewModel $typeViewModel): CustomResponse
+    public function isSupplierExist(SupplierViewModel $supplierViewModel): CustomResponse
     {
         $res = new CustomResponse();
-        $isExist = ProductType::where('typeName',$typeViewModel->getTypeName())->exists();
+        $isExist = Supplier::where('supplierName',$supplierViewModel->getSupplierName())->exists();
 
         if($isExist){
             $res->setCode(CustomResponseCode::ERROR->value);

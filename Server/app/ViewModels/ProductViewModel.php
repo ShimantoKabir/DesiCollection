@@ -26,7 +26,7 @@ class ProductViewModel extends BaseViewModel
     public ?int $userTypeId;
     public ?string $userTypeName;
     public ?int $userAgeId;
-    public int $billNumber;
+    public ?int $billNumber;
     public int $totalQuantity;
     public int $availableQuantity;
     public int $maxOfferPercentage;
@@ -290,9 +290,9 @@ class ProductViewModel extends BaseViewModel
     }
 
     /**
-     * @param int $billNumber
+     * @param int|null $billNumber
      */
-    public function setBillNumber(int $billNumber): void
+    public function setBillNumber(?int $billNumber): void
     {
         $this->billNumber = $billNumber;
     }
@@ -510,8 +510,13 @@ class ProductViewModel extends BaseViewModel
         $this->setFabricId($request->productViewModel["fabricId"]);
         $this->setUserAgeId($request->productViewModel["userAgeId"]);
         $this->setUserTypeId($request->productViewModel["userTypeId"]);
-        $this->setModifiedBy($request->productViewModel["modifiedBy"]);
         $this->setBillNumber($request->productViewModel["billNumber"]);
+        $this->setStartDate($request->productViewModel["startDate"]);
+        $this->setEndDate($request->productViewModel["endDate"]);
+
+//        $x = new CustomResponse();
+//        $x->setCode(5);
+//        $x->setMsg("ok");
 
         return $this->productUseCase->getIndexData($this);
     }
