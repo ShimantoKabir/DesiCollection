@@ -15,5 +15,6 @@ enum CustomResponseMsg : string
     case BRAND_EXIST = "Brand already exist!";
     case AGE_EXIST = "Age already exist!";
     case ADDRESS_EXIST = "Address already exist!";
+    case SUPPLIER_EXIST = "Supplier name already exist!";
     case OK = "OK";
 }

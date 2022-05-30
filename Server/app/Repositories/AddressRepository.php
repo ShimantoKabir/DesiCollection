@@ -7,11 +7,11 @@ use App\Enums\CustomResponseCode;
 use App\Enums\CustomResponseMsg;
 use App\Models\Address;
 use App\Models\CustomResponse;
-use App\Models\ProductUserAge;
+use App\Repositories\Interfaces\IAddressRepository;
 use App\ViewModels\AddressViewModel;
 use Illuminate\Support\Facades\DB;
 
-class AddressRepository extends BaseRepository implements Interfaces\IAddressRepository
+class AddressRepository extends BaseRepository implements IAddressRepository
 {
 
     public function read(): array
@@ -31,7 +31,7 @@ class AddressRepository extends BaseRepository implements Interfaces\IAddressRep
     }
 
 
-    public function readByLinkUpId(int $linkUpId): array
+    public function readByLinkUpIdAndType(int $linkUpId,string $addressType): array
     {
         return Address::select(
             'id',
@@ -44,7 +44,11 @@ class AddressRepository extends BaseRepository implements Interfaces\IAddressRep
             'addressType',
             'firstMobileNo',
             'secondMobileNo',
-        )->where("linkUpId",$linkUpId)->get()->toArray();
+        )
+        ->where("linkUpId",$linkUpId)
+        ->where("addressType",$addressType)
+        ->get()
+        ->toArray();
     }
 
     public function create(AddressViewModel $addressViewModel): CustomResponse
@@ -61,7 +65,7 @@ class AddressRepository extends BaseRepository implements Interfaces\IAddressRep
             $model->country = $addressViewModel->getCountry();
             $model->zipCode = $addressViewModel->getZipCode();
             $model->linkUpId = $addressViewModel->getLinkUpId();
-            $model->addressType = AddressType::SUPPLIER;
+            $model->addressType = AddressType::SUPPLIER->value;
             $model->firstMobileNo = $addressViewModel->getFirstMobileNo();
             $model->secondMobileNo = $addressViewModel->getSecondMobileNo();
             $model->ip = $addressViewModel->getIp();
@@ -90,7 +94,7 @@ class AddressRepository extends BaseRepository implements Interfaces\IAddressRep
         DB::beginTransaction();
         try{
 
-            Address::where('linkUpId',$addressViewModel->getLinkUpId())
+            Address::where('id',$addressViewModel->getId())
                 ->update([
                     'city' => $addressViewModel->getCity(),
                     'email' => $addressViewModel->getEmail(),
@@ -143,10 +147,9 @@ class AddressRepository extends BaseRepository implements Interfaces\IAddressRep
             ->where('email',$addressViewModel->getEmail())
             ->where('country',$addressViewModel->getCountry())
             ->where('zipCode',$addressViewModel->getZipCode())
-            ->where('linkUpId',$addressViewModel->getLinkUpId())
             ->where('firstMobileNo',$addressViewModel->getFirstMobileNo())
             ->where('secondMobileNo',$addressViewModel->getSecondMobileNo())
-            ->where('addressType',AddressType::SUPPLIER)
+            ->where('addressType',AddressType::SUPPLIER->value)
             ->exists();
 
         if($isExist){

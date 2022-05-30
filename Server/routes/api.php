@@ -12,6 +12,7 @@ use App\Http\Controllers\ProductCtl;
 use App\Http\Controllers\ProductUserTypeCtl;
 use App\Http\Controllers\RoleCtl;
 use App\Http\Controllers\SizeCtl;
+use App\Http\Controllers\SupplierCtl;
 use App\Http\Controllers\TestCtl;
 use App\Http\Controllers\TypeCtl;
 use App\Http\Controllers\UserInfoCtl;
@@ -95,3 +96,8 @@ Route::post('/products/index', [ProductCtl::class, 'index']);
 Route::post('/products', [ProductCtl::class, 'save']);
 Route::put('/products', [ProductCtl::class, 'update']);
 Route::delete('/products', [ProductCtl::class, 'remove']);
+
+Route::post('/suppliers/index', [SupplierCtl::class, 'index']);
+Route::post('/suppliers', [SupplierCtl::class, 'save']);
+Route::put('/suppliers', [SupplierCtl::class, 'update']);
+Route::delete('/suppliers', [SupplierCtl::class, 'remove']);

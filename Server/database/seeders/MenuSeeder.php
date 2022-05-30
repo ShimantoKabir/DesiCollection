@@ -221,6 +221,36 @@ class MenuSeeder extends Seeder
                 "menu_name" => "Report",
                 "is_active" => 1,
                 "parent_tree_id" => 17
+            ],
+            [
+                "oid" => 121,
+                "href" => null,
+                "icon" => "fas fa-book",
+                "tree_id" => 21,
+                "for_whom" => 1,
+                "menu_name" => "Supplier",
+                "is_active" => 1,
+                "parent_tree_id" => 0
+            ],
+            [
+                "oid" => 122,
+                "href" => "/dashboard/supplier/manage",
+                "icon" => null,
+                "tree_id" => 22,
+                "for_whom" => 1,
+                "menu_name" => "Manage",
+                "is_active" => 1,
+                "parent_tree_id" => 21
+            ],
+            [
+                "oid" => 123,
+                "href" => "/dashboard/supplier/bills",
+                "icon" => null,
+                "tree_id" => 23,
+                "for_whom" => 1,
+                "menu_name" => "Bill",
+                "is_active" => 1,
+                "parent_tree_id" => 21
             ]
         ];
 

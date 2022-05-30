@@ -112,7 +112,7 @@ class SupplierRepository extends BaseRepository implements Interfaces\ISupplierR
 
         if($isExist){
             $res->setCode(CustomResponseCode::ERROR->value);
-            $res->setMsg(CustomResponseMsg::SIZE_NAME_EXIST->value);
+            $res->setMsg(CustomResponseMsg::SUPPLIER_EXIST->value);
         }else{
             $res->setCode(CustomResponseCode::SUCCESS->value);
             $res->setMsg(CustomResponseMsg::SUCCESS->value);

@@ -21,14 +21,7 @@ class CreateAddressesTable extends Migration
             $table->string("detail");
             $table->string("country");
             $table->string("zipCode");
-            $table->enum('addressType',
-                [
-                    AddressType::SUPPLIER->value,
-                    AddressType::DELIVERY->value,
-                    AddressType::BILLING->value,
-                    AddressType::USER->value
-                ]
-            );
+            $table->tinyInteger('addressType')->default(0);
             $table->bigInteger("linkUpId");
             $table->string("firstMobileNo");
             $table->string("secondMobileNo")->nullable();
