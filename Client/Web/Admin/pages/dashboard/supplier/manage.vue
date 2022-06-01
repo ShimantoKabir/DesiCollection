@@ -36,98 +36,98 @@
                         Looks good!
                       </div>
                     </div>
-                    <div class="mb-3">
-                      <label for="cityInput" class="form-label">City</label>
-                      <input v-model="supplierViewModel.addressViewModel.city"
-                             type="text"
-                             class="form-control"
-                             id="cityInput" required>
-                      <div class="invalid-feedback">
-                        Please give city name!
-                      </div>
-                      <div class="valid-feedback">
-                        Looks good!
-                      </div>
-                    </div>
-                    <div class="mb-3">
-                      <label for="emailInput" class="form-label">Email</label>
-                      <input v-model="supplierViewModel.addressViewModel.email"
-                             type="text"
-                             class="form-control"
-                             id="emailInput" required>
-                      <div class="invalid-feedback">
-                        Please give email!
-                      </div>
-                      <div class="valid-feedback">
-                        Looks good!
-                      </div>
-                    </div>
-                    <div class="mb-3">
-                      <label for="countryInput" class="form-label">Country</label>
-                      <input v-model="supplierViewModel.addressViewModel.country"
-                             type="text"
-                             class="form-control"
-                             id="countryInput" required>
-                      <div class="invalid-feedback">
-                        Please give country!
-                      </div>
-                      <div class="valid-feedback">
-                        Looks good!
-                      </div>
-                    </div>
-                    <div class="mb-3">
-                      <label for="zipCodeInput" class="form-label">Zip Code</label>
-                      <input v-model="supplierViewModel.addressViewModel.zipCode"
-                             type="text"
-                             class="form-control"
-                             id="zipCodeInput" required>
-                      <div class="invalid-feedback">
-                        Please give zipcode!
-                      </div>
-                      <div class="valid-feedback">
-                        Looks good!
-                      </div>
-                    </div>
-                    <div class="mb-3">
-                      <label for="firstMobileNoCodeInput" class="form-label">First mobile number</label>
-                      <input v-model="supplierViewModel.addressViewModel.firstMobileNo"
-                             type="text"
-                             class="form-control"
-                             id="firstMobileNoCodeInput" required>
-                      <div class="invalid-feedback">
-                        Please give first mobile number!
-                      </div>
-                      <div class="valid-feedback">
-                        Looks good!
-                      </div>
-                    </div>
-                    <div class="mb-3">
-                      <label for="secondMobileNoCodeInput" class="form-label">Second mobile number</label>
-                      <input v-model="supplierViewModel.addressViewModel.secondMobileNo"
-                             type="text"
-                             class="form-control"
-                             id="secondMobileNoCodeInput" required>
-                      <div class="invalid-feedback">
-                        Please give second mobile number!
-                      </div>
-                      <div class="valid-feedback">
-                        Looks good!
-                      </div>
-                    </div>
-                    <div class="mb-3">
-                      <label for="detailInput" class="form-label">Detail</label>
-                      <textarea
-                        class="form-control"
-                        id="detailInput"
-                        v-model="supplierViewModel.addressViewModel.detail">
-                      </textarea>
-                      <div class="invalid-feedback">
-                        Please give second mobile number!
-                      </div>
-                      <div class="valid-feedback">
-                        Looks good!
-                      </div>
-                    </div>
+<!--                    <div class="mb-3">-->
+<!--                      <label for="cityInput" class="form-label">City</label>-->
+<!--                      <input v-model="supplierViewModel.addressViewModel.city"-->
+<!--                             type="text"-->
+<!--                             class="form-control"-->
+<!--                             id="cityInput" required>-->
+<!--                      <div class="invalid-feedback">-->
+<!--                        Please give city name!-->
+<!--                      </div>-->
+<!--                      <div class="valid-feedback">-->
+<!--                        Looks good!-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                    <div class="mb-3">-->
+<!--                      <label for="emailInput" class="form-label">Email</label>-->
+<!--                      <input v-model="supplierViewModel.addressViewModel.email"-->
+<!--                             type="text"-->
+<!--                             class="form-control"-->
+<!--                             id="emailInput" required>-->
+<!--                      <div class="invalid-feedback">-->
+<!--                        Please give email!-->
+<!--                      </div>-->
+<!--                      <div class="valid-feedback">-->
+<!--                        Looks good!-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                    <div class="mb-3">-->
+<!--                      <label for="countryInput" class="form-label">Country</label>-->
+<!--                      <input v-model="supplierViewModel.addressViewModel.country"-->
+<!--                             type="text"-->
+<!--                             class="form-control"-->
+<!--                             id="countryInput" required>-->
+<!--                      <div class="invalid-feedback">-->
+<!--                        Please give country!-->
+<!--                      </div>-->
+<!--                      <div class="valid-feedback">-->
+<!--                        Looks good!-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                    <div class="mb-3">-->
+<!--                      <label for="zipCodeInput" class="form-label">Zip Code</label>-->
+<!--                      <input v-model="supplierViewModel.addressViewModel.zipCode"-->
+<!--                             type="text"-->
+<!--                             class="form-control"-->
+<!--                             id="zipCodeInput" required>-->
+<!--                      <div class="invalid-feedback">-->
+<!--                        Please give zipcode!-->
+<!--                      </div>-->
+<!--                      <div class="valid-feedback">-->
+<!--                        Looks good!-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                    <div class="mb-3">-->
+<!--                      <label for="firstMobileNoCodeInput" class="form-label">First mobile number</label>-->
+<!--                      <input v-model="supplierViewModel.addressViewModel.firstMobileNo"-->
+<!--                             type="text"-->
+<!--                             class="form-control"-->
+<!--                             id="firstMobileNoCodeInput" required>-->
+<!--                      <div class="invalid-feedback">-->
+<!--                        Please give first mobile number!-->
+<!--                      </div>-->
+<!--                      <div class="valid-feedback">-->
+<!--                        Looks good!-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                    <div class="mb-3">-->
+<!--                      <label for="secondMobileNoCodeInput" class="form-label">Second mobile number</label>-->
+<!--                      <input v-model="supplierViewModel.addressViewModel.secondMobileNo"-->
+<!--                             type="text"-->
+<!--                             class="form-control"-->
+<!--                             id="secondMobileNoCodeInput" required>-->
+<!--                      <div class="invalid-feedback">-->
+<!--                        Please give second mobile number!-->
+<!--                      </div>-->
+<!--                      <div class="valid-feedback">-->
+<!--                        Looks good!-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                    <div class="mb-3">-->
+<!--                      <label for="detailInput" class="form-label">Detail</label>-->
+<!--                      <textarea-->
+<!--                        class="form-control"-->
+<!--                        id="detailInput"-->
+<!--                        v-model="supplierViewModel.addressViewModel.detail">-->
+<!--                      </textarea>-->
+<!--                      <div class="invalid-feedback">-->
+<!--                        Please give second mobile number!-->
+<!--                      </div>-->
+<!--                      <div class="valid-feedback">-->
+<!--                        Looks good!-->
+<!--                      </div>-->
+<!--                    </div>-->
                   </form>
                 </div>
                 <div class="modal-footer">
@@ -196,8 +196,8 @@
               <td>
                 {{s.supplierName}}
               </td>
-              <td><i class="fas fa-edit cp" v-on:click="setFormData(f)" ></i></td>
-              <td><i class="fas fa-trash cp" v-on:click="setDeleteData(f)" ></i></td>
+              <td><i class="fas fa-edit cp" v-on:click="setFormData(s)" ></i></td>
+              <td><i class="fas fa-trash cp" v-on:click="setDeleteData(s)" ></i></td>
             </tr>
             </tbody>
           </table>
@@ -218,16 +218,16 @@ export default {
       supplierViewModel: {
         id: 0,
         supplierName: "",
-        addressViewModel : {
-          id : 0,
-          city : "",
-          email : "",
-          detail : "",
-          country : "",
-          zipCode : "",
-          firstMobileNo : "",
-          secondMobileNo : ""
-        },
+        // addressViewModel : {
+        //   id : 0,
+        //   city : "",
+        //   email : "",
+        //   detail : "",
+        //   country : "",
+        //   zipCode : "",
+        //   firstMobileNo : "",
+        //   secondMobileNo : ""
+        // },
         suppliers : []
       },
     }
@@ -259,14 +259,14 @@ export default {
     onReset(){
       this.supplierViewModel.id = 0;
       this.supplierViewModel.supplierName = "";
-      this.supplierViewModel.addressViewModel.id = 0;
-      this.supplierViewModel.addressViewModel.city = "";
-      this.supplierViewModel.addressViewModel.email = "";
-      this.supplierViewModel.addressViewModel.detail = "";
-      this.supplierViewModel.addressViewModel.country = "";
-      this.supplierViewModel.addressViewModel.zipCode = "";
-      this.supplierViewModel.addressViewModel.firstMobileNo = "";
-      this.supplierViewModel.addressViewModel.secondMobileNo = "";
+      // this.supplierViewModel.addressViewModel.id = 0;
+      // this.supplierViewModel.addressViewModel.city = "";
+      // this.supplierViewModel.addressViewModel.email = "";
+      // this.supplierViewModel.addressViewModel.detail = "";
+      // this.supplierViewModel.addressViewModel.country = "";
+      // this.supplierViewModel.addressViewModel.zipCode = "";
+      // this.supplierViewModel.addressViewModel.firstMobileNo = "";
+      // this.supplierViewModel.addressViewModel.secondMobileNo = "";
     },
     onAlertClose(eventData){
       console.log("eventDate=",eventData);
@@ -292,6 +292,10 @@ export default {
         supplierViewModel : this.supplierViewModel
       }).then(res=>{
         if(res.code === this.networkState.SUCCESS){
+          this.supplierViewModel.suppliers.push({
+            id : res.model.id,
+            supplierName: res.model.supplierName
+          });
           this.showSuccess(this,res.msg);
         }else {
           this.showErrorMsg(this,this.opState.CREATE, res.msg);
@@ -304,11 +308,12 @@ export default {
       this.showLoader(this);
       this.$axios.$put('/suppliers',{
         userInfo : this.getAuthInfo(),
-        ageViewModel : this.ageViewModel
+        supplierViewModel : this.supplierViewModel
       }).then(res=>{
         if(res.code === this.networkState.SUCCESS){
 
           let objIndex = this.supplierViewModel.suppliers.findIndex((obj => obj.id === this.supplierViewModel.id));
+          this.supplierViewModel.suppliers[objIndex].supplierName = this.supplierViewModel.supplierName;
 
           this.showSuccess(this,res.msg);
         }else {
@@ -320,6 +325,7 @@ export default {
     },
     setFormData(supplier){
       this.supplierViewModel.id = supplier.id;
+      this.supplierViewModel.supplierName = supplier.supplierName;
       this.$refs.updateSupplierBtn.click();
     },
     setDeleteData(supplier){
@@ -341,7 +347,8 @@ export default {
       };
       this.$axios.$delete("/suppliers",config).then(res=>{
         if(res.code === this.networkState.SUCCESS){
-          this.ageViewModel.ages = this.ageViewModel.ages.filter((item) => item.id !== this.ageViewModel.id);
+          this.supplierViewModel.suppliers = this.supplierViewModel.suppliers
+            .filter((item) => item.id !== this.supplierViewModel.id);
           this.showSuccess(this,res.msg);
         }else {
           this.showError(this,this.opState.DELETE);
@@ -358,5 +365,7 @@ export default {
 </script>
 
 <style scoped>
-
+  .supplier-update-btn{
+    display: none;
+  }
 </style>

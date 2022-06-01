@@ -165,37 +165,56 @@ class SupplierViewModel extends BaseViewModel
             return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $supplierInputValidationResponse);
         }
 
-        $addressInputValidationResponse = $this->checkInputValidation($request->supplierViewModel["addressViewModel"],[
-            'city' => 'required|string',
-            'email' => 'required|string',
-            'country' => 'required|string',
-            'zipCode' => 'required|string',
-            'firstMobileNo' => 'required|string'
-        ]);
-
-        if($addressInputValidationResponse != CustomResponseMsg::OK->value){
-            return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $addressInputValidationResponse);
-        }
-
         $this->setSupplierName($request->supplierViewModel["supplierName"]);
-
-        $addressViewModel = new AddressViewModel();
-        $addressViewModel->setCity($request->supplierViewModel["addressViewModel"]["city"]);
-        $addressViewModel->setEmail($request->supplierViewModel["addressViewModel"]["email"]);
-        $addressViewModel->setDetail($request->supplierViewModel["addressViewModel"]["detail"]);
-        $addressViewModel->setCountry($request->supplierViewModel["addressViewModel"]["country"]);
-        $addressViewModel->setZipCode($request->supplierViewModel["addressViewModel"]["zipCode"]);
-        $addressViewModel->setFirstMobileNo($request->supplierViewModel["addressViewModel"]["firstMobileNo"]);
-        $addressViewModel->setSecondMobileNo($request->supplierViewModel["addressViewModel"]["secondMobileNo"]);
-        $addressViewModel->setIp($request->ip());
-        $addressViewModel->setModifiedBy(0);
-
-        $this->setAddressViewModel($addressViewModel);
         $this->setIp($request->ip());
         $this->setModifiedBy(0);
 
         return $this->supplierUseCase->save($this);
 
+    }
+
+    public function update(Request $request) : CustomResponse
+    {
+        $authResponse = $this->checkAuthValidation($request,OperationType::CREATE);
+
+        if($authResponse != CustomResponseMsg::OK->value){
+            return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $authResponse);
+        }
+
+        $supplierInputValidationResponse = $this->checkInputValidation($request->supplierViewModel,[
+            'supplierName' => 'required|string'
+        ]);
+
+        if($supplierInputValidationResponse != CustomResponseMsg::OK->value){
+            return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $supplierInputValidationResponse);
+        }
+
+        $this->setId($request->supplierViewModel["id"]);
+        $this->setSupplierName($request->supplierViewModel["supplierName"]);
+        $this->setIp($request->ip());
+        $this->setModifiedBy(0);
+
+        return $this->supplierUseCase->update($this);
+    }
+
+    public function remove(Request $request) : CustomResponse
+    {
+        $authResponse = $this->checkAuthValidation($request,OperationType::CREATE);
+
+        if($authResponse != CustomResponseMsg::OK->value){
+            return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $authResponse);
+        }
+
+        $inputValidationResponse = $this->checkInputValidation($request->supplierViewModel,[
+            'id' => 'required|int'
+        ]);
+
+        if($inputValidationResponse != CustomResponseMsg::OK->value){
+            return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $inputValidationResponse);
+        }
+
+        $this->setId($request->supplierViewModel["id"]);
+        return $this->supplierUseCase->remove($this);
     }
 
 }

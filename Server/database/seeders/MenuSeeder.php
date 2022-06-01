@@ -244,9 +244,19 @@ class MenuSeeder extends Seeder
             ],
             [
                 "oid" => 123,
-                "href" => "/dashboard/supplier/bills",
+                "href" => "/dashboard/supplier/address",
                 "icon" => null,
                 "tree_id" => 23,
+                "for_whom" => 1,
+                "menu_name" => "Address",
+                "is_active" => 1,
+                "parent_tree_id" => 21
+            ],
+            [
+                "oid" => 124,
+                "href" => "/dashboard/supplier/bill",
+                "icon" => null,
+                "tree_id" => 24,
                 "for_whom" => 1,
                 "menu_name" => "Bill",
                 "is_active" => 1,

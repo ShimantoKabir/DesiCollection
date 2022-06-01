@@ -149,7 +149,7 @@ class AddressRepository extends BaseRepository implements IAddressRepository
             ->where('zipCode',$addressViewModel->getZipCode())
             ->where('firstMobileNo',$addressViewModel->getFirstMobileNo())
             ->where('secondMobileNo',$addressViewModel->getSecondMobileNo())
-            ->where('addressType',AddressType::SUPPLIER->value)
+            ->where('addressType',$addressViewModel->getAddressType())
             ->exists();
 
         if($isExist){

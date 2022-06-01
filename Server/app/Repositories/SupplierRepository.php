@@ -4,22 +4,18 @@ namespace App\Repositories;
 
 use App\Enums\CustomResponseCode;
 use App\Enums\CustomResponseMsg;
-use App\Models\Address;
 use App\Models\CustomResponse;
-use App\Models\ProductType;
 use App\Models\Supplier;
+use App\Repositories\Interfaces\ISupplierRepository;
 use App\ViewModels\SupplierViewModel;
 use Illuminate\Support\Facades\DB;
 
-class SupplierRepository extends BaseRepository implements Interfaces\ISupplierRepository
+class SupplierRepository extends BaseRepository implements ISupplierRepository
 {
 
     public function read(): array
     {
-        return Supplier::select(
-            'id',
-            'supplierName',
-        )->get()->toArray();
+        return Supplier::select('id', 'supplierName')->get()->toArray();
     }
 
     public function getIndexData(): CustomResponse
@@ -27,7 +23,7 @@ class SupplierRepository extends BaseRepository implements Interfaces\ISupplierR
         $res = new CustomResponse();
         $res->setCode(CustomResponseCode::SUCCESS->value);
         $res->setMsg(CustomResponseMsg::INIT_SUCCESS->value);
-        $res->setTypes($this->read());
+        $res->setSuppliers($this->read());
         return $res;
     }
 
@@ -52,6 +48,7 @@ class SupplierRepository extends BaseRepository implements Interfaces\ISupplierR
             DB::commit();
 
         }catch (\Exception $e){
+            DB::rollBack();
             $res->setCode(CustomResponseCode::ERROR->value);
             $res->setMsg($e->getMessage());
         }
@@ -78,6 +75,7 @@ class SupplierRepository extends BaseRepository implements Interfaces\ISupplierR
             $res->setMsg(CustomResponseMsg::SUCCESS->value);
 
         }catch (\Exception $e){
+            DB::rollBack();
             $res->setCode(CustomResponseCode::ERROR->value);
             $res->setMsg($e->getMessage());
         }
@@ -98,6 +96,7 @@ class SupplierRepository extends BaseRepository implements Interfaces\ISupplierR
             $res->setMsg(CustomResponseMsg::SUCCESS->value);
 
         }catch (\Exception $e){
+            DB::rollBack();
             $res->setCode(CustomResponseCode::ERROR->value);
             $res->setMsg($e->getMessage());
         }
