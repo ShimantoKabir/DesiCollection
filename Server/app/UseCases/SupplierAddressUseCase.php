@@ -4,20 +4,24 @@ namespace App\UseCases;
 
 use App\Enums\CustomResponseCode;
 use App\Models\CustomResponse;
+use App\Repositories\AddressRepository;
+use App\Repositories\SupplierAddressRepository;
 use App\ViewModels\SupplierAddressViewModel;
 
 class SupplierAddressUseCase extends BaseUseCase
 {
     public SupplierAddressRepository $supplierAddressRepository;
+    public AddressRepository $addressRepository;
 
-    public function __construct(SupplierAddressRepository $supplierAddressRepository)
+    public function __construct(SupplierAddressRepository $supplierAddressRepository,AddressRepository $addressRepository)
     {
         $this->supplierAddressRepository = $supplierAddressRepository;
+        $this->addressRepository = $addressRepository;
     }
 
     public function getIndexData(SupplierAddressViewModel $supplierAddressViewModel) : CustomResponse
     {
-        return $this->supplierAddressRepository->getIndexData();
+        return $this->supplierAddressRepository->getIndexData($supplierAddressViewModel);
     }
 
     public function save(SupplierAddressViewModel $supplierAddressViewModel) : CustomResponse

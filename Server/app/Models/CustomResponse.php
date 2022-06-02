@@ -18,6 +18,7 @@ class CustomResponse
     public array $colors;
     public array $supplierBills;
     public array $suppliers;
+    public array $addresses;
     public ?object $address;
 
     public function setResponse(int $code, string $msg) : CustomResponse
@@ -217,6 +218,23 @@ class CustomResponse
     public function setAddress(?object $address): void
     {
         $this->address = $address;
+    }
+
+
+    /**
+     * @return array
+     */
+    public function getAddresses(): array
+    {
+        return $this->addresses;
+    }
+
+    /**
+     * @param array $addresses
+     */
+    public function setAddresses(array $addresses): void
+    {
+        $this->addresses = $addresses;
     }
 
 }

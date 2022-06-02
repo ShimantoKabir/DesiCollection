@@ -65,7 +65,7 @@ class AddressRepository extends BaseRepository implements IAddressRepository
             $model->country = $addressViewModel->getCountry();
             $model->zipCode = $addressViewModel->getZipCode();
             $model->linkUpId = $addressViewModel->getLinkUpId();
-            $model->addressType = AddressType::SUPPLIER->value;
+            $model->addressType = $addressViewModel->getAddressType();
             $model->firstMobileNo = $addressViewModel->getFirstMobileNo();
             $model->secondMobileNo = $addressViewModel->getSecondMobileNo();
             $model->ip = $addressViewModel->getIp();
