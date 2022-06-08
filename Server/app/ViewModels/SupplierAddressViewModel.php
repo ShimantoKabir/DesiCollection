@@ -315,8 +315,7 @@ class SupplierAddressViewModel extends BaseViewModel
             'email' => 'required|string',
             'country' => 'required|string',
             'zipCode' => 'required|string',
-            'supplierId' => 'int|string',
-            'supplierName' => 'required|string',
+            'supplierId' => 'required|int',
             'firstMobileNo' => 'required|string'
         ]);
 
@@ -326,12 +325,12 @@ class SupplierAddressViewModel extends BaseViewModel
 
         $this->setCity($request->supplierAddressViewModel["city"]);
         $this->setEmail($request->supplierAddressViewModel["email"]);
-        $this->setDetail($request->supplierAddressViewModel["detail"]);
         $this->setCountry($request->supplierAddressViewModel["country"]);
         $this->setZipCode($request->supplierAddressViewModel["zipCode"]);
-        $this->setSupplierName($request->supplierAddressViewModel["supplierName"]);
         $this->setFirstMobileNo($request->supplierAddressViewModel["firstMobileNo"]);
         $this->setSecondMobileNo($request->supplierAddressViewModel["secondMobileNo"]);
+        $this->setDetail($request->supplierAddressViewModel["detail"]);
+        $this->setSupplierId($request->supplierAddressViewModel["supplierId"]);
         $this->setIp($request->ip());
         $this->setModifiedBy(0);
 
@@ -348,12 +347,12 @@ class SupplierAddressViewModel extends BaseViewModel
         }
 
         $inputValidationResponse = $this->checkInputValidation($request->supplierAddressViewModel,[
-            'id' => 'int|string',
+            'id' => 'required|int',
             'city' => 'required|string',
             'email' => 'required|string',
             'country' => 'required|string',
             'zipCode' => 'required|string',
-            'supplierId' => 'int|string',
+            'supplierId' => 'required|int',
             'supplierName' => 'required|string',
             'firstMobileNo' => 'required|string'
         ]);

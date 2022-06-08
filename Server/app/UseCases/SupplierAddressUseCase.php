@@ -6,22 +6,26 @@ use App\Enums\CustomResponseCode;
 use App\Models\CustomResponse;
 use App\Repositories\AddressRepository;
 use App\Repositories\SupplierAddressRepository;
+use App\Repositories\SupplierRepository;
 use App\ViewModels\SupplierAddressViewModel;
 
 class SupplierAddressUseCase extends BaseUseCase
 {
     public SupplierAddressRepository $supplierAddressRepository;
-    public AddressRepository $addressRepository;
+    public SupplierRepository $supplierRepository;
 
-    public function __construct(SupplierAddressRepository $supplierAddressRepository,AddressRepository $addressRepository)
+    public function __construct(SupplierAddressRepository $supplierAddressRepository,
+                                SupplierRepository $supplierRepository)
     {
         $this->supplierAddressRepository = $supplierAddressRepository;
-        $this->addressRepository = $addressRepository;
+        $this->supplierRepository = $supplierRepository;
     }
 
     public function getIndexData(SupplierAddressViewModel $supplierAddressViewModel) : CustomResponse
     {
-        return $this->supplierAddressRepository->getIndexData($supplierAddressViewModel);
+        $indexData =  $this->supplierAddressRepository->getIndexData($supplierAddressViewModel);
+        $indexData->setSuppliers($this->supplierRepository->read());
+        return $indexData;
     }
 
     public function save(SupplierAddressViewModel $supplierAddressViewModel) : CustomResponse
@@ -37,13 +41,7 @@ class SupplierAddressUseCase extends BaseUseCase
 
     public function update(SupplierAddressViewModel $supplierAddressViewModel) : CustomResponse
     {
-        $existResponse = $this->supplierAddressRepository->isSupplierAddressExist($supplierAddressViewModel);
-
-        if($existResponse->code == CustomResponseCode::ERROR->value){
-            return $existResponse;
-        }else{
-            return $this->supplierAddressRepository->update($supplierAddressViewModel);
-        }
+        return $this->supplierAddressRepository->update($supplierAddressViewModel);
     }
 
     public function remove(SupplierAddressViewModel $supplierAddressViewModel) : CustomResponse

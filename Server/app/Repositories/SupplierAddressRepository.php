@@ -21,14 +21,17 @@ class SupplierAddressRepository extends BaseRepository implements ISupplierAddre
     {
         $customResponse = new CustomResponse();
         $addresses = DB::table('addresses')
-            ->join('addresses', 'addresses.linkUpId', '=', 'suppliers.id')
-            ->select('addresses.*', 'suppliers.supplierName')
+            ->join('suppliers', 'addresses.linkUpId', '=', 'suppliers.id')
+            ->select('addresses.*', 'suppliers.id AS supplierId', 'suppliers.supplierName')
             ->where("addresses.addressType",AddressType::SUPPLIER->value)
-            ->get()->toArray();
+            ->get()
+            ->toArray();
 
         $customResponse->setCode(CustomResponseCode::SUCCESS->value);
         $customResponse->setMsg(CustomResponseMsg::SUCCESS->value);
         $customResponse->setAddresses($addresses);
+
+        return $customResponse;
     }
 
     /**
@@ -49,7 +52,7 @@ class SupplierAddressRepository extends BaseRepository implements ISupplierAddre
             $model->detail = $supplierAddressViewModel->getDetail();
             $model->country = $supplierAddressViewModel->getCountry();
             $model->zipCode = $supplierAddressViewModel->getZipCode();
-            $model->linkUpId = $supplierAddressViewModel->getLinkUpId();
+            $model->linkUpId = $supplierAddressViewModel->getSupplierId();
             $model->addressType = AddressType::SUPPLIER->value;
             $model->firstMobileNo = $supplierAddressViewModel->getFirstMobileNo();
             $model->secondMobileNo = $supplierAddressViewModel->getSecondMobileNo();
@@ -92,6 +95,7 @@ class SupplierAddressRepository extends BaseRepository implements ISupplierAddre
                     'detail' => $supplierAddressViewModel->getDetail(),
                     'country' => $supplierAddressViewModel->getCountry(),
                     'zipCode' => $supplierAddressViewModel->getZipCode(),
+                    'linkUpId' => $supplierAddressViewModel->getSupplierId(),
                     'firstMobileNo' => $supplierAddressViewModel->getFirstMobileNo(),
                     'secondMobileNo' => $supplierAddressViewModel->getSecondMobileNo(),
                     'ip' => $supplierAddressViewModel->getIp(),
@@ -151,6 +155,7 @@ class SupplierAddressRepository extends BaseRepository implements ISupplierAddre
             ->where('zipCode', $supplierAddressViewModel->getZipCode())
             ->where('firstMobileNo', $supplierAddressViewModel->getFirstMobileNo())
             ->where('secondMobileNo', $supplierAddressViewModel->getSecondMobileNo())
+            ->where('linkUpId', $supplierAddressViewModel->getSupplierId())
             ->where('addressType', AddressType::SUPPLIER->value)
             ->exists();
 
