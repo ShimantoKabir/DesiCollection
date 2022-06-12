@@ -140,7 +140,7 @@ export default {
     getInitialData(){
       this.showLoader(this);
       this.$axios.$post('/user-types/index',{
-        userInfo : this.getAuthInfo()
+        userInfoViewModel : this.getAuthInfo()
       }).then(res=>{
         if(res.code === this.networkState.SUCCESS){
           this.userTypeViewModel.userTypes = res.userTypes;
@@ -184,7 +184,7 @@ export default {
     onCreate(){
       this.showLoader(this);
       this.$axios.$post('/user-types',{
-        userInfo : this.getAuthInfo(),
+        userInfoViewModel : this.getAuthInfo(),
         userTypeViewModel : this.userTypeViewModel
       }).then(res=>{
         if(res.code === this.networkState.SUCCESS){
@@ -203,7 +203,7 @@ export default {
     onUpdate(){
       this.showLoader(this);
       this.$axios.$put('/user-types',{
-        userInfo : this.getAuthInfo(),
+        userInfoViewModel : this.getAuthInfo(),
         userTypeViewModel : this.userTypeViewModel
       }).then(res=>{
         if(res.code === this.networkState.SUCCESS){
@@ -231,7 +231,7 @@ export default {
     onDelete(){
       let config = {
         data: {
-          userInfo : {
+          userInfoViewModel : {
             email : this.cookieUserInfo.email,
             href : window.location.pathname,
             sessionId : this.cookieUserInfo.sessionId

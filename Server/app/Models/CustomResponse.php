@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\ViewModels\UserInfoViewModel;
+
 class CustomResponse
 {
     public int $code;

@@ -2,7 +2,6 @@
 
 namespace App\Traits;
 
-use App\Models\CustomResponse;
 use App\Services\AdministrationService;
 use App\ViewModels\UserInfoViewModel;
 use Illuminate\Http\Request;

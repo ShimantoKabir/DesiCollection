@@ -11,10 +11,7 @@ use Illuminate\Http\Request;
 
 class FabricViewModel extends BaseViewModel
 {
-    public int $id;
     public string $fabricName;
-    public string $ip;
-    public int $modifiedBy;
     public array $fabrics;
     public object $model;
     public FabricUseCase $fabricUseCase;
@@ -24,20 +21,8 @@ class FabricViewModel extends BaseViewModel
         $this->fabricUseCase = $fabricUseCase;
     }
 
-    public function setId(int $id){
-        $this->id = $id;
-    }
-
     public function setFabricName(string $fabricName){
         $this->fabricName = $fabricName;
-    }
-
-    public function setIp(string $ip){
-        $this->ip = $ip;
-    }
-
-    public function setModifiedBy(int $modifiedBy){
-        $this->modifiedBy = $modifiedBy;
     }
 
     public function getIndexData(Request $request) : CustomResponse

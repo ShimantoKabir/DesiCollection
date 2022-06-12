@@ -16,5 +16,8 @@ enum CustomResponseMsg : string
     case AGE_EXIST = "Age already exist!";
     case ADDRESS_EXIST = "Address already exist!";
     case SUPPLIER_EXIST = "Supplier name already exist!";
+    case SESSION_EXPIRED = "Session expired!";
+    case PAGE_PERMISSION_DENIED = "You don't have permission to access this page!";
+    case PERMISSION_OK = "All permission ok!";
     case OK = "OK";
 }

@@ -11,7 +11,6 @@ use Illuminate\Http\Request;
 
 class ProductViewModel extends BaseViewModel
 {
-    public int $id;
     public ?string $code;
     public ?int $typeId;
     public ?string $typeName;
@@ -40,22 +39,6 @@ class ProductViewModel extends BaseViewModel
     public ?string $startDate;
     public ?string $endDate;
     private ProductUseCase $productUseCase;
-
-    /**
-     * @return int
-     */
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int $id
-     */
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
 
     /**
      * @return string|null

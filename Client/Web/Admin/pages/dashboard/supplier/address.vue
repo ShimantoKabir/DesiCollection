@@ -251,7 +251,7 @@ export default {
     getInitialData() {
       this.showLoader(this);
       this.$axios.$post('/suppliers/addresses/index', {
-        userInfo: this.getAuthInfo()
+        userInfoViewModel: this.getAuthInfo()
       }).then(res => {
         if (res.code === this.networkState.SUCCESS) {
           this.supplierAddressViewModel.suppliers = res.suppliers;
@@ -324,7 +324,7 @@ export default {
     onCreate() {
       this.showLoader(this);
       this.$axios.$post('/suppliers/addresses', {
-        userInfo: this.getAuthInfo(),
+        userInfoViewModel: this.getAuthInfo(),
         supplierAddressViewModel: this.supplierAddressViewModel
       }).then(res => {
         if (res.code === this.networkState.SUCCESS) {
@@ -355,7 +355,7 @@ export default {
     onUpdate() {
       this.showLoader(this);
       this.$axios.$put('/suppliers/addresses', {
-        userInfo: this.getAuthInfo(),
+        userInfoViewModel: this.getAuthInfo(),
         supplierAddressViewModel: this.supplierAddressViewModel
       }).then(res => {
         if (res.code === this.networkState.SUCCESS) {
@@ -407,7 +407,7 @@ export default {
     onDelete() {
       let config = {
         data: {
-          userInfo: {
+          userInfoViewModel: {
             email: this.cookieUserInfo.email,
             href: window.location.pathname,
             sessionId: this.cookieUserInfo.sessionId

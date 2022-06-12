@@ -16,6 +16,7 @@ class SupplierBill extends Model
         'debitAmount',
         'creditAmount',
         'totalQuantity',
+        'imageName',
         'ip',
         'createdAt',
         'updatedAt',

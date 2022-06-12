@@ -11,10 +11,7 @@ use App\UseCases\SizeUseCase;
 
 class SizeViewModel extends BaseViewModel
 {
-    public int $id;
     public string $sizeName;
-    public string $ip;
-    public int $modifiedBy;
     public array $sizes;
     public object $model;
     public SizeUseCase $sizeUseCase;
@@ -24,20 +21,8 @@ class SizeViewModel extends BaseViewModel
         $this->sizeUseCase = $sizeUseCase;
     }
 
-    public function setId(int $id){
-        $this->id = $id;
-    }
-
     public function setSizeName(string $sizeName){
         $this->sizeName = $sizeName;
-    }
-
-    public function setIp(string $ip){
-        $this->ip = $ip;
-    }
-
-    public function setModifiedBy(int $modifiedBy){
-        $this->modifiedBy = $modifiedBy;
     }
 
     public function getIndexData(Request $request) : CustomResponse

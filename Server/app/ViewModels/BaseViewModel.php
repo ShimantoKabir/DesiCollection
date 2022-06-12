@@ -2,17 +2,67 @@
 
 namespace App\ViewModels;
 
-use App\Enums\CustomResponseCode;
 use App\Enums\CustomResponseMsg;
 use App\Enums\OperationType;
-use App\Models\CustomRequest;
-use App\Models\CustomResponse;
-use App\UseCases\FabricUseCase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class BaseViewModel
 {
+    public ?int $id;
+    public ?string $ip;
+    public ?int $modifiedBy;
+    public array $validationFieldForId = [
+        'id' => 'int|string',
+    ];
+
+    /**
+     * @param int|null $id
+     */
+    public function setId(?int $id): void
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param string|null $ip
+     */
+    public function setIp(?string $ip): void
+    {
+        $this->ip = $ip;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getIp(): ?string
+    {
+        return $this->ip;
+    }
+
+    /**
+     * @param int|null $modifiedBy
+     */
+    public function setModifiedBy(?int $modifiedBy): void
+    {
+        $this->modifiedBy = $modifiedBy;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getModifiedBy(): ?int
+    {
+        return $this->modifiedBy;
+    }
 
     public function checkAuthValidation(Request $request,OperationType $opType) : string
     {

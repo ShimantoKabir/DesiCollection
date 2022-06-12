@@ -18,16 +18,15 @@ class AdministrationService
 
     public static function checkPermission(Request $request): array
     {
-
-        $res = [
-          "msg"=>"",
-          "code"=>""
-        ];
-        $userInfo = $request->userInfo;
-        $path = $userInfo["href"];
-        $operation = $userInfo["operation"];
-
         try{
+            $res = [
+              "msg"=>"",
+              "code"=>""
+            ];
+
+            $userInfo = $request->userInfo;
+            $path = $userInfo["href"];
+            $operation = $userInfo["operation"];
 
             $userInfos = UserInfo::where('email', $userInfo['email'])
                 ->where('session_id', $userInfo['sessionId'])
@@ -68,19 +67,15 @@ class AdministrationService
                     $res["msg"]="You don't have permission to access this page!";
                     $res["code"] = 404;
                 }
-
             }else{
                 $res["msg"]="Session expired!";
                 $res["code"] = 404;
             }
-
         }catch (Exception $e){
             $res["msg"]=$e->getMessage();
             $res["code"] = 404;
         }
-
         return $res;
-
     }
 
 }

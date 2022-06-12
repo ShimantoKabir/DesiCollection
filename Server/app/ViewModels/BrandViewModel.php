@@ -11,27 +11,18 @@ use Illuminate\Http\Request;
 
 class BrandViewModel extends BaseViewModel
 {
-
-    public int $id;
     public string $brandName;
-    public ?string $imageName;
-    public string $ip;
-    public int $modifiedBy;
     public array $brands;
     public object $model;
     public $brandImage;
     public ?string $imagePath;
+    public ?string $imageName;
 
     public BrandUseCase $brandUseCase;
 
     public function __construct(BrandUseCase $brandUseCase)
     {
         $this->brandUseCase = $brandUseCase;
-    }
-
-    public function setId(int $id)
-    {
-        $this->id = $id;
     }
 
     public function setBrandName(string $brandName)
@@ -63,24 +54,9 @@ class BrandViewModel extends BaseViewModel
         return $this->brandImage;
     }
 
-    public function setIp(string $ip)
-    {
-        $this->ip = $ip;
-    }
-
     public function getIp() : string
     {
         return $this->ip;
-    }
-
-    public function setModifiedBy(int $modifiedBy)
-    {
-        $this->modifiedBy = $modifiedBy;
-    }
-
-    public function getModifiedBy() : string
-    {
-        return $this->modifiedBy;
     }
 
     public function setImagePath(?string $imagePath)
@@ -108,13 +84,6 @@ class BrandViewModel extends BaseViewModel
     {
 
         $brandViewModel = json_decode($request->brandViewModel,true);
-        $userInfo = json_decode($request->userInfo,true);
-
-        $authResponse = $this->checkAuthObjValidation($userInfo,OperationType::CREATE);
-
-        if($authResponse != CustomResponseMsg::OK->value){
-            return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $authResponse);
-        }
 
         $inputValidationResponse = $this->checkInputValidation($brandViewModel,[
             'brandName' => 'required|string'
@@ -140,7 +109,7 @@ class BrandViewModel extends BaseViewModel
         $this->setImagePath(null);
         $this->setImageName(null);
         $this->setIp($request->ip());
-        $this->setModifiedBy(0);
+        $this->setModifiedBy($request->modifiedBy);
 
         return $this->brandUseCase->save($this);
 
@@ -191,13 +160,6 @@ class BrandViewModel extends BaseViewModel
 
     public function remove(Request $request) : CustomResponse
     {
-
-        $authResponse = $this->checkAuthValidation($request,OperationType::CREATE);
-
-        if($authResponse != CustomResponseMsg::OK->value){
-            return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $authResponse);
-        }
-
         $inputValidationResponse = $this->checkInputValidation($request->brandViewModel,[
             'id' => 'required|int'
         ]);

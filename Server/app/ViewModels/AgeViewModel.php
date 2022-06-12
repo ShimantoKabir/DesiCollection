@@ -11,12 +11,9 @@ use Illuminate\Http\Request;
 
 class AgeViewModel extends BaseViewModel
 {
-    public int $id;
     public ?int $minAge;
     public ?int $maxAge;
     public ?int $fixedAge;
-    public string $ip;
-    public int $modifiedBy;
     public array $ages;
     public object $model;
     public bool $isFixedAgeEnable;
@@ -25,10 +22,6 @@ class AgeViewModel extends BaseViewModel
     public function __construct(AgeUseCase $ageUseCase)
     {
         $this->ageUseCase = $ageUseCase;
-    }
-
-    public function setId(int $id){
-        $this->id = $id;
     }
 
     public function setMinAge(?int $minAge){
@@ -50,14 +43,6 @@ class AgeViewModel extends BaseViewModel
     public function getFixedAgeEnableStatus() : bool
     {
         return $this->isFixedAgeEnable;
-    }
-
-    public function setIp(string $ip){
-        $this->ip = $ip;
-    }
-
-    public function setModifiedBy(int $modifiedBy){
-        $this->modifiedBy = $modifiedBy;
     }
 
     public function getIndexData(Request $request) : CustomResponse

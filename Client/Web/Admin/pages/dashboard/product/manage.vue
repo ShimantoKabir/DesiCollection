@@ -155,7 +155,7 @@ export default {
     getInitialData(){
       this.showLoader(this);
       this.$axios.$post('/products/index',{
-        userInfo : this.getAuthInfo(),
+        userInfoViewModel : this.getAuthInfo(),
         productViewModel: this.productViewModel
       }).then(res=>{
         if(res.code === this.networkState.SUCCESS){
@@ -200,7 +200,7 @@ export default {
     onCreate(){
       this.showLoader(this);
       this.$axios.$post('/products',{
-        userInfo : this.getAuthInfo(),
+        userInfoViewModel : this.getAuthInfo(),
         productViewModel : this.productViewModel
       }).then(res=>{
         if(res.code === this.networkState.SUCCESS){
@@ -219,7 +219,7 @@ export default {
     onUpdate(){
       this.showLoader(this);
       this.$axios.$put('/products',{
-        userInfo : this.getAuthInfo(),
+        userInfoViewModel : this.getAuthInfo(),
         productViewModel : this.productViewModel
       }).then(res=>{
         if(res.code === this.networkState.SUCCESS){
@@ -247,7 +247,7 @@ export default {
     onDelete(){
       let config = {
         data: {
-          userInfo : {
+          userInfoViewModel : {
             email : this.cookieUserInfo.email,
             href : window.location.pathname,
             sessionId : this.cookieUserInfo.sessionId

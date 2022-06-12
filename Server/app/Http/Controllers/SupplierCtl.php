@@ -36,6 +36,4 @@ class SupplierCtl extends Controller
     {
         return response()->json($this->supplierViewModel->remove($request), HttpResponseCodes::HTTP_OK);
     }
-
-
 }

@@ -154,7 +154,7 @@ export default {
     getInitialData(){
       this.showLoader(this);
       this.$axios.$post('/brands/index',{
-        userInfo : this.getAuthInfo()
+        userInfoViewModel : this.getAuthInfo()
       }).then(res=>{
         if(res.code === this.networkState.SUCCESS){
           this.brandViewModel.brands = res.brands;
@@ -202,7 +202,7 @@ export default {
       const formData = new FormData();
       formData.append('brandImage', this.brandViewModel.brandImage);
       formData.append("brandViewModel",JSON.stringify(this.brandViewModel));
-      formData.append("userInfo",JSON.stringify(this.getAuthInfo()))
+      formData.append("userInfoViewModel",JSON.stringify(this.getAuthInfo()))
       const headers = { 'Content-Type': 'multipart/form-data' };
 
       this.showLoader(this);
@@ -227,7 +227,7 @@ export default {
       const formData = new FormData();
       formData.append('brandImage', this.brandViewModel.brandImage);
       formData.append("brandViewModel",JSON.stringify(this.brandViewModel));
-      formData.append("userInfo",JSON.stringify(this.getAuthInfo()))
+      formData.append("userInfoViewModel",JSON.stringify(this.getAuthInfo()))
       formData.append('_method', 'PUT');
       const headers = { 'Content-Type': 'multipart/form-data' };
 
@@ -266,7 +266,7 @@ export default {
     onDelete(){
       let config = {
         data: {
-          userInfo : {
+          userInfoViewModel : {
             email : this.cookieUserInfo.email,
             href : window.location.pathname,
             sessionId : this.cookieUserInfo.sessionId

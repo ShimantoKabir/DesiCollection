@@ -12,18 +12,10 @@ use Illuminate\Http\Request;
 class ProductUserTypeViewModel extends BaseViewModel
 {
 
-    public int $id;
     public string $userTypeName;
-    public string $ip;
-    public int $modifiedBy;
     public array $userTypes;
     public object $model;
     public ProductUserTypeUseCase $productUserTypeUseCase;
-
-    public function setId(int $id)
-    {
-        $this->id = $id;
-    }
 
     public function getId() : int
     {
@@ -40,19 +32,9 @@ class ProductUserTypeViewModel extends BaseViewModel
         return $this->userTypeName;
     }
 
-    public function setIp(string $ip)
-    {
-        $this->ip = $ip;
-    }
-
     public function getIp() : string
     {
         return $this->ip;
-    }
-
-    public function setModifiedBy(int $modifiedBy)
-    {
-        $this->modifiedBy = $modifiedBy;
     }
 
     public function getModifiedBy() : int

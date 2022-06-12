@@ -4,28 +4,11 @@ namespace App\ViewModels;
 
 class ColorViewModel extends BaseViewModel
 {
-    public int $id;
     public string $colorName;
     public ?string $ip;
     public ?int $modifiedBy;
     public array $colors;
     public ?object $model;
-
-    /**
-     * @param int $id
-     */
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * @return int
-     */
-    public function getId(): int
-    {
-        return $this->id;
-    }
 
     /**
      * @param string $colorName
