@@ -9,10 +9,9 @@ use Symfony\Component\HttpFoundation\Response as HttpResponseCodes;
 
 class BrandCtl extends Controller
 {
-
     public BrandViewModel $brandViewModel;
 
-    public function __construct(Request $request,BrandViewModel $brandViewModel)
+    public function __construct(BrandViewModel $brandViewModel)
     {
         $this->brandViewModel = $brandViewModel;
     }
@@ -36,5 +35,4 @@ class BrandCtl extends Controller
     {
         return response()->json($this->brandViewModel->remove($request), HttpResponseCodes::HTTP_OK);
     }
-
 }

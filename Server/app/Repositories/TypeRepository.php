@@ -65,6 +65,7 @@ class TypeRepository extends BaseRepository implements ITypeRepository
             ProductType::where('id',$typeViewModel->getId())
                 ->update([
                     'typeName' => $typeViewModel->getTypeName(),
+                    'ip' => $typeViewModel->getIp(),
                     'updatedAt' => $date
                 ]);
 

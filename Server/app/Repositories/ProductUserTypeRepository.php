@@ -5,7 +5,6 @@ namespace App\Repositories;
 use App\Enums\CustomResponseCode;
 use App\Enums\CustomResponseMsg;
 use App\Models\CustomResponse;
-use App\Models\ProductType;
 use App\Models\ProductUserType;
 use App\Repositories\Interfaces\IProductUserTypeRepository;
 use App\ViewModels\ProductUserTypeViewModel;
@@ -67,7 +66,8 @@ class ProductUserTypeRepository extends BaseRepository implements IProductUserTy
                 ->update([
                     'userTypeName' => $productUserTypeViewModel->getUserTypeName(),
                     'updatedAt' => $date,
-                    'modifiedBy' => $productUserTypeViewModel->getModifiedBy()
+                    'modifiedBy' => $productUserTypeViewModel->getModifiedBy(),
+                    'ip' => $productUserTypeViewModel->getIp()
                 ]);
 
             DB::commit();
@@ -88,7 +88,7 @@ class ProductUserTypeRepository extends BaseRepository implements IProductUserTy
         DB::beginTransaction();
         try{
 
-            ProductUserType::where('id',$productUserTypeViewModel->id)->delete();
+            ProductUserType::where('id',$productUserTypeViewModel->getId())->delete();
             DB::commit();
 
             $res->setCode(CustomResponseCode::SUCCESS->value);

@@ -4,7 +4,6 @@ namespace App\ViewModels;
 
 use App\Enums\CustomResponseCode;
 use App\Enums\CustomResponseMsg;
-use App\Enums\OperationType;
 use App\Models\CustomResponse;
 use App\UseCases\SupplierAddressUseCase;
 use Illuminate\Http\Request;

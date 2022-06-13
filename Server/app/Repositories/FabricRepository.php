@@ -29,11 +29,10 @@ class FabricRepository extends BaseRepository implements IFabricRepository
         try{
 
             $model = new Fabric();
-            $model->fabricName = $fabricViewModel->fabricName;
-            $model->ip = $fabricViewModel->ip;
-            $model->modifiedBy = $fabricViewModel->modifiedBy;
+            $model->fabricName = $fabricViewModel->getFabricName();
+            $model->ip = $fabricViewModel->getIp();
+            $model->modifiedBy = $fabricViewModel->getModifiedBy();
             $model->createdAt = date('Y-m-d H:i:s');
-            $model->updatedAt = date('Y-m-d H:i:s');
             $model->save();
 
             $res->setModel($model);
@@ -63,7 +62,7 @@ class FabricRepository extends BaseRepository implements IFabricRepository
 
             Fabric::where('id',$fabricViewModel->id)
             ->update([
-                'fabricName'=>$fabricViewModel->fabricName,
+                'fabricName'=>$fabricViewModel->getFabricName(),
                 'updatedAt' => date('Y-m-d H:i:s')
             ]);
 

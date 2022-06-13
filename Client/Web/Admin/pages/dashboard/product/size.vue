@@ -223,14 +223,8 @@ export default {
     onDelete(){
       let config = {
         data: {
-          userInfoViewModel : {
-            email : this.cookieUserInfo.email,
-            href : window.location.pathname,
-            sessionId : this.cookieUserInfo.sessionId
-          },
-          sizeViewModel : {
-            id : this.sizeViewModel.id
-          }
+          userInfoViewModel : this.getAuthInfo(),
+          sizeViewModel : this.sizeViewModel
         }
       };
       this.$axios.$delete("/sizes",config).then(res=>{

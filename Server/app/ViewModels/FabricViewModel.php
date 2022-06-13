@@ -13,7 +13,6 @@ class FabricViewModel extends BaseViewModel
 {
     public string $fabricName;
     public array $fabrics;
-    public object $model;
     public FabricUseCase $fabricUseCase;
 
     public function __construct(FabricUseCase $fabricUseCase)
@@ -21,29 +20,45 @@ class FabricViewModel extends BaseViewModel
         $this->fabricUseCase = $fabricUseCase;
     }
 
-    public function setFabricName(string $fabricName){
+    /**
+     * @return array
+     */
+    public function getFabrics(): array
+    {
+        return $this->fabrics;
+    }
+
+    /**
+     * @param array $fabrics
+     */
+    public function setFabrics(array $fabrics): void
+    {
+        $this->fabrics = $fabrics;
+    }
+
+    /**
+     * @param string $fabricName
+     */
+    public function setFabricName(string $fabricName): void
+    {
         $this->fabricName = $fabricName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFabricName(): string
+    {
+        return $this->fabricName;
     }
 
     public function getIndexData(Request $request) : CustomResponse
     {
-        $authResponse = $this->checkAuthValidation($request,OperationType::READ);
-
-        if($authResponse != CustomResponseMsg::OK->value){
-            return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $authResponse);
-        }
-
         return $this->fabricUseCase->getIndexData();
     }
 
     public function save(Request $request) : CustomResponse
     {
-        $authResponse = $this->checkAuthValidation($request,OperationType::CREATE);
-
-        if($authResponse != CustomResponseMsg::OK->value){
-            return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $authResponse);
-        }
-
         $inputValidationResponse = $this->checkInputValidation($request->fabricViewModel,[
             'fabricName' => 'required|string'
         ]);
@@ -54,20 +69,13 @@ class FabricViewModel extends BaseViewModel
 
         $this->setFabricName($request->fabricViewModel["fabricName"]);
         $this->setIp($request->ip());
-        $this->setModifiedBy(0);
+        $this->setModifiedBy($request->modifiedBy);
 
         return $this->fabricUseCase->save($this);
-
     }
 
     public function update(Request $request) : CustomResponse
     {
-        $authResponse = $this->checkAuthValidation($request,OperationType::CREATE);
-
-        if($authResponse != CustomResponseMsg::OK->value){
-            return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $authResponse);
-        }
-
         $inputValidationResponse = $this->checkInputValidation($request->fabricViewModel,[
             'fabricName' => 'required|string'
         ]);
@@ -79,20 +87,13 @@ class FabricViewModel extends BaseViewModel
         $this->setId($request->fabricViewModel["id"]);
         $this->setFabricName($request->fabricViewModel["fabricName"]);
         $this->setIp($request->ip());
-        $this->setModifiedBy(0);
+        $this->setModifiedBy($request->modifiedBy);
 
         return $this->fabricUseCase->update($this);
     }
 
     public function remove(Request $request) : CustomResponse
     {
-
-        $authResponse = $this->checkAuthValidation($request,OperationType::CREATE);
-
-        if($authResponse != CustomResponseMsg::OK->value){
-            return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $authResponse);
-        }
-
         $inputValidationResponse = $this->checkInputValidation($request->fabricViewModel,[
             'id' => 'required|int'
         ]);

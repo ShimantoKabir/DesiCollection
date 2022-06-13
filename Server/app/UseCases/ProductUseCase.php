@@ -16,7 +16,6 @@ use App\ViewModels\ProductViewModel;
 
 class ProductUseCase extends BaseUseCase
 {
-
     private ProductRepository $productRepository;
     private FabricRepository $fabricRepository;
     private SizeRepository $sizeRepository;

@@ -6,7 +6,6 @@ use App\Enums\CustomResponseCode;
 use App\Enums\CustomResponseMsg;
 use App\Models\Brand;
 use App\Models\CustomResponse;
-use App\Models\ProductUserAge;
 use App\Repositories\Interfaces\IBrandRepository;
 use App\ViewModels\BrandViewModel;
 use Illuminate\Support\Facades\DB;
@@ -43,9 +42,9 @@ class BrandRepository extends BaseRepository implements IBrandRepository
             $model = new Brand();
             $model->brandName = $brandViewModel->getBrandName();
             $model->imageName = $brandViewModel->getImageName();
-            $model->modifiedBy = $brandViewModel->getModifiedBy();
             $model->createdAt = $date;
             $model->ip = $brandViewModel->getIp();
+            $model->modifiedBy = $brandViewModel->getModifiedBy();
             $model->save();
 
             $model->imagePath = $this->getAssetPrefix().$brandViewModel->getImageName();
@@ -76,6 +75,7 @@ class BrandRepository extends BaseRepository implements IBrandRepository
                     'brandName' => $brandViewModel->getBrandName(),
                     'imageName' => $brandViewModel->getImageName(),
                     'updatedAt' => $date,
+                    'ip' => $brandViewModel->getIp(),
                     'modifiedBy' => $brandViewModel->getModifiedBy()
                 ]);
 
@@ -99,7 +99,7 @@ class BrandRepository extends BaseRepository implements IBrandRepository
         DB::beginTransaction();
         try{
 
-            Brand::where('id',$brandViewModel->id)->delete();
+            Brand::where('id',$brandViewModel->getId())->delete();
             DB::commit();
 
             $res->setCode(CustomResponseCode::SUCCESS->value);

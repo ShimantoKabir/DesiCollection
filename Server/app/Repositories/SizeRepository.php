@@ -31,11 +31,10 @@ class SizeRepository extends BaseRepository implements ISizeRepository
         try{
 
             $model = new Size();
-            $model->sizeName = $sizeViewModel->sizeName;
-            $model->ip = $sizeViewModel->ip;
-            $model->modifiedBy = $sizeViewModel->modifiedBy;
+            $model->sizeName = $sizeViewModel->getSizeName();
+            $model->ip = $sizeViewModel->getIp();
+            $model->modifiedBy = $sizeViewModel->getModifiedBy();
             $model->createdAt = $date;
-            $model->updatedAt = $date;
             $model->save();
 
             $res->setModel($model);
@@ -66,8 +65,10 @@ class SizeRepository extends BaseRepository implements ISizeRepository
 
             Size::where('id',$sizeViewModel->id)
                 ->update([
-                    'sizeName' => $sizeViewModel->sizeName,
-                    'updatedAt' => $date
+                    'sizeName' => $sizeViewModel->getSizeName(),
+                    'updatedAt' => $date,
+                    'ip' => $sizeViewModel->getIp(),
+                    'modifiedBy' => $sizeViewModel->getModifiedBy()
                 ]);
 
             DB::commit();
@@ -106,7 +107,7 @@ class SizeRepository extends BaseRepository implements ISizeRepository
         DB::beginTransaction();
         try{
 
-            Size::where('id',$sizeViewModel->id)->delete();
+            Size::where('id',$sizeViewModel->getId())->delete();
             DB::commit();
 
             $res->setCode(CustomResponseCode::SUCCESS->value);

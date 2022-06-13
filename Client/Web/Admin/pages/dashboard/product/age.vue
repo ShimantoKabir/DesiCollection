@@ -290,17 +290,8 @@ export default {
     onDelete(){
       let config = {
         data: {
-          userInfoViewModel : {
-            email : this.cookieUserInfo.email,
-            href : window.location.pathname,
-            sessionId : this.cookieUserInfo.sessionId
-          },
-          ageViewModel : {
-            id : this.ageViewModel.id,
-            minAge : this.ageViewModel.minAge,
-            maxAge : this.ageViewModel.maxAge,
-            fixedAge : this.ageViewModel.fixedAge
-          }
+          userInfoViewModel : this.getAuthInfo(),
+          ageViewModel : this.ageViewModel
         }
       };
       this.$axios.$delete("/ages",config).then(res=>{

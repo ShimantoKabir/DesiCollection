@@ -224,14 +224,8 @@ export default {
     onDelete(){
       let config = {
         data: {
-          userInfoViewModel : {
-            email : this.cookieUserInfo.email,
-            href : window.location.pathname,
-            sessionId : this.cookieUserInfo.sessionId
-          },
-          fabricViewModel : {
-            id : this.fabricViewModel.id
-          }
+          userInfoViewModel : this.getAuthInfo(),
+          fabricViewModel : this.fabricViewModel
         }
       };
       this.$axios.$delete("/fabrics",config).then(res=>{

@@ -32,10 +32,6 @@ class ProductViewModel extends BaseViewModel
     public int $maxProfitPercentage;
     public int $singlePurchasePrice;
     public array $imageIds;
-    public ?string $ip;
-    public ?string $createdAt;
-    public ?string $updatedAt;
-    public ?int $modifiedBy;
     public ?string $startDate;
     public ?string $endDate;
     private ProductUseCase $productUseCase;
@@ -377,62 +373,6 @@ class ProductViewModel extends BaseViewModel
     }
 
     /**
-     * @return string|null
-     */
-    public function getIp(): ?string
-    {
-        return $this->ip;
-    }
-
-    /**
-     * @param string|null $ip
-     */
-    public function setIp(?string $ip): void
-    {
-        $this->ip = $ip;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getCreatedAt(): ?string
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * @param string|null $createdAt
-     */
-    public function setCreatedAt(?string $createdAt): void
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getUpdatedAt(): ?string
-    {
-        return $this->updatedAt;
-    }
-
-    /**
-     * @param string|null $updatedAt
-     */
-    public function setUpdatedAt(?string $updatedAt): void
-    {
-        $this->updatedAt = $updatedAt;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getModifiedBy(): ?int
-    {
-        return $this->modifiedBy;
-    }
-
-    /**
      * @param int|null $modifiedBy
      */
     public function setModifiedBy(?int $modifiedBy): void
@@ -480,12 +420,6 @@ class ProductViewModel extends BaseViewModel
 
     public function getIndexData(Request $request) : CustomResponse
     {
-        $authResponse = $this->checkAuthValidation($request,OperationType::READ);
-
-        if($authResponse != CustomResponseMsg::OK->value){
-            return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $authResponse);
-        }
-
         $this->setTypeId($request->productViewModel["typeId"]);
         $this->setSizeId($request->productViewModel["sizeId"]);
         $this->setColorId($request->productViewModel["colorId"]);
@@ -496,11 +430,7 @@ class ProductViewModel extends BaseViewModel
         $this->setBillNumber($request->productViewModel["billNumber"]);
         $this->setStartDate($request->productViewModel["startDate"]);
         $this->setEndDate($request->productViewModel["endDate"]);
-
-//        $x = new CustomResponse();
-//        $x->setCode(5);
-//        $x->setMsg("ok");
-
+        $this->setModifiedBy($request->modifiedBy);
         return $this->productUseCase->getIndexData($this);
     }
 

@@ -12,7 +12,7 @@ class FabricCtl extends Controller
 
     public FabricViewModel $fabricViewModel;
 
-    public function __construct(Request $request,FabricViewModel $fabricViewModel)
+    public function __construct(FabricViewModel $fabricViewModel)
     {
         $this->fabricViewModel = $fabricViewModel;
     }

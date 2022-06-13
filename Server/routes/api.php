@@ -65,40 +65,44 @@ Route::post('/colors', [ColorCtl::class, 'create']);
 Route::put('/colors', [ColorCtl::class, 'update']);
 Route::delete('/colors', [ColorCtl::class, 'delete']);
 
-Route::post('/fabrics/index', [FabricCtl::class, 'index']);
-Route::post('/fabrics', [FabricCtl::class, 'save']);
-Route::put('/fabrics', [FabricCtl::class, 'update']);
-Route::delete('/fabrics', [FabricCtl::class, 'remove']);
+Route::post('/fabrics/index', [FabricCtl::class, 'index'])->middleware(AdministrationMiddleware::class);
+Route::post('/fabrics', [FabricCtl::class, 'save'])->middleware(AdministrationMiddleware::class);
+Route::put('/fabrics', [FabricCtl::class, 'update'])->middleware(AdministrationMiddleware::class);
+Route::delete('/fabrics', [FabricCtl::class, 'remove'])->middleware(AdministrationMiddleware::class);
 
-Route::post('/sizes/index', [SizeCtl::class, 'index']);
-Route::post('/sizes', [SizeCtl::class, 'save']);
-Route::put('/sizes', [SizeCtl::class, 'update']);
-Route::delete('/sizes', [SizeCtl::class, 'remove']);
+Route::post('/sizes/index', [SizeCtl::class, 'index'])->middleware(AdministrationMiddleware::class);
+Route::post('/sizes', [SizeCtl::class, 'save'])->middleware(AdministrationMiddleware::class);
+Route::put('/sizes', [SizeCtl::class, 'update'])->middleware(AdministrationMiddleware::class);
+Route::delete('/sizes', [SizeCtl::class, 'remove'])->middleware(AdministrationMiddleware::class);
 
-Route::post('/ages/index', [AgeCtl::class, 'index']);
-Route::post('/ages', [AgeCtl::class, 'save']);
-Route::put('/ages', [AgeCtl::class, 'update']);
-Route::delete('/ages', [AgeCtl::class, 'remove']);
+Route::post('/ages/index', [AgeCtl::class, 'index'])->middleware(AdministrationMiddleware::class);
+Route::post('/ages', [AgeCtl::class, 'save'])->middleware(AdministrationMiddleware::class);
+Route::put('/ages', [AgeCtl::class, 'update'])->middleware(AdministrationMiddleware::class);
+Route::delete('/ages', [AgeCtl::class, 'remove'])->middleware(AdministrationMiddleware::class);
 
-Route::post('/brands/index', [BrandCtl::class, 'index']);
-Route::post('/brands', [BrandCtl::class, 'save']);
-Route::put('/brands', [BrandCtl::class, 'update']);
-Route::delete('/brands', [BrandCtl::class, 'remove']);
+Route::post('/brands/index', [BrandCtl::class, 'index'])->middleware(AdministrationMiddleware::class);
+Route::post('/brands', [BrandCtl::class, 'save'])->middleware(AdministrationMiddleware::class);
+Route::put('/brands', [BrandCtl::class, 'update'])->middleware(AdministrationMiddleware::class);
+Route::delete('/brands', [BrandCtl::class, 'remove'])->middleware(AdministrationMiddleware::class);
 
-Route::post('/types/index', [TypeCtl::class, 'index']);
-Route::post('/types', [TypeCtl::class, 'save']);
-Route::put('/types', [TypeCtl::class, 'update']);
-Route::delete('/types', [TypeCtl::class, 'remove']);
+Route::post('/types/index', [TypeCtl::class, 'index'])->middleware(AdministrationMiddleware::class);
+Route::post('/types', [TypeCtl::class, 'save'])->middleware(AdministrationMiddleware::class);
+Route::put('/types', [TypeCtl::class, 'update'])->middleware(AdministrationMiddleware::class);
+Route::delete('/types', [TypeCtl::class, 'remove'])->middleware(AdministrationMiddleware::class);
 
-Route::post('/user-types/index', [ProductUserTypeCtl::class, 'index']);
-Route::post('/user-types', [ProductUserTypeCtl::class, 'save']);
-Route::put('/user-types', [ProductUserTypeCtl::class, 'update']);
-Route::delete('/user-types', [ProductUserTypeCtl::class, 'remove']);
+Route::post('/user-types/index', [ProductUserTypeCtl::class, 'index'])
+    ->middleware(AdministrationMiddleware::class);
+Route::post('/user-types', [ProductUserTypeCtl::class, 'save'])
+    ->middleware(AdministrationMiddleware::class);
+Route::put('/user-types', [ProductUserTypeCtl::class, 'update'])
+    ->middleware(AdministrationMiddleware::class);
+Route::delete('/user-types', [ProductUserTypeCtl::class, 'remove'])
+    ->middleware(AdministrationMiddleware::class);
 
-Route::post('/products/index', [ProductCtl::class, 'index']);
-Route::post('/products', [ProductCtl::class, 'save']);
-Route::put('/products', [ProductCtl::class, 'update']);
-Route::delete('/products', [ProductCtl::class, 'remove']);
+Route::post('/products/index', [ProductCtl::class, 'index'])->middleware(AdministrationMiddleware::class);
+Route::post('/products', [ProductCtl::class, 'save'])->middleware(AdministrationMiddleware::class);
+Route::put('/products', [ProductCtl::class, 'update'])->middleware(AdministrationMiddleware::class);
+Route::delete('/products', [ProductCtl::class, 'remove'])->middleware(AdministrationMiddleware::class);
 
 Route::post('/suppliers/index', [SupplierCtl::class, 'index'])->middleware(AdministrationMiddleware::class);
 Route::post('/suppliers', [SupplierCtl::class, 'save'])->middleware(AdministrationMiddleware::class);

@@ -11,7 +11,7 @@ class TypeCtl extends Controller
 {
     public TypeViewModel $typeViewModel;
 
-    public function __construct(Request $request,TypeViewModel $typeViewModel)
+    public function __construct(TypeViewModel $typeViewModel)
     {
         $this->typeViewModel = $typeViewModel;
     }

@@ -12,7 +12,7 @@ class ProductUserTypeCtl extends Controller
 {
     public ProductUserTypeViewModel $productUserTypeViewModel;
 
-    public function __construct(Request $request,ProductUserTypeViewModel $productUserTypeViewModel)
+    public function __construct(ProductUserTypeViewModel $productUserTypeViewModel)
     {
         $this->productUserTypeViewModel = $productUserTypeViewModel;
     }

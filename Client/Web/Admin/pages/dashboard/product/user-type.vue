@@ -231,14 +231,8 @@ export default {
     onDelete(){
       let config = {
         data: {
-          userInfoViewModel : {
-            email : this.cookieUserInfo.email,
-            href : window.location.pathname,
-            sessionId : this.cookieUserInfo.sessionId
-          },
-          userTypeViewModel : {
-            id : this.userTypeViewModel.id
-          }
+          userInfoViewModel : this.getAuthInfo(),
+          userTypeViewModel : this.userTypeViewModel
         }
       };
       this.$axios.$delete("/user-types",config).then(res=>{

@@ -11,7 +11,7 @@ class SizeCtl extends Controller
 {
     public SizeViewModel $sizeViewModel;
 
-    public function __construct(Request $request,SizeViewModel $sizeViewModel)
+    public function __construct(SizeViewModel $sizeViewModel)
     {
         $this->sizeViewModel = $sizeViewModel;
     }

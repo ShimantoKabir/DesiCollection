@@ -47,23 +47,11 @@ class AgeViewModel extends BaseViewModel
 
     public function getIndexData(Request $request) : CustomResponse
     {
-        $authResponse = $this->checkAuthValidation($request,OperationType::READ);
-
-        if($authResponse != CustomResponseMsg::OK->value){
-            return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $authResponse);
-        }
-
         return $this->ageUseCase->getIndexData();
     }
 
     public function save(Request $request) : CustomResponse
     {
-        $authResponse = $this->checkAuthValidation($request,OperationType::CREATE);
-
-        if($authResponse != CustomResponseMsg::OK->value){
-            return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $authResponse);
-        }
-
         $inputValidationResponse = $this->checkInputValidation($request->ageViewModel,[
             'minAge' => 'int',
             'maxAge' => 'int',
@@ -80,7 +68,7 @@ class AgeViewModel extends BaseViewModel
         $this->setFixedAgeEnableStatus($request->ageViewModel["isFixedAgeEnable"]);
 
         $this->setIp($request->ip());
-        $this->setModifiedBy(0);
+        $this->setModifiedBy($request->modifiedBy);
 
         return $this->ageUseCase->save($this);
 
@@ -88,12 +76,6 @@ class AgeViewModel extends BaseViewModel
 
     public function update(Request $request) : CustomResponse
     {
-        $authResponse = $this->checkAuthValidation($request,OperationType::CREATE);
-
-        if($authResponse != CustomResponseMsg::OK->value){
-            return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $authResponse);
-        }
-
         $inputValidationResponse = $this->checkInputValidation($request->ageViewModel,[
             'minAge' => 'int',
             'maxAge' => 'int',
@@ -110,20 +92,13 @@ class AgeViewModel extends BaseViewModel
         $this->setFixedAge($request->ageViewModel["fixedAge"]);
         $this->setFixedAgeEnableStatus($request->ageViewModel["isFixedAgeEnable"]);
         $this->setIp($request->ip());
-        $this->setModifiedBy(0);
+        $this->setModifiedBy($request->modifiedBy);
 
         return $this->ageUseCase->update($this);
     }
 
     public function remove(Request $request) : CustomResponse
     {
-
-        $authResponse = $this->checkAuthValidation($request,OperationType::CREATE);
-
-        if($authResponse != CustomResponseMsg::OK->value){
-            return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $authResponse);
-        }
-
         $inputValidationResponse = $this->checkInputValidation($request->ageViewModel,[
             'id' => 'required|int'
         ]);

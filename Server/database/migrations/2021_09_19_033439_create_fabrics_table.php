@@ -18,7 +18,7 @@ class CreateFabricsTable extends Migration
             $table->string("fabricName");
             $table->string("ip")->nullable();
             $table->dateTime("createdAt");
-            $table->dateTime("updatedAt");
+            $table->dateTime("updatedAt")->nullable();
             $table->integer("modifiedBy")->nullable();
         });
     }
