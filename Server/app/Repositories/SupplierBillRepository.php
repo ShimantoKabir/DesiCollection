@@ -25,6 +25,7 @@ class SupplierBillRepository extends BaseRepository implements ISupplierBillRepo
             "supplier_bills.debitAmount",
             "supplier_bills.creditAmount",
             "supplier_bills.totalQuantity",
+            "supplier_bills.imageName",
             DB::raw($this->getImageRawSql("supplier_bills.imageName","imagePath")),
             'suppliers.supplierName'
         )
@@ -97,21 +98,24 @@ class SupplierBillRepository extends BaseRepository implements ISupplierBillRepo
         try{
 
             SupplierBill::where('id',$supplierBillViewModel->getId())
-                ->update([
-                    "supplierId" => $supplierBillViewModel->getSupplierId(),
-                    "billNumber" => $supplierBillViewModel->getBillNumber(),
-                    "billingDate" => $supplierBillViewModel->getBillingDate(),
-                    "debitAmount" => $supplierBillViewModel->getDebitAmount(),
-                    "totalQuantity" => $supplierBillViewModel->getTotalQuantity(),
-                    'imageName' => $supplierBillViewModel->getImageName(),
-                    "ip" => $supplierBillViewModel->getIp(),
-                    "updatedAt" => $date,
-                    "modifiedBy" => $supplierBillViewModel->getModifiedBy()
-                ]);
+            ->update([
+                "supplierId" => $supplierBillViewModel->getSupplierId(),
+                "billNumber" => $supplierBillViewModel->getBillNumber(),
+                "billingDate" => $supplierBillViewModel->getBillingDate(),
+                "debitAmount" => $supplierBillViewModel->getDebitAmount(),
+                "totalQuantity" => $supplierBillViewModel->getTotalQuantity(),
+                'imageName' => $supplierBillViewModel->getImageName(),
+                "ip" => $supplierBillViewModel->getIp(),
+                "updatedAt" => $date,
+                "modifiedBy" => $supplierBillViewModel->getModifiedBy()
+            ]);
+
+            $supplierBillViewModel->setImagePath($this->getAssetPrefix().$supplierBillViewModel->getImageName());
 
             DB::commit();
             $res->setCode(CustomResponseCode::SUCCESS->value);
             $res->setMsg(CustomResponseMsg::SUCCESS->value);
+            $res->setModel($supplierBillViewModel);
 
         }catch (\Exception $e){
             DB::rollBack();

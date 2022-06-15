@@ -13,7 +13,7 @@ class BaseViewModel
     public ?string $ip;
     public ?int $modifiedBy;
     public array $validationFieldForId = [
-        'id' => 'int|string',
+        'id' => 'required|int'
     ];
 
     /**

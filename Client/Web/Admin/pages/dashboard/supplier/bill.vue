@@ -324,7 +324,6 @@ export default {
 
           let objIndex = this.supplierBillViewModel.supplierBills
             .findIndex((obj => obj.id === this.supplierBillViewModel.id));
-
           let supplier = this.supplierBillViewModel.suppliers
             .find((obj => obj.id === this.supplierBillViewModel.supplierId));
 

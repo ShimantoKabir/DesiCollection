@@ -25,8 +25,8 @@ class SupplierBillViewModel extends BaseViewModel
         'supplierId' => 'required|int',
         'billNumber' => 'required|string',
         'billingDate' => 'required|string',
-        'debitAmount' => 'required|string',
-        'totalQuantity' => 'required|string'
+        'debitAmount' => 'required|int',
+        'totalQuantity' => 'required|int'
     ];
 
     public function __construct(SupplierBillUseCases $supplierBillUseCases)
@@ -245,7 +245,7 @@ class SupplierBillViewModel extends BaseViewModel
 
         $file = $request->hasFile('billImage') ? $request->file("billImage") : null;
 
-        $this->setId($request->supplierBillViewModel["id"]);
+        $this->setId($supplierBillViewModel["id"]);
         $this->setBillImage($file);
         $this->setImagePath($supplierBillViewModel["imagePath"]);
         $this->setImageName($supplierBillViewModel["imageName"]);

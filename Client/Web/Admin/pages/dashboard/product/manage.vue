@@ -27,10 +27,120 @@
                 <div class="modal-body">
                   <form :class="formClassNames.join(' ')" novalidate>
                     <div class="mb-3">
-                      <label for="colorInput" class="form-label">Product</label>
-                      <input v-model="productViewModel.productName" type="text" class="form-control" id="colorInput" required>
+                      <label for="fabricSelectInput" class="form-label">Fabric</label>
+                      <select id="fabricSelectInput"
+                              v-model="productViewModel.fabricId"
+                              class="form-select" >
+                        <option v-bind:value="0">--select--</option>
+                        <option v-bind:value="f.id" v-for="f in productViewModel.fabrics" >
+                          {{f.fabricName}}
+                        </option>
+                      </select>
                       <div class="invalid-feedback">
-                        Please give product name!
+                        Please select fabric!
+                      </div>
+                      <div class="valid-feedback">
+                        Looks good!
+                      </div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="sizeSelectInput" class="form-label">Size</label>
+                      <select id="sizeSelectInput"
+                              v-model="productViewModel.sizeId"
+                              class="form-select" >
+                        <option v-bind:value="0">--select--</option>
+                        <option v-bind:value="s.id" v-for="s in productViewModel.sizes" >
+                          {{s.sizeName}}
+                        </option>
+                      </select>
+                      <div class="invalid-feedback">
+                        Please select size!
+                      </div>
+                      <div class="valid-feedback">
+                        Looks good!
+                      </div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="ageSelectInput" class="form-label">Age</label>
+                      <select id="ageSelectInput"
+                              v-model="productViewModel.userAgeId"
+                              class="form-select" >
+                        <option v-bind:value="0">--select--</option>
+                        <option v-bind:value="a.id" v-for="a in productViewModel.ages" >
+                          <template v-if="a.fixedAge">Fixed Age - {{a.fixedAge}}</template>
+                          <template v-else>Min Age - {{a.maxAge}}, Max Age - {{a.minAge}}</template>
+                        </option>
+                      </select>
+                      <div class="invalid-feedback">
+                        Please select age!
+                      </div>
+                      <div class="valid-feedback">
+                        Looks good!
+                      </div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="colorSelectInput" class="form-label">Color</label>
+                      <select id="colorSelectInput"
+                              v-model="productViewModel.colorId"
+                              class="form-select" >
+                        <option v-bind:value="0">--select--</option>
+                        <option v-bind:value="c.id" v-for="c in productViewModel.colors" >
+                          {{c.colorName}}
+                        </option>
+                      </select>
+                      <div class="invalid-feedback">
+                        Please select color!
+                      </div>
+                      <div class="valid-feedback">
+                        Looks good!
+                      </div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="typeSelectInput" class="form-label">Type</label>
+                      <select id="typeSelectInput"
+                              v-model="productViewModel.typeId"
+                              class="form-select" >
+                        <option v-bind:value="0">--select--</option>
+                        <option v-bind:value="t.id" v-for="t in productViewModel.types" >
+                          {{t.typeName}}
+                        </option>
+                      </select>
+                      <div class="invalid-feedback">
+                        Please select type!
+                      </div>
+                      <div class="valid-feedback">
+                        Looks good!
+                      </div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="userSelectInput" class="form-label">User</label>
+                      <select id="userSelectInput"
+                              v-model="productViewModel.userTypeId"
+                              class="form-select" >
+                        <option v-bind:value="0">--select--</option>
+                        <option v-bind:value="u.id" v-for="u in productViewModel.userTypes" >
+                          {{u.userTypeName}}
+                        </option>
+                      </select>
+                      <div class="invalid-feedback">
+                        Please select user!
+                      </div>
+                      <div class="valid-feedback">
+                        Looks good!
+                      </div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="billSelectInput" class="form-label">Bill Number</label>
+                      <select id="billSelectInput"
+                              v-model="productViewModel.billNumber"
+                              class="form-select" >
+                        <option v-bind:value="null">--select--</option>
+                        <option v-bind:value="b.billNumber" v-for="b in productViewModel.supplierBills" >
+                          {{b.billNumber}}
+                        </option>
+                      </select>
+                      <div class="invalid-feedback">
+                        Please select user!
                       </div>
                       <div class="valid-feedback">
                         Looks good!
@@ -140,12 +250,20 @@ export default {
         typeName : "",
         userTypeId : 0,
         userTypeName : "",
-        billNumber : "",
+        billNumber : null,
         availableQuantity : 0,
         singlePurchasePrice : 0,
         maxOfferPercentage : 0,
         maxProfitPercentage : 0,
         products : [],
+        sizes : [],
+        fabrics : [],
+        ages : [],
+        brands : [],
+        types : [],
+        userTypes : [],
+        colors : [],
+        supplierBills : [],
         startDate : '',
         endDate: ''
       },
@@ -160,6 +278,14 @@ export default {
       }).then(res=>{
         if(res.code === this.networkState.SUCCESS){
           this.productViewModel.products = res.products;
+          this.productViewModel.sizes = res.sizes;
+          this.productViewModel.fabrics = res.fabrics;
+          this.productViewModel.ages = res.ages;
+          this.productViewModel.brands = res.brands;
+          this.productViewModel.types = res.types;
+          this.productViewModel.userTypes = res.userTypes;
+          this.productViewModel.colors = res.colors;
+          this.productViewModel.supplierBills = res.supplierBills;
           this.showSuccess(this,res.msg);
         }else {
           this.showErrorMsg(this,this.opState.READ,res.msg);

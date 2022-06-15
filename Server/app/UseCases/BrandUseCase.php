@@ -39,17 +39,14 @@ class BrandUseCase extends BaseUseCase
 
     public function update(BrandViewModel $brandViewModel) : CustomResponse
     {
-        if (!is_null($brandViewModel->getImageName()) &&
+        if (!is_null($brandViewModel->getBrandImage()) &&
             $this->brandRepository->IsFileExistInFtp($brandViewModel->getImageName())){
+
             $isDeleted = $this->brandRepository->deleteFileFromFtp($brandViewModel->getImageName());
             if ($isDeleted){
-                $brandViewModel->setImageName(null);
+                $billImageName = $this->brandRepository->uploadFileToFtp($brandViewModel->getBrandImage());
+                $brandViewModel->setImageName($billImageName);
             }
-        }
-
-        if (!is_null($brandViewModel->getBrandImage())){
-            $brandImageName = $this->brandRepository->uploadFileToFtp($brandViewModel->getBrandImage());
-            $brandViewModel->setImageName($brandImageName);
         }
 
         return $this->brandRepository->update($brandViewModel);
@@ -57,7 +54,6 @@ class BrandUseCase extends BaseUseCase
 
     public function remove(BrandViewModel $brandViewModel) : CustomResponse
     {
-
         if (!is_null($brandViewModel->getImageName()) &&
             $this->brandRepository->IsFileExistInFtp($brandViewModel->getImageName())){
             $this->brandRepository->deleteFileFromFtp($brandViewModel->getImageName());

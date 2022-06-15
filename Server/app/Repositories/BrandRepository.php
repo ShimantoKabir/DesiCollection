@@ -74,15 +74,16 @@ class BrandRepository extends BaseRepository implements IBrandRepository
                 ->update([
                     'brandName' => $brandViewModel->getBrandName(),
                     'imageName' => $brandViewModel->getImageName(),
-                    'updatedAt' => $date,
                     'ip' => $brandViewModel->getIp(),
+                    'updatedAt' => $date,
                     'modifiedBy' => $brandViewModel->getModifiedBy()
                 ]);
+
+            $brandViewModel->setImagePath($this->getAssetPrefix().$brandViewModel->getImageName());
 
             DB::commit();
             $res->setCode(CustomResponseCode::SUCCESS->value);
             $res->setMsg(CustomResponseMsg::SUCCESS->value);
-            $brandViewModel->setImagePath($this->getAssetPrefix().$brandViewModel->getImageName());
             $res->setModel($brandViewModel);
 
         }catch (\Exception $e){

@@ -45,18 +45,14 @@ class SupplierBillUseCases extends BaseUseCase
 
     public function update(SupplierBillViewModel $supplierBillViewModel) : CustomResponse
     {
-
-        if (!is_null($supplierBillViewModel->getImageName()) &&
+        if (!is_null($supplierBillViewModel->getBillImage()) &&
             $this->supplierBillRepository->IsFileExistInFtp($supplierBillViewModel->getImageName())){
+
             $isDeleted = $this->supplierBillRepository->deleteFileFromFtp($supplierBillViewModel->getImageName());
             if ($isDeleted){
-                $supplierBillViewModel->setImageName(null);
+                $billImageName = $this->supplierBillRepository->uploadFileToFtp($supplierBillViewModel->getBillImage());
+                $supplierBillViewModel->setImageName($billImageName);
             }
-        }
-
-        if (!is_null($supplierBillViewModel->getBillImage())){
-            $billImageName = $this->supplierBillRepository->uploadFileToFtp($supplierBillViewModel->getBrandImage());
-            $supplierBillViewModel->setImageName($billImageName);
         }
 
         return $this->supplierBillRepository->update($supplierBillViewModel);
