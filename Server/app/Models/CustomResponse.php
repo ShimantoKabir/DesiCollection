@@ -22,12 +22,29 @@ class CustomResponse
     public array $suppliers;
     public array $addresses;
     public ?object $address;
+    public ?array $images;
 
     public function setResponse(int $code, string $msg) : CustomResponse
     {
         $this->code = $code;
         $this->msg = $msg;
         return $this;
+    }
+
+    /**
+     * @param array|null $images
+     */
+    public function setImages(?array $images): void
+    {
+        $this->images = $images;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getImages(): ?array
+    {
+        return $this->images;
     }
 
     public function setCode(int $code){

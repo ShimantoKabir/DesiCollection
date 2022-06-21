@@ -6,16 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class AppImage extends Model
 {
-    protected $table = "AppImage";
+    protected $table = "app_images";
     public $timestamps = false;
     protected $fillable = [
         'id',
-        'image_url',
-        'is_active',
-        'reference_id',
+        'imageName',
+        'imageType',
+        'isActive',
+        'referenceId',
         'ip',
-        'created_at',
-        'updated_at',
-        'modified_by'
+        'createdAt',
+        'updatedAt',
+        'modifiedBy'
     ];
 }

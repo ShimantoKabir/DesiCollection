@@ -25,16 +25,16 @@ class ProductViewModel extends BaseViewModel
     public ?int $userTypeId;
     public ?string $userTypeName;
     public ?int $userAgeId;
-    public ?int $billNumber;
+    public ?string $billNumber;
     public int $totalQuantity;
     public int $availableQuantity;
-    public int $maxOfferPercentage;
-    public int $maxProfitPercentage;
+    public int $minOfferPercentage;
+    public int $minProfitPercentage;
     public int $singlePurchasePrice;
-    public array $imageIds;
     public ?string $startDate;
     public ?string $endDate;
     private ProductUseCase $productUseCase;
+    public ?array $images;
 
     /**
      * @return string|null
@@ -261,17 +261,17 @@ class ProductViewModel extends BaseViewModel
     }
 
     /**
-     * @return int|null
+     * @return string|null
      */
-    public function getBillNumber(): ?int
+    public function getBillNumber(): ?string
     {
         return $this->billNumber;
     }
 
     /**
-     * @param int|null $billNumber
+     * @param string|null $billNumber
      */
-    public function setBillNumber(?int $billNumber): void
+    public function setBillNumber(?string $billNumber): void
     {
         $this->billNumber = $billNumber;
     }
@@ -306,38 +306,6 @@ class ProductViewModel extends BaseViewModel
     public function setAvailableQuantity(int $availableQuantity): void
     {
         $this->availableQuantity = $availableQuantity;
-    }
-
-    /**
-     * @return int
-     */
-    public function getMaxOfferPercentage(): int
-    {
-        return $this->maxOfferPercentage;
-    }
-
-    /**
-     * @return int
-     */
-    public function getMaxProfitPercentage(): int
-    {
-        return $this->maxProfitPercentage;
-    }
-
-    /**
-     * @param int $maxOfferPercentage
-     */
-    public function setMaxOfferPercentage(int $maxOfferPercentage): void
-    {
-        $this->maxOfferPercentage = $maxOfferPercentage;
-    }
-
-    /**
-     * @param int $maxProfitPercentage
-     */
-    public function setMaxProfitPercentage(int $maxProfitPercentage): void
-    {
-        $this->maxProfitPercentage = $maxProfitPercentage;
     }
 
     /**
@@ -412,11 +380,42 @@ class ProductViewModel extends BaseViewModel
         return $this->endDate;
     }
 
+    /**
+     * @return int
+     */
+    public function getMinOfferPercentage(): int
+    {
+        return $this->minOfferPercentage;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMinProfitPercentage(): int
+    {
+        return $this->minProfitPercentage;
+    }
+
+    /**
+     * @param int $minOfferPercentage
+     */
+    public function setMinOfferPercentage(int $minOfferPercentage): void
+    {
+        $this->minOfferPercentage = $minOfferPercentage;
+    }
+
+    /**
+     * @param int $minProfitPercentage
+     */
+    public function setMinProfitPercentage(int $minProfitPercentage): void
+    {
+        $this->minProfitPercentage = $minProfitPercentage;
+    }
+
     public function __construct(ProductUseCase $productUseCase)
     {
         $this->productUseCase = $productUseCase;
     }
-
 
     public function getIndexData(Request $request) : CustomResponse
     {
@@ -432,6 +431,54 @@ class ProductViewModel extends BaseViewModel
         $this->setEndDate($request->productViewModel["endDate"]);
         $this->setModifiedBy($request->modifiedBy);
         return $this->productUseCase->getIndexData($this);
+    }
+
+    public function save(Request $request) : CustomResponse
+    {
+
+        $productViewModel = json_decode($request->productViewModel,true);
+
+        $inputValidationResponse = $this->checkInputValidation($productViewModel,[
+            'billNumber' => 'required|string',
+            'totalQuantity' => 'required|int',
+            'minOfferPercentage' => 'required|int',
+            'minProfitPercentage' => 'required|int',
+            'singlePurchasePrice' => 'required|int'
+        ]);
+
+        if($inputValidationResponse != CustomResponseMsg::OK->value){
+            return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $inputValidationResponse);
+        }
+
+        if($request->hasFile('productImages')){
+            $imageValidationResponse = $this->checkInputValidation($request->all(),[
+                'productImages' => 'required',
+                'productImages.*' => 'mimes:jpg,png|max:2048'
+            ]);
+
+            if($imageValidationResponse != CustomResponseMsg::OK->value){
+                return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $imageValidationResponse);
+            }
+        }
+
+        $this->setTypeId($productViewModel["typeId"]);
+        $this->setSizeId($productViewModel["sizeId"]);
+        $this->setColorId($productViewModel["colorId"]);
+        $this->setBrandId($productViewModel["brandId"]);
+        $this->setFabricId($productViewModel["fabricId"]);
+        $this->setUserAgeId($productViewModel["userAgeId"]);
+        $this->setUserTypeId($productViewModel["userTypeId"]);
+        $this->setBillNumber($productViewModel["billNumber"]);
+        $this->setTotalQuantity($productViewModel["totalQuantity"]);
+        $this->setSinglePurchasePrice($productViewModel["singlePurchasePrice"]);
+        $this->setMinOfferPercentage($productViewModel["minOfferPercentage"]);
+        $this->setMinProfitPercentage($productViewModel["minProfitPercentage"]);
+        $this->setIp($request->ip());
+        $this->setModifiedBy($request->modifiedBy);
+        $file = $request->hasFile('productImages') ? $request->file("productImages") : null;
+        $this->setImages($file);
+        return $this->productUseCase->save($this);
+
     }
 
 }

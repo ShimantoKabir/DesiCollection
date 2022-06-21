@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Enums\CustomResponseCode;
 use App\Enums\CustomResponseMsg;
 use App\Models\CustomResponse;
+use App\Models\Product;
 use App\Repositories\Interfaces\IProductRepository;
 use App\ViewModels\ProductViewModel;
 use Illuminate\Support\Facades\DB;
@@ -23,7 +24,44 @@ class ProductRepository extends BaseRepository implements IProductRepository
 
     public function create(ProductViewModel $productViewModel): CustomResponse
     {
-        // TODO: Implement create() method.
+        $date = $this->getCurrentDate();
+        $res = new CustomResponse();
+        DB::beginTransaction();
+        try{
+
+            $model = new Product();
+            $model->code = "SKU".time();
+            $model->typeId = $productViewModel->getTypeId();
+            $model->sizeId = $productViewModel->getSizeId();
+            $model->colorId = $productViewModel->getColorId();
+            $model->brandId = $productViewModel->getBrandId();
+            $model->fabricId = $productViewModel->getFabricId();
+            $model->userAgeId = $productViewModel->getUserAgeId();
+            $model->userTypeId = $productViewModel->getUserTypeId();
+            $model->billNumber = $productViewModel->getBillNumber();
+            $model->totalQuantity = $productViewModel->getTotalQuantity();
+            $model->availableQuantity = $productViewModel->getTotalQuantity();
+            $model->minOfferPercentage = $productViewModel->getMinOfferPercentage();
+            $model->minProfitPercentage = $productViewModel->getMinProfitPercentage();
+            $model->singlePurchasePrice = $productViewModel->getSinglePurchasePrice();
+            $model->ip = $productViewModel->getIp();
+            $model->createdAt = $date;
+            $model->modifiedBy = $productViewModel->getModifiedBy();
+            $model->save();
+
+            $res->setModel($model);
+            $res->setCode(CustomResponseCode::SUCCESS->value);
+            $res->setMsg(CustomResponseMsg::SUCCESS->value);
+
+            DB::commit();
+
+        }catch (\Exception $e){
+            DB::rollBack();
+            $res->setCode(CustomResponseCode::ERROR->value);
+            $res->setMsg($e->getMessage());
+        }
+
+        return $res;
     }
 
     public function update(ProductViewModel $productViewModel): CustomResponse
@@ -48,6 +86,7 @@ class ProductRepository extends BaseRepository implements IProductRepository
 
     public function readProduct(ProductViewModel $productViewModel): array
     {
+
         $productQuery = DB::table('products')
             ->join('sizes', 'sizes.id', '=', 'products.sizeId')
             ->join('colors', 'colors.id', '=', 'products.colorId')
@@ -110,6 +149,6 @@ class ProductRepository extends BaseRepository implements IProductRepository
             );
         }
 
-        return $productQuery->get()->partition(15)->toArray();
+        return $productQuery->get()->toArray();
     }
 }

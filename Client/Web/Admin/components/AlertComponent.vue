@@ -78,7 +78,7 @@ export default {
     }
   },
   mounted() {
-    console.log("alertOpState", this.opState);
+
   },
   data(){
     return{

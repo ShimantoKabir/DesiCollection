@@ -15,12 +15,15 @@ class CreateAppImagesTable extends Migration
     {
         Schema::create('app_images', function (Blueprint $table) {
             $table->id();
-            $table->string("image_url");
-            $table->boolean("is_active")->default(false);
-            $table->integer("reference_id")->comment("can be user id/ can be product id/ others");
+            $table->string("imageName");
+            $table->tinyInteger("imageType");
+            $table->boolean("isActive")->default(false);
+            $table->integer("referenceId")
+                ->comment("can be user id/ can be product id/ others");
             $table->string("ip")->nullable();
-            $table->timestamps();
-            $table->integer("modified_by")->nullable();
+            $table->dateTime("createdAt");
+            $table->dateTime("updatedAt")->nullable();
+            $table->integer("modifiedBy")->nullable();
         });
     }
 
