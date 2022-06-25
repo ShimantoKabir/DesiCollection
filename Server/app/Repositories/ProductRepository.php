@@ -66,12 +66,63 @@ class ProductRepository extends BaseRepository implements IProductRepository
 
     public function update(ProductViewModel $productViewModel): CustomResponse
     {
-        // TODO: Implement update() method.
+        $date = $this->getCurrentDate();
+        $res = new CustomResponse();
+        DB::beginTransaction();
+        try{
+
+            Product::where('id',$productViewModel->getId())
+            ->update([
+                'typeId' => $productViewModel->getTypeId(),
+                'sizeId' => $productViewModel->getSizeId(),
+                'colorId' => $productViewModel->getColorId(),
+                'brandId' => $productViewModel->getBrandId(),
+                'fabricId' => $productViewModel->getFabricId(),
+                'userAgeId' => $productViewModel->getUserAgeId(),
+                'userTypeId' => $productViewModel->getUserTypeId(),
+                'billNumber' => $productViewModel->getBillNumber(),
+                'totalQuantity' => $productViewModel->getTotalQuantity(),
+                'minOfferPercentage' => $productViewModel->getMinOfferPercentage(),
+                'minProfitPercentage' => $productViewModel->getMinProfitPercentage(),
+                'singlePurchasePrice' => $productViewModel->getSinglePurchasePrice(),
+                'ip' => $productViewModel->getIp(),
+                'updatedAt' => $date,
+                'modifiedBy' => $productViewModel->getModifiedBy()
+            ]);
+
+            DB::commit();
+            $res->setCode(CustomResponseCode::SUCCESS->value);
+            $res->setMsg(CustomResponseMsg::SUCCESS->value);
+            $res->setModel($productViewModel);
+
+        }catch (\Exception $e){
+            DB::rollBack();
+            $res->setCode(CustomResponseCode::ERROR->value);
+            $res->setMsg($e->getMessage());
+        }
+
+        return $res;
     }
 
     public function delete(ProductViewModel $productViewModel): CustomResponse
     {
-        // TODO: Implement delete() method.
+        $res = new CustomResponse();
+        DB::beginTransaction();
+        try{
+
+            Product::where('id',$productViewModel->getId())->delete();
+
+            DB::commit();
+            $res->setCode(CustomResponseCode::SUCCESS->value);
+            $res->setMsg(CustomResponseMsg::SUCCESS->value);
+
+        }catch (\Exception $e){
+            DB::rollBack();
+            $res->setCode(CustomResponseCode::ERROR->value);
+            $res->setMsg($e->getMessage());
+        }
+
+        return $res;
     }
 
     public function isProductExist(ProductViewModel $productViewModel): CustomResponse

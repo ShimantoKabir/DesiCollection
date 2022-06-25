@@ -118,4 +118,66 @@ class AppImageRepository extends BaseRepository implements IAppImageRepository
             DB::raw($this->getImageRawSql("imageName","imagePath"))
         )->where("referenceId",$referenceId)->get()->toArray();
     }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function readyByIds(array $ids): array
+    {
+        return AppImage::select(
+            "id",
+            "imageName"
+        )->whereIn('id', $ids)->get()->toArray();
+    }
+
+    /**
+     * @param array $ids
+     * @return CustomResponse
+     */
+    public function deleteByIds(array $ids): CustomResponse
+    {
+        $res = new CustomResponse();
+        DB::beginTransaction();
+        try{
+
+            AppImage::whereIn('id',$ids)->delete();
+            DB::commit();
+
+            $res->setCode(CustomResponseCode::SUCCESS->value);
+            $res->setMsg(CustomResponseMsg::SUCCESS->value);
+
+        }catch (\Exception $e){
+            DB::rollBack();
+            $res->setCode(CustomResponseCode::ERROR->value);
+            $res->setMsg($e->getMessage());
+        }
+
+        return $res;
+    }
+
+    /**
+     * @param int $referenceId
+     * @return CustomResponse
+     */
+    public function deleteByReferenceId(int $referenceId): CustomResponse
+    {
+        $res = new CustomResponse();
+        DB::beginTransaction();
+        try{
+
+            AppImage::where('referenceId',$referenceId)->delete();
+            DB::commit();
+
+            $res->setCode(CustomResponseCode::SUCCESS->value);
+            $res->setMsg(CustomResponseMsg::SUCCESS->value);
+
+        }catch (\Exception $e){
+            DB::rollBack();
+            $res->setCode(CustomResponseCode::ERROR->value);
+            $res->setMsg($e->getMessage());
+        }
+
+        return $res;
+    }
 }

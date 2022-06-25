@@ -4,7 +4,6 @@ namespace App\ViewModels;
 
 use App\Enums\CustomResponseCode;
 use App\Enums\CustomResponseMsg;
-use App\Enums\OperationType;
 use App\Models\CustomResponse;
 use App\UseCases\ProductUseCase;
 use Illuminate\Http\Request;
@@ -33,8 +32,9 @@ class ProductViewModel extends BaseViewModel
     public int $singlePurchasePrice;
     public ?string $startDate;
     public ?string $endDate;
-    private ProductUseCase $productUseCase;
     public ?array $images;
+    public ?array $deletedImageIds;
+    private ProductUseCase $productUseCase;
 
     /**
      * @return string|null
@@ -325,19 +325,19 @@ class ProductViewModel extends BaseViewModel
     }
 
     /**
-     * @return array
+     * @param array|null $images
      */
-    public function getImages(): array
+    public function setImages(?array $images): void
     {
-        return $this->images;
+        $this->images = $images;
     }
 
     /**
-     * @param array $images
+     * @return array|null
      */
-    public function setImages(array $images): void
+    public function getImages(): ?array
     {
-        $this->images = $images;
+        return $this->images;
     }
 
     /**
@@ -412,6 +412,22 @@ class ProductViewModel extends BaseViewModel
         $this->minProfitPercentage = $minProfitPercentage;
     }
 
+    /**
+     * @return array|null
+     */
+    public function getDeletedImageIds(): ?array
+    {
+        return $this->deletedImageIds;
+    }
+
+    /**
+     * @param array|null $deletedImageIds
+     */
+    public function setDeletedImageIds(?array $deletedImageIds): void
+    {
+        $this->deletedImageIds = $deletedImageIds;
+    }
+
     public function __construct(ProductUseCase $productUseCase)
     {
         $this->productUseCase = $productUseCase;
@@ -478,6 +494,71 @@ class ProductViewModel extends BaseViewModel
         $file = $request->hasFile('productImages') ? $request->file("productImages") : null;
         $this->setImages($file);
         return $this->productUseCase->save($this);
+    }
+
+    public function update(Request $request) : CustomResponse
+    {
+        $productViewModel = json_decode($request->productViewModel,true);
+
+        $inputValidationResponse = $this->checkInputValidation($productViewModel,[
+            'billNumber' => 'required|string',
+            'totalQuantity' => 'required|int',
+            'minOfferPercentage' => 'required|int',
+            'minProfitPercentage' => 'required|int',
+            'singlePurchasePrice' => 'required|int'
+        ]);
+
+        if($inputValidationResponse != CustomResponseMsg::OK->value){
+            return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $inputValidationResponse);
+        }
+
+        if($request->hasFile('productImages')){
+            $imageValidationResponse = $this->checkInputValidation($request->all(),[
+                'productImages' => 'required',
+                'productImages.*' => 'mimes:jpg,png|max:2048'
+            ]);
+
+            if($imageValidationResponse != CustomResponseMsg::OK->value){
+                return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $imageValidationResponse);
+            }
+        }
+
+        $this->setId($productViewModel["id"]);
+        $this->setTypeId($productViewModel["typeId"]);
+        $this->setSizeId($productViewModel["sizeId"]);
+        $this->setColorId($productViewModel["colorId"]);
+        $this->setBrandId($productViewModel["brandId"]);
+        $this->setFabricId($productViewModel["fabricId"]);
+        $this->setUserAgeId($productViewModel["userAgeId"]);
+        $this->setUserTypeId($productViewModel["userTypeId"]);
+        $this->setBillNumber($productViewModel["billNumber"]);
+        $this->setTotalQuantity($productViewModel["totalQuantity"]);
+        $this->setAvailableQuantity($productViewModel["availableQuantity"]);
+        $this->setSinglePurchasePrice($productViewModel["singlePurchasePrice"]);
+        $this->setMinOfferPercentage($productViewModel["minOfferPercentage"]);
+        $this->setMinProfitPercentage($productViewModel["minProfitPercentage"]);
+        $this->setDeletedImageIds($productViewModel["deletedImageIds"]);
+        $this->setIp($request->ip());
+        $this->setModifiedBy($request->modifiedBy);
+        $file = $request->hasFile('productImages') ? $request->file("productImages") : null;
+        $this->setImages($file);
+
+        return $this->productUseCase->update($this);
+    }
+
+    public function remove(Request $request) : CustomResponse
+    {
+
+        $inputValidationResponse = $this->checkInputValidation($request->productViewModel,[
+            'id' => 'required|int'
+        ]);
+
+        if($inputValidationResponse != CustomResponseMsg::OK->value){
+            return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $inputValidationResponse);
+        }
+
+        $this->setId($request->productViewModel["id"]);
+        return $this->productUseCase->remove($this);
 
     }
 

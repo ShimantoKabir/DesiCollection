@@ -43,10 +43,6 @@ class AdministrationMiddleware
                     'modifiedBy' => $permissionResponse->getModel()->id,
                 ]);
                 return $next($request);
-//                return response([
-//                    "msg" => $permissionResponse->getMsg(),
-//                    "code" => $permissionResponse->getCode()
-//                ]);
             }else{
                 return response([
                     "msg" => $permissionResponse->getMsg(),

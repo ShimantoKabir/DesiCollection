@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CustomResponse;
 use App\ViewModels\ProductViewModel;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -24,8 +23,16 @@ class ProductCtl extends Controller
 
     public function save(Request $request): JsonResponse
     {
-        // return $request->file("productImages")[0]->getClientOriginalExtension();
-
         return response()->json($this->productViewModel->save($request), HttpResponseCodes::HTTP_OK);
+    }
+
+    public function update(Request $request): JsonResponse
+    {
+        return response()->json($this->productViewModel->update($request), HttpResponseCodes::HTTP_OK);
+    }
+
+    public function remove(Request $request): JsonResponse
+    {
+        return response()->json($this->productViewModel->remove($request), HttpResponseCodes::HTTP_OK);
     }
 }

@@ -177,6 +177,7 @@
                       <multiple-image
                         @upload-success="uploadImageSuccess"
                         @edit-image="editImage"
+                        @before-remove="beforeRemove"
                         :data-images="this.productViewModel.initImages"
                         dragText="Drag images (multiple)"
                         browseText="(or) Select">
@@ -310,6 +311,7 @@ export default {
         supplierBills : [],
         images : [],
         initImages : [],
+        deletedImageIds : [],
         startDate : null,
         endDate: null
       },
@@ -347,6 +349,20 @@ export default {
     uploadImageSuccess(formData, index, fileList) {
       this.productViewModel.images = fileList;
     },
+    beforeRemove (index, done, fileList) {
+      let r = confirm("Do you want to remove the image?");
+      if (r === true) {
+        if(fileList[index].id){
+          this.pushDeletedImageId(fileList[index].id);
+        }
+        done();
+      }
+    },
+    pushDeletedImageId(id){
+      if (!this.productViewModel.deletedImageIds.includes(id)){
+        this.productViewModel.deletedImageIds.push(id);
+      }
+    },
     editImage (formData, index, fileList) {
       this.productViewModel.images = fileList;
     },
@@ -376,17 +392,28 @@ export default {
     },
     verifyInput(which){
       this.formClassNames.push("was-validated");
-      if(which === this.opState.CREATE || which === this.opState.UPDATE){
-        if(
-          this.productViewModel.billNumber &&
-          this.productViewModel.totalQuantity &&
-          this.productViewModel.singlePurchasePrice &&
-          this.productViewModel.minOfferPercentage &&
-          this.productViewModel.minProfitPercentage &&
-          this.productViewModel.images.length > 0
-        ){
-          which === this.opState.CREATE ? this.onCreate() : this.onUpdate();
-        }
+
+      if(
+        which === this.opState.CREATE &&
+        this.productViewModel.billNumber &&
+        this.productViewModel.totalQuantity &&
+        this.productViewModel.singlePurchasePrice &&
+        this.productViewModel.minOfferPercentage &&
+        this.productViewModel.minProfitPercentage &&
+        this.productViewModel.images.length > 0
+      ){
+        this.onCreate();
+      }
+
+      if(
+        which === this.opState.UPDATE &&
+        this.productViewModel.billNumber &&
+        this.productViewModel.totalQuantity &&
+        this.productViewModel.singlePurchasePrice &&
+        this.productViewModel.minOfferPercentage &&
+        this.productViewModel.minProfitPercentage
+      ){
+        this.onUpdate();
       }
     },
     onReset(){
@@ -407,12 +434,8 @@ export default {
       this.productViewModel.singlePurchasePrice = null;
       this.productViewModel.initImages = [];
     },
-    onAlertClose(eventData){
-      console.log("eventDate=",eventData);
-    },
-    onLeftBtnClick(eventData){
-      console.log("eventDate=",eventData);
-    },
+    onAlertClose(eventData){},
+    onLeftBtnClick(eventData){},
     onRightBtnClick(eventData){
       if (eventData === this.opState.READ){
         this.getInitialData();
@@ -430,6 +453,7 @@ export default {
       this.productViewModel.images.forEach((obj,index)=>{
         formData.append("productImages[]",this.b64toBlob(this.productViewModel.images[index].path),obj.name);
       });
+
       formData.append("productViewModel",JSON.stringify(this.productViewModel));
       formData.append("userInfoViewModel",JSON.stringify(this.getAuthInfo()));
       const headers = { 'Content-Type': 'multipart/form-data' };
@@ -440,7 +464,23 @@ export default {
         if(res.code === this.networkState.SUCCESS){
           this.productViewModel.products.push({
             id : res.model.id,
-          })
+            code : res.model.code,
+            billNumber : res.model.billNumber,
+            colorId : res.model.colorId,
+            fabricId : res.model.fabricId,
+            sizeId : res.model.sizeId,
+            userAgeId : res.model.userAgeId,
+            brandId : res.model.brandId,
+            typeId : res.model.typeId,
+            userTypeId : res.model.userTypeId,
+            totalQuantity : res.model.totalQuantity,
+            availableQuantity : res.model.availableQuantity,
+            minProfitPercentage : res.model.minProfitPercentage,
+            minOfferPercentage : res.model.minOfferPercentage,
+            singlePurchasePrice : res.model.singlePurchasePrice,
+            images: res.images
+          });
+
           this.showSuccess(this,res.msg);
         }else {
           this.showErrorMsg(this,this.opState.CREATE,res.msg);
@@ -450,27 +490,62 @@ export default {
       });
     },
     onUpdate(){
+      const formData = new FormData();
+
       this.productViewModel.images.forEach((obj,index)=>{
-        console.log("obj=",obj);
-        // formData.append("productImages[]",this.b64toBlob(this.productViewModel.images[index].path),obj.name);
+        if(obj.name){
+          formData.append("productImages[]",this.b64toBlob(this.productViewModel.images[index].path),obj.name);
+        }
+        if(obj.name && obj.id){
+          this.pushDeletedImageId(obj.id);
+        }
       });
-      // this.showLoader(this);
-      // this.$axios.$put('/products',{
-      //   userInfoViewModel : this.getAuthInfo(),
-      //   productViewModel : this.productViewModel
-      // }).then(res=>{
-      //   if(res.code === this.networkState.SUCCESS){
-      //
-      //     let objIndex = this.productViewModel.products.findIndex((obj => obj.id === this.productViewModel.id));
-      //     this.productViewModel.products[objIndex].productName = this.productViewModel.productName;
-      //
-      //     this.showSuccess(this,res.msg);
-      //   }else {
-      //     this.showErrorMsg(this,this.opState.UPDATE,res.msg);
-      //   }
-      // }).catch(err=>{
-      //   this.showError(this,this.opState.UPDATE);
-      // });
+
+      formData.append("productViewModel",JSON.stringify(this.productViewModel));
+      formData.append("userInfoViewModel",JSON.stringify(this.getAuthInfo()));
+      formData.append('_method', 'PUT');
+
+      const headers = { 'Content-Type': 'multipart/form-data' };
+
+      this.showLoader(this);
+
+      this.$axios.$post('/products',formData,{ headers }).then(res=>{
+        if(res.code === this.networkState.SUCCESS){
+          this.productViewModel.deletedImageIds = [];
+
+          let objIndex = this.productViewModel.products.findIndex((obj => obj.id === this.productViewModel.id));
+
+          this.productViewModel.products[objIndex].billNumber = res.model.billNumber;
+          this.productViewModel.products[objIndex].colorId = res.model.colorId;
+          this.productViewModel.products[objIndex].fabricId = res.model.fabricId;
+          this.productViewModel.products[objIndex].sizeId = res.model.sizeId;
+          this.productViewModel.products[objIndex].userAgeId = res.model.userAgeId;
+          this.productViewModel.products[objIndex].brandId = res.model.brandId;
+          this.productViewModel.products[objIndex].typeId = res.model.typeId;
+          this.productViewModel.products[objIndex].userTypeId = res.model.userTypeId;
+          this.productViewModel.products[objIndex].totalQuantity = res.model.totalQuantity;
+          this.productViewModel.products[objIndex].availableQuantity = res.model.availableQuantity;
+          this.productViewModel.products[objIndex].minProfitPercentage = res.model.minProfitPercentage;
+          this.productViewModel.products[objIndex].minOfferPercentage = res.model.minOfferPercentage;
+          this.productViewModel.products[objIndex].singlePurchasePrice = res.model.singlePurchasePrice;
+
+          this.productViewModel.initImages = [];
+
+          let self = this;
+          res.images.forEach(obj=>{
+            self.productViewModel.initImages.push({
+              id: obj.id,
+              path: obj.imagePath
+            });
+          });
+
+          this.showSuccess(this,res.msg);
+        }else {
+          this.showErrorMsg(this,this.opState.CREATE,res.msg);
+        }
+      }).catch(err=>{
+        this.showError(this,this.opState.CREATE);
+      });
     },
     setDeleteData(product){
       this.productViewModel.id = product.id;

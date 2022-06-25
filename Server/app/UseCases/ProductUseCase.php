@@ -70,8 +70,8 @@ class ProductUseCase extends BaseUseCase
 
         $products = $indexData->getProducts();
 
-        foreach ($products as $index => $product){
-            $products[$index]->images = $this->appImageRepository->readByReferenceId($product->id);
+        foreach ($products as $product){
+            $product->images = $this->appImageRepository->readByReferenceId($product->id);
         }
 
         return $indexData;
@@ -79,14 +79,13 @@ class ProductUseCase extends BaseUseCase
 
     public function save(ProductViewModel $productViewModel) : CustomResponse
     {
-        // $successUploadCount = 0;
         $images = [];
         $res = $this->productRepository->create($productViewModel);
 
         if ($res->getCode() == CustomResponseCode::SUCCESS->value){
             if (!is_null($productViewModel->getImages())) {
                 foreach ($productViewModel->getImages() as $file) {
-                    $imageName = $this->brandRepository->uploadFileToFtp($file);
+                    $imageName = $this->productRepository->uploadFileToFtp($file);
                     if(!is_null($imageName)){
                         $appImageViewModel = new AppImageViewModel();
                         $appImageViewModel->setImageName($imageName);
@@ -97,7 +96,6 @@ class ProductUseCase extends BaseUseCase
                         $appImageViewModel->setModifiedBy($productViewModel->getModifiedBy());
                         $imgUploadEntryRes = $this->appImageRepository->create($appImageViewModel);
                         if($imgUploadEntryRes->getCode() == CustomResponseCode::SUCCESS->value){
-                            // $successUploadCount++;
                             $images[] = $imgUploadEntryRes->getModel();
                         }
                     }
@@ -109,5 +107,56 @@ class ProductUseCase extends BaseUseCase
 
         return $res;
     }
+
+    public function update(ProductViewModel $productViewModel) : CustomResponse
+    {
+        $res = $this->productRepository->update($productViewModel);
+
+        if (count($productViewModel->getDeletedImageIds()) > 0){
+            $appImages = $this->appImageRepository->readyByIds($productViewModel->getDeletedImageIds());
+            $this->appImageRepository->deleteByIds($productViewModel->getDeletedImageIds());
+
+            foreach ($appImages as $appImage){
+                $this->productRepository->deleteFileFromFtp($appImage["imageName"]);
+            }
+        }
+
+        if ($res->getCode() == CustomResponseCode::SUCCESS->value && !is_null($productViewModel->getImages())){
+            foreach ($productViewModel->getImages() as $file) {
+                $imageName = $this->productRepository->uploadFileToFtp($file);
+                if(!is_null($imageName)){
+                    $appImageViewModel = new AppImageViewModel();
+                    $appImageViewModel->setImageName($imageName);
+                    $appImageViewModel->setIsActive(0);
+                    $appImageViewModel->setImageType(ImageType::PRODUCT->value);
+                    $appImageViewModel->setReferenceId($productViewModel->getId());
+                    $appImageViewModel->setIp($productViewModel->getIp());
+                    $appImageViewModel->setModifiedBy($productViewModel->getModifiedBy());
+                    $this->appImageRepository->create($appImageViewModel);
+                }
+            }
+        }
+
+        $res->setImages($this->appImageRepository->readByReferenceId($productViewModel->getId()));
+
+        return $res;
+    }
+
+    public function remove(ProductViewModel $productViewModel) : CustomResponse
+    {
+        $res = $this->productRepository->delete($productViewModel);
+
+        $images = $this->appImageRepository->readByReferenceId($productViewModel->getId());
+
+        if (count($images)>0){
+            $this->appImageRepository->deleteByReferenceId($productViewModel->getId());
+            foreach ($images as $image){
+                $this->productRepository->deleteFileFromFtp($image["imageName"]);
+            }
+        }
+
+        return  $res;
+    }
+
 
 }
