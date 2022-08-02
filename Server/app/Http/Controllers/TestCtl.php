@@ -8,25 +8,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CustomResponseCode;
+use App\Enums\CustomResponseMsg;
+use App\Models\CustomResponse;
 use Illuminate\Http\Request;
 
 class TestCtl extends Controller
 {
-    public function test(Request $request)
+    public function test(Request $request) : CustomResponse
     {
-
-        $x = $request->all();
-
-        $y = 2;
-        $z = 4;
-
-        $l = $y + $z;
-
-
-        return [
-            'request'=>$request->all(),
-            'stats'=>'working ....!',
-            'res' => $l
-        ];
+        $res = new CustomResponse();
+        $res->setMsg(CustomResponseMsg::SUCCESS->value);
+        $res->setCode(CustomResponseCode::SUCCESS->value);
+        return $res;
     }
 }

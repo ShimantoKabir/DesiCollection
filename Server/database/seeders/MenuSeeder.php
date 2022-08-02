@@ -261,6 +261,26 @@ class MenuSeeder extends Seeder
                 "menu_name" => "Bill",
                 "is_active" => 1,
                 "parent_tree_id" => 21
+            ],
+            [
+                "oid" => 125,
+                "href" => null,
+                "icon" => "fas fa-book",
+                "tree_id" => 24,
+                "for_whom" => 1,
+                "menu_name" => "Sale",
+                "is_active" => 1,
+                "parent_tree_id" => 0
+            ],
+            [
+                "oid" => 126,
+                "href" => "/dashboard/sale/offline",
+                "icon" => "fas fa-book",
+                "tree_id" => 26,
+                "for_whom" => 1,
+                "menu_name" => "Offline",
+                "is_active" => 1,
+                "parent_tree_id" => 24
             ]
         ];
 

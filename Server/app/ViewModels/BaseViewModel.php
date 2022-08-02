@@ -64,40 +64,6 @@ class BaseViewModel
         return $this->modifiedBy;
     }
 
-    public function checkAuthValidation(Request $request,OperationType $opType) : string
-    {
-        $authMsg = CustomResponseMsg::OK->value;
-
-        $validator = Validator::make($request->userInfo,[
-            'email' => 'required|email',
-            'href' => 'required|string',
-            'sessionId' => 'required|string'
-        ]);
-
-        if($validator->fails()){
-            $authMsg = $validator->errors()->first();
-        }
-
-        return $authMsg;
-    }
-
-    public function checkAuthObjValidation($userInfo,OperationType $opType) : string
-    {
-        $authMsg = CustomResponseMsg::OK->value;
-
-        $validator = Validator::make($userInfo,[
-            'email' => 'required|email',
-            'href' => 'required|string',
-            'sessionId' => 'required|string'
-        ]);
-
-        if($validator->fails()){
-            $authMsg = $validator->errors()->first();
-        }
-
-        return $authMsg;
-    }
-
     public function checkInputValidation($viewModel, array $rules) : string
     {
 

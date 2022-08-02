@@ -47,6 +47,8 @@ class MenuPermissionForRoleSeeder extends Seeder
             ["role_oid" => 101, "menu_oid" => 122],
             ["role_oid" => 101, "menu_oid" => 123],
             ["role_oid" => 101, "menu_oid" => 124],
+            ["role_oid" => 101, "menu_oid" => 125],
+            ["role_oid" => 101, "menu_oid" => 126],
             ["role_oid" => 102, "menu_oid" => 101],
             ["role_oid" => 102, "menu_oid" => 102],
             ["role_oid" => 102, "menu_oid" => 103],
