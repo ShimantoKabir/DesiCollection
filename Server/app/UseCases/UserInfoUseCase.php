@@ -3,7 +3,6 @@
 namespace App\UseCases;
 
 use App\Models\CustomResponse;
-use App\Repositories\TypeRepository;
 use App\Repositories\UserInfoRepository;
 use App\ViewModels\UserInfoViewModel;
 

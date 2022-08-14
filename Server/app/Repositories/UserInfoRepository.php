@@ -4,12 +4,16 @@ namespace App\Repositories;
 
 use App\Enums\CustomResponseCode;
 use App\Enums\CustomResponseMsg;
+use App\Enums\OperationType;
+use App\Enums\UserType;
 use App\Models\CustomResponse;
 use App\Models\UserInfo;
 use App\Repositories\Interfaces\IUserInfoRepository;
 use App\ViewModels\UserInfoViewModel;
 use Exception;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class UserInfoRepository extends BaseRepository implements IUserInfoRepository
 {
@@ -80,6 +84,43 @@ class UserInfoRepository extends BaseRepository implements IUserInfoRepository
             $response->setMsg($e->getMessage());
             $response->setCode(CustomResponseCode::ERROR->value);
         }
+        return $response;
+    }
+
+    public function getCustomers(int $perPage=5) : LengthAwarePaginator
+    {
+        return UserInfo::query()->where('for_whom', UserType::CUSTOMER->value)->paginate($perPage);
+    }
+
+    /**
+     * @param UserInfoViewModel $userInfoViewModel
+     * @return CustomResponse
+     */
+    public function save(UserInfoViewModel $userInfoViewModel): CustomResponse
+    {
+        $response = new CustomResponse();
+
+        DB::beginTransaction();
+        try {
+
+            $userInfo = new UserInfo();
+            $userInfo->for_whom = UserType::CUSTOMER->value;
+            $userInfo->password = sha1($userInfoViewModel->getMobileNumber());
+            $userInfo->mobile_number = $userInfoViewModel->getMobileNumber();
+            $userInfo->op_access = OperationType::READ->value;
+            $userInfo->save();
+
+            DB::commit();
+
+            $response->setMsg(CustomResponseMsg::SUCCESS->value);
+            $response->setCode(CustomResponseCode::SUCCESS->value);
+
+        }catch (\Exception $e){
+            DB::rollBack();
+            $response->setMsg($e->getMessage());
+            $response->setCode(CustomResponseCode::ERROR->value);
+        }
+
         return $response;
     }
 }

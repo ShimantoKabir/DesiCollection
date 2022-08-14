@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\ViewModels\UserInfoViewModel;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class CustomResponse
 {
@@ -23,12 +24,29 @@ class CustomResponse
     public array $addresses;
     public ?object $address;
     public ?array $images;
+    public LengthAwarePaginator $paginator;
 
     public function setResponse(int $code, string $msg) : CustomResponse
     {
         $this->code = $code;
         $this->msg = $msg;
         return $this;
+    }
+
+    /**
+     * @param LengthAwarePaginator $paginator
+     */
+    public function setPaginator(LengthAwarePaginator $paginator): void
+    {
+        $this->paginator = $paginator;
+    }
+
+    /**
+     * @return LengthAwarePaginator
+     */
+    public function getPaginator(): LengthAwarePaginator
+    {
+        return $this->paginator;
     }
 
     /**

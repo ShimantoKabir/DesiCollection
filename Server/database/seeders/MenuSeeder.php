@@ -268,13 +268,13 @@ class MenuSeeder extends Seeder
                 "icon" => "fas fa-book",
                 "tree_id" => 24,
                 "for_whom" => 1,
-                "menu_name" => "Sale",
+                "menu_name" => "Sales",
                 "is_active" => 1,
                 "parent_tree_id" => 0
             ],
             [
                 "oid" => 126,
-                "href" => "/dashboard/sale/offline",
+                "href" => "/dashboard/sales/offline",
                 "icon" => "fas fa-book",
                 "tree_id" => 26,
                 "for_whom" => 1,

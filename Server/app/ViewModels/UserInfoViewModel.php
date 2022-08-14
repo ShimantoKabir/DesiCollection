@@ -24,8 +24,6 @@ class UserInfoViewModel extends BaseViewModel
     public ?string $mobileNumber;
     public ?string $socialLoginId;
     public ?string $restrictedMenuOid;
-    public ?string $ip;
-    public ?int $modifiedBy;
     public string $operation;
     public string $href;
     public UserInfoUseCase $userInfoUseCase;

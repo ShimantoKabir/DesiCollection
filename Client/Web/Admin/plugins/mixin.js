@@ -96,6 +96,11 @@ let mixin = {
       }
 
       return new Blob([ia], {type:mimeString});
+    },
+    formatDate(date,subtractDay=0){
+      let month = date.getMonth() + 1;
+      let day = date.getDate() - subtractDay;
+      return date.getFullYear()+"-"+month.toString().padStart(2,"0")+"-"+day.toString().padStart(2,"0");
     }
   }
 }

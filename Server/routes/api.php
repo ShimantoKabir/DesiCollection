@@ -3,6 +3,7 @@
 use App\Http\Controllers\AgeCtl;
 use App\Http\Controllers\AisEntryCtl;
 use App\Http\Controllers\AisReportCtl;
+use App\Http\Controllers\BillController;
 use App\Http\Controllers\BrandCtl;
 use App\Http\Controllers\ChartOfAccountCtl;
 use App\Http\Controllers\ColorCtl;
@@ -90,14 +91,10 @@ Route::post('/types', [TypeCtl::class, 'save'])->middleware(AdministrationMiddle
 Route::put('/types', [TypeCtl::class, 'update'])->middleware(AdministrationMiddleware::class);
 Route::delete('/types', [TypeCtl::class, 'remove'])->middleware(AdministrationMiddleware::class);
 
-Route::post('/user-types/index', [ProductUserTypeCtl::class, 'index'])
-    ->middleware(AdministrationMiddleware::class);
-Route::post('/user-types', [ProductUserTypeCtl::class, 'save'])
-    ->middleware(AdministrationMiddleware::class);
-Route::put('/user-types', [ProductUserTypeCtl::class, 'update'])
-    ->middleware(AdministrationMiddleware::class);
-Route::delete('/user-types', [ProductUserTypeCtl::class, 'remove'])
-    ->middleware(AdministrationMiddleware::class);
+Route::post('/user-types/index', [ProductUserTypeCtl::class, 'index'])->middleware(AdministrationMiddleware::class);
+Route::post('/user-types', [ProductUserTypeCtl::class, 'save'])->middleware(AdministrationMiddleware::class);
+Route::put('/user-types', [ProductUserTypeCtl::class, 'update'])->middleware(AdministrationMiddleware::class);
+Route::delete('/user-types', [ProductUserTypeCtl::class, 'remove'])->middleware(AdministrationMiddleware::class);
 
 Route::post('/products/index', [ProductCtl::class, 'index'])->middleware(AdministrationMiddleware::class);
 Route::post('/products', [ProductCtl::class, 'save'])->middleware(AdministrationMiddleware::class);
@@ -114,11 +111,9 @@ Route::post('/suppliers/addresses', [SupplierAddressCtl::class, 'save'])->middle
 Route::put('/suppliers/addresses', [SupplierAddressCtl::class, 'update'])->middleware(AdministrationMiddleware::class);
 Route::delete('/suppliers/addresses', [SupplierAddressCtl::class, 'remove'])->middleware(AdministrationMiddleware::class);
 
-Route::post('/supplier-bills/index', [SupplierBillCtl::class, 'index'])
-    ->middleware(AdministrationMiddleware::class);
-Route::post('/supplier-bills', [SupplierBillCtl::class, 'save'])
-    ->middleware(AdministrationMiddleware::class);
-Route::put('/supplier-bills', [SupplierBillCtl::class, 'update'])
-    ->middleware(AdministrationMiddleware::class);
-Route::delete('/supplier-bills', [SupplierBillCtl::class, 'remove'])
-    ->middleware(AdministrationMiddleware::class);
+Route::post('/supplier-bills/index', [SupplierBillCtl::class, 'index'])->middleware(AdministrationMiddleware::class);
+Route::post('/supplier-bills', [SupplierBillCtl::class, 'save'])->middleware(AdministrationMiddleware::class);
+Route::put('/supplier-bills', [SupplierBillCtl::class, 'update'])->middleware(AdministrationMiddleware::class);
+Route::delete('/supplier-bills', [SupplierBillCtl::class, 'remove'])->middleware(AdministrationMiddleware::class);
+
+Route::post('/sales-offline/index', [BillController::class, 'index'])->middleware(AdministrationMiddleware::class);

@@ -2,18 +2,28 @@
 
 namespace App\ViewModels;
 
+use App\Enums\CustomResponseCode;
+use App\Enums\CustomResponseMsg;
+use App\Models\CustomResponse;
+use App\UseCases\BillUseCase;
+use Illuminate\Http\Request;
+
 class BillViewModel extends BaseViewModel
 {
     public ?string $number;
     public ?int $customerId;
-    public int $givenPrice;
-    public int $singlePrice;
-    public int $vatPercentage;
-    public int $productCode;
-    public int $productQuantity;
+    public ?int $givenPrice;
     public ?bool $isActive;
     public ?string $firstName;
     public ?string $mobileNumber;
+    public SaleViewModel $saleViewModel;
+    public BillUseCase $billUseCase;
+
+    public function __construct(BillUseCase $billUseCase)
+    {
+        $this->billUseCase = $billUseCase;
+    }
+
 
     /**
      * @return string|null
@@ -48,67 +58,19 @@ class BillViewModel extends BaseViewModel
     }
 
     /**
-     * @return int
+     * @param int|null $givenPrice
      */
-    public function getGivenPrice(): int
-    {
-        return $this->givenPrice;
-    }
-
-    /**
-     * @param int $givenPrice
-     */
-    public function setGivenPrice(int $givenPrice): void
+    public function setGivenPrice(?int $givenPrice): void
     {
         $this->givenPrice = $givenPrice;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getSinglePrice(): int
+    public function getGivenPrice(): ?int
     {
-        return $this->singlePrice;
-    }
-
-    /**
-     * @param int $singlePrice
-     */
-    public function setSinglePrice(int $singlePrice): void
-    {
-        $this->singlePrice = $singlePrice;
-    }
-
-    /**
-     * @param int $vatPercentage
-     */
-    public function setVatPercentage(int $vatPercentage): void
-    {
-        $this->vatPercentage = $vatPercentage;
-    }
-
-    /**
-     * @return int
-     */
-    public function getVatPercentage(): int
-    {
-        return $this->vatPercentage;
-    }
-
-    /**
-     * @return int
-     */
-    public function getProductCode(): int
-    {
-        return $this->productCode;
-    }
-
-    /**
-     * @param int $productCode
-     */
-    public function setProductCode(int $productCode): void
-    {
-        $this->productCode = $productCode;
+        return $this->givenPrice;
     }
 
     /**
@@ -127,6 +89,42 @@ class BillViewModel extends BaseViewModel
         $this->isActive = $isActive;
     }
 
+    /**
+     * @param string|null $mobileNumber
+     */
+    public function setMobileNumber(?string $mobileNumber): void
+    {
+        $this->mobileNumber = $mobileNumber;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getMobileNumber(): ?string
+    {
+        return $this->mobileNumber;
+    }
+
+    /**
+     * @return SaleViewModel
+     */
+    public function getSaleViewModel(): SaleViewModel
+    {
+        return $this->saleViewModel;
+    }
+
+    /**
+     * @param SaleViewModel $saleViewModel
+     */
+    public function setSaleViewModel(SaleViewModel $saleViewModel): void
+    {
+        $this->saleViewModel = $saleViewModel;
+    }
+
+    public function getIndexData(Request $request) : CustomResponse
+    {
+        return $this->billUseCase->getIndexData($this);
+    }
 
 
 

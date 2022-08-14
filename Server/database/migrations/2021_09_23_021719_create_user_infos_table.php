@@ -17,11 +17,11 @@ class CreateUserInfosTable extends Migration
             $table->id();
             $table->string('email')->nullable();
             $table->string('token')->nullable();
-            $table->tinyInteger('for_whom')->comment("1 - admin, 2 - customer");
+            $table->tinyInteger('for_whom')->comment("1 - admin, 2 - customer");  // not nullable
             $table->tinyInteger("role_oid")->nullable();
-            $table->string('password');
+            $table->string('password'); // not nullable
             $table->string('last_name')->nullable();
-            $table->string("op_access")->comment("C, R, U, D, CR, CU, CD, RU, RD, UD, CRU, CRD, CUD, RUD, CRUD");
+            $table->string("op_access")->comment("C, R, U, D, CR, CU, CD, RU, RD, UD, CRU, CRD, CUD, RUD, CRUD"); // not nullable
             $table->string('user_name')->nullable();
             $table->tinyInteger('is_active')->default(0);
             $table->string('session_id')->nullable();
