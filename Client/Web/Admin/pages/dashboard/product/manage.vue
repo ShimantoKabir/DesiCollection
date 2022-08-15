@@ -105,7 +105,7 @@
                       </select>
                     </div>
                     <div class="mb-3">
-                      <label for="billSelectInput" class="form-label">Bill Number</label>
+                      <label for="billSelectInput" class="form-label">Bill No(Supplier)</label>
                       <select id="billSelectInput"
                               v-model="productViewModel.billNumber"
                               class="form-select" required>
@@ -122,7 +122,7 @@
                       </div>
                     </div>
                     <div class="mb-3">
-                      <label for="totalQuantityInput" class="form-label">Total Quantity</label>
+                      <label for="totalQuantityInput" class="form-label">Quantity</label>
                       <input v-model="productViewModel.totalQuantity"
                              type="number"
                              class="form-control"
@@ -135,7 +135,7 @@
                       </div>
                     </div>
                     <div class="mb-3">
-                      <label for="singlePriceInput" class="form-label">Single Price</label>
+                      <label for="singlePriceInput" class="form-label">Price</label>
                       <input v-model="productViewModel.singlePurchasePrice"
                              type="number"
                              class="form-control"
@@ -148,7 +148,7 @@
                       </div>
                     </div>
                     <div class="mb-3">
-                      <label for="minOfferInput" class="form-label">Minimum Offer(%)</label>
+                      <label for="minOfferInput" class="form-label">Offer(%)</label>
                       <input v-model="productViewModel.minOfferPercentage"
                              type="number"
                              class="form-control"
@@ -161,7 +161,7 @@
                       </div>
                     </div>
                     <div class="mb-3">
-                      <label for="maxProfitInput" class="form-label">Minimum Profit(%)</label>
+                      <label for="maxProfitInput" class="form-label">Profit(%)</label>
                       <input v-model="productViewModel.minProfitPercentage"
                              type="number"
                              class="form-control"
@@ -173,12 +173,19 @@
                         Looks good!
                       </div>
                     </div>
+                    <div class="mb-3">
+                      <label for="vatInput" class="form-label">VAT(%)</label>
+                      <input v-model="productViewModel.vatPercentage"
+                         type="number"
+                         class="form-control"
+                         id="vatInput">
+                    </div>
                     <div class="mb-3" >
                       <multiple-image
                         @upload-success="uploadImageSuccess"
                         @edit-image="editImage"
                         @before-remove="beforeRemove"
-                        :data-images="this.productViewModel.initImages"
+                        :data-images="productViewModel.initImages"
                         dragText="Drag images (multiple)"
                         browseText="(or) Select">
                       </multiple-image>
@@ -242,12 +249,13 @@
             <tr>
               <th>SL</th>
               <th>Code</th>
-              <th>Bill Number</th>
-              <th>Total Quantity</th>
-              <th>Available Quantity</th>
-              <th>Minimum Offer(%)</th>
-              <th>Minimum Profit(%)</th>
-              <th>Single Price</th>
+              <th>Bill No(Supplier)</th>
+              <th>Total(Qty)</th>
+              <th>Available(Qty)</th>
+              <th>Offer(%)</th>
+              <th>Profit(%)</th>
+              <th>Price</th>
+              <th>VAT(%)</th>
               <th>Edit</th>
               <th>View</th>
               <th>Delete</th>
@@ -263,6 +271,7 @@
               <td>{{f.minOfferPercentage}}</td>
               <td>{{f.minProfitPercentage}}</td>
               <td>{{f.singlePurchasePrice}}</td>
+              <td>{{f.vatPercentage}}</td>
               <td><i class="fas fa-edit cp" v-on:click="setFormData(f,false)" ></i></td>
               <td><i class="fas fa-eye cp" v-on:click="setFormData(f,true)" ></i></td>
               <td><i class="fas fa-trash cp" v-on:click="setDeleteData(f)" ></i></td>
@@ -296,6 +305,7 @@ export default {
         userTypeId : null,
         billNumber : null,
         totalQuantity : null,
+        vatPercentage : 0,
         availableQuantity : null,
         singlePurchasePrice : null,
         minOfferPercentage : null,
@@ -334,6 +344,7 @@ export default {
       this.productViewModel.minProfitPercentage = product.minProfitPercentage;
       this.productViewModel.minOfferPercentage = product.minOfferPercentage;
       this.productViewModel.singlePurchasePrice = product.singlePurchasePrice;
+      this.productViewModel.vatPercentage = product.vatPercentage;
       this.productViewModel.initImages = [];
 
       let self = this;
@@ -432,6 +443,7 @@ export default {
       this.productViewModel.minProfitPercentage = null;
       this.productViewModel.minOfferPercentage = null;
       this.productViewModel.singlePurchasePrice = null;
+      this.productViewModel.vatPercentage = 0;
       this.productViewModel.initImages = [];
     },
     onAlertClose(eventData){},
@@ -478,6 +490,7 @@ export default {
             minProfitPercentage : res.model.minProfitPercentage,
             minOfferPercentage : res.model.minOfferPercentage,
             singlePurchasePrice : res.model.singlePurchasePrice,
+            vatPercentage : res.model.vatPercentage,
             images: res.images
           });
 
@@ -528,6 +541,7 @@ export default {
           this.productViewModel.products[objIndex].minProfitPercentage = res.model.minProfitPercentage;
           this.productViewModel.products[objIndex].minOfferPercentage = res.model.minOfferPercentage;
           this.productViewModel.products[objIndex].singlePurchasePrice = res.model.singlePurchasePrice;
+          this.productViewModel.products[objIndex].vatPercentage = res.model.vatPercentage;
 
           this.productViewModel.initImages = [];
 

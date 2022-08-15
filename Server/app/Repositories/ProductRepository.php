@@ -40,6 +40,7 @@ class ProductRepository extends BaseRepository implements IProductRepository
             $model->userTypeId = $productViewModel->getUserTypeId();
             $model->billNumber = $productViewModel->getBillNumber();
             $model->totalQuantity = $productViewModel->getTotalQuantity();
+            $model->vatPercentage = $productViewModel->getVatPercentage();
             $model->availableQuantity = $productViewModel->getTotalQuantity();
             $model->minOfferPercentage = $productViewModel->getMinOfferPercentage();
             $model->minProfitPercentage = $productViewModel->getMinProfitPercentage();
@@ -82,6 +83,7 @@ class ProductRepository extends BaseRepository implements IProductRepository
                 'userTypeId' => $productViewModel->getUserTypeId(),
                 'billNumber' => $productViewModel->getBillNumber(),
                 'totalQuantity' => $productViewModel->getTotalQuantity(),
+                'VatPercentage' => $productViewModel->getVatPercentage(),
                 'minOfferPercentage' => $productViewModel->getMinOfferPercentage(),
                 'minProfitPercentage' => $productViewModel->getMinProfitPercentage(),
                 'singlePurchasePrice' => $productViewModel->getSinglePurchasePrice(),

@@ -25,6 +25,7 @@ class CreateProductsTable extends Migration
             $table->string("billNumber");
             $table->integer("userTypeId")->nullable();
             $table->integer("totalQuantity");
+            $table->integer("vatPercentage")->default(0);
             $table->integer("availableQuantity");
             $table->integer("minOfferPercentage");
             $table->integer("minProfitPercentage");

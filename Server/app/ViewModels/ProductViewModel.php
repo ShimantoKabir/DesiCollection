@@ -34,6 +34,7 @@ class ProductViewModel extends BaseViewModel
     public ?string $endDate;
     public ?array $images;
     public ?array $deletedImageIds;
+    public ?int $vatPercentage;
     private ProductUseCase $productUseCase;
 
     /**
@@ -428,6 +429,22 @@ class ProductViewModel extends BaseViewModel
         $this->deletedImageIds = $deletedImageIds;
     }
 
+    /**
+     * @return int|null
+     */
+    public function getVatPercentage(): ?int
+    {
+        return $this->vatPercentage;
+    }
+
+    /**
+     * @param int|null $vatPercentage
+     */
+    public function setVatPercentage(?int $vatPercentage): void
+    {
+        $this->vatPercentage = $vatPercentage;
+    }
+
     public function __construct(ProductUseCase $productUseCase)
     {
         $this->productUseCase = $productUseCase;
@@ -459,7 +476,7 @@ class ProductViewModel extends BaseViewModel
             'totalQuantity' => 'required|int',
             'minOfferPercentage' => 'required|int',
             'minProfitPercentage' => 'required|int',
-            'singlePurchasePrice' => 'required|int'
+            'singlePurchasePrice' => 'required|int',
         ]);
 
         if($inputValidationResponse != CustomResponseMsg::OK->value){
@@ -486,6 +503,7 @@ class ProductViewModel extends BaseViewModel
         $this->setUserTypeId($productViewModel["userTypeId"]);
         $this->setBillNumber($productViewModel["billNumber"]);
         $this->setTotalQuantity($productViewModel["totalQuantity"]);
+        $this->setVatPercentage(is_integer($productViewModel["vatPercentage"]) ? $productViewModel["vatPercentage"] : 0);
         $this->setSinglePurchasePrice($productViewModel["singlePurchasePrice"]);
         $this->setMinOfferPercentage($productViewModel["minOfferPercentage"]);
         $this->setMinProfitPercentage($productViewModel["minProfitPercentage"]);
@@ -532,6 +550,7 @@ class ProductViewModel extends BaseViewModel
         $this->setUserAgeId($productViewModel["userAgeId"]);
         $this->setUserTypeId($productViewModel["userTypeId"]);
         $this->setBillNumber($productViewModel["billNumber"]);
+        $this->setVatPercentage(is_integer($productViewModel["vatPercentage"]) ? $productViewModel["vatPercentage"] : 0);
         $this->setTotalQuantity($productViewModel["totalQuantity"]);
         $this->setAvailableQuantity($productViewModel["availableQuantity"]);
         $this->setSinglePurchasePrice($productViewModel["singlePurchasePrice"]);
