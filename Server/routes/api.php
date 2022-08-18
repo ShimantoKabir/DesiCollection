@@ -117,3 +117,5 @@ Route::put('/supplier-bills', [SupplierBillCtl::class, 'update'])->middleware(Ad
 Route::delete('/supplier-bills', [SupplierBillCtl::class, 'remove'])->middleware(AdministrationMiddleware::class);
 
 Route::post('/sales-offline/index', [BillController::class, 'index'])->middleware(AdministrationMiddleware::class);
+Route::post('/sales-offline/calculation', [BillController::class, 'calculate'])->middleware(AdministrationMiddleware::class);
+

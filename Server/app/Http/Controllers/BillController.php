@@ -22,4 +22,9 @@ class BillController extends Controller
         return response()->json($this->billViewModel->getIndexData($request), HttpResponseCodes::HTTP_OK);
     }
 
+    public function calculate(Request $request): JsonResponse
+    {
+        return response()->json($this->billViewModel->calculate($request), HttpResponseCodes::HTTP_OK);
+    }
+
 }

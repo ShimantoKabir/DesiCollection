@@ -130,6 +130,7 @@
               <th>Quantity</th>
               <th>Vat(%)</th>
               <th>Price</th>
+              <th>Total</th>
             </tr>
             </thead>
             <tbody>
@@ -138,13 +139,14 @@
             </tr>
             <tr  v-for="(s,i) in billViewModel.salesViewModels" >
               <td>{{i+1}}</td>
-              <td><input v-model="s.productCode" type="text" class="form-control"></td>
-              <td><input v-model="s.productQuantity" type="number" class="form-control"></td>
-              <td><input v-model="s.vatPercentage" type="number" class="form-control"></td>
-              <td><input v-model="s.singlePrice" type="number" class="form-control"></td>
+              <td><input v-model="s.productCode" type="text" class="form-control" :disabled="isConfirmed"></td>
+              <td><input v-model="s.productQuantity" type="number" class="form-control" :disabled="isConfirmed"></td>
+              <td><input v-model="s.vatPercentage" type="number" class="form-control" disabled></td>
+              <td><input v-model="s.singlePrice" type="number" class="form-control" disabled></td>
+              <td><input v-model="s.total" type="number" class="form-control" disabled></td>
             </tr>
             <tr>
-              <td colspan="5" class="text-center" >
+              <td colspan="6" class="text-center" >
                 <button v-on:click="addOrRemoveSales(1)" class="btn btn-outline-success" >
                   <i class="fas fa-plus" ></i>
                 </button>
@@ -153,17 +155,23 @@
                 </button>
               </td>
             </tr>
-            <tr>
-              <td colspan="4" >
-                <button class="btn btn-success" v-on:click="verifyInput(opState.CREATE)" >
+            <tr v-if="isConfirmed" >
+              <td colspan="5" >
+                <button class="btn btn-success" >
                   <span v-if="billViewModel.number" >Update</span>
                   <span v-else >Save</span>
                 </button>
               </td>
               <td class="text-end" >
-                <button v-on:click="onReset" class="btn btn-outline-dark" >
-                  Reset
-                </button>
+                <button v-on:click="onReset" class="btn btn-outline-dark" >Reset</button>
+              </td>
+            </tr>
+            <tr v-else >
+              <td colspan="5" >
+                <button class="btn btn-success" v-on:click="verifyInput(opState.CREATE)" >Confirm</button>
+              </td>
+              <td class="text-end" >
+                <button v-on:click="onCancel" class="btn btn-outline-dark" >Cancel</button>
               </td>
             </tr>
             </tbody>
@@ -186,6 +194,7 @@ export default {
   },
   data(){
     return{
+      isConfirmed: false,
       salasValidationMsg: "",
       currentDate : null,
       showValidation : false,
@@ -202,13 +211,17 @@ export default {
             singlePrice : 0,
             vatPercentage : 0,
             productCode : "",
-            productQuantity : 0
+            productQuantity : 0,
+            total : 0
           }
         ]
       }
     }
   },
   methods : {
+    onCancel(){
+
+    },
     onReset(){
 
     },
@@ -227,37 +240,44 @@ export default {
       }
     },
     verifyInput(which){
-      if (which === this.opState.CREATE){
-        this.showValidation = true;
-        let priceCheck = this.billViewModel.salesViewModels.findIndex(obj=>{
-          return obj.singlePrice === 0 || obj.singlePrice === ""
-        });
-
-        let quantityCheck = this.billViewModel.salesViewModels.findIndex(obj=>{
-          return obj.productQuantity === 0 || obj.productQuantity === ""
-        });
-
-        let vatCheck = this.billViewModel.salesViewModels.findIndex(obj=>{
-          return obj.vatPercentage === ""
-        });
-
-        let codeCheck = this.billViewModel.salesViewModels.findIndex(obj=>{
-          return !obj.productCode
-        });
-
-        if (codeCheck !== -1){
-          this.salasValidationMsg = `Code is missing on row: ${codeCheck+1}`;
-        }else if (priceCheck !== -1){
-          this.salasValidationMsg = `Price is missing on row: ${priceCheck+1}`;
-        }else if (quantityCheck !== -1){
-          this.salasValidationMsg = `Quantity is missing on row: ${quantityCheck+1}`;
-        }else if (vatCheck !== -1){
-          this.salasValidationMsg = `Vat is missing on row: ${vatCheck+1}`;
+      this.getProductVatAndPrice();
+      // if (which === this.opState.CREATE){
+      //   this.showValidation = true;
+      //
+      //   let quantityCheck = this.billViewModel.salesViewModels.findIndex(obj=>{
+      //     return obj.productQuantity === 0 || obj.productQuantity === ""
+      //   });
+      //
+      //   let codeCheck = this.billViewModel.salesViewModels.findIndex(obj=>{
+      //     return !obj.productCode
+      //   });
+      //
+      //   if (codeCheck !== -1){
+      //     this.salasValidationMsg = `Code is missing on row: ${codeCheck+1}`;
+      //   }else if (quantityCheck !== -1){
+      //     this.salasValidationMsg = `Quantity is missing on row: ${quantityCheck+1}`;
+      //   }else {
+      //     this.showValidation = false;
+      //     this.isConfirmed = true;
+      //     this.getProductVatAndPrice();
+      //   }
+      //
+      // }
+    },
+    getProductVatAndPrice(){
+      this.showLoader(this);
+      this.$axios.$post('/sales-offline/calculation',{
+        billViewModel : this.billViewModel,
+        userInfoViewModel: this.getAuthInfo()
+      }).then(res=>{
+        if(res.code === this.networkState.SUCCESS){
+          this.showSuccess(this,res.msg);
         }else {
-          this.showValidation = false;
+          this.showErrorMsg(this,this.opState.READ,res.msg);
         }
-
-      }
+      }).catch(err=>{
+        this.showError(this,this.opState.READ);
+      });
     },
     onModalOpen(){
 

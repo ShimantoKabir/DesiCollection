@@ -18,12 +18,28 @@ class BillViewModel extends BaseViewModel
     public ?string $mobileNumber;
     public SaleViewModel $saleViewModel;
     public BillUseCase $billUseCase;
+    public ?array $saleViewModels;
 
     public function __construct(BillUseCase $billUseCase)
     {
         $this->billUseCase = $billUseCase;
     }
 
+    /**
+     * @return array|null
+     */
+    public function getSaleViewModels(): ?array
+    {
+        return $this->saleViewModels;
+    }
+
+    /**
+     * @param array|null $saleViewModels
+     */
+    public function setSaleViewModels(?array $saleViewModels): void
+    {
+        $this->saleViewModels = $saleViewModels;
+    }
 
     /**
      * @return string|null
@@ -126,6 +142,23 @@ class BillViewModel extends BaseViewModel
         return $this->billUseCase->getIndexData($this);
     }
 
+    public function calculate(Request $request) : CustomResponse
+    {
+
+        $billViewModel = $request->billViewModel;
+
+        $inputValidationResponse = $this->checkInputValidation($billViewModel,[
+            'salesViewModels.*.productCode' => 'required|string',
+            'salesViewModels.*.productQuantity' => 'required|integer|min:1'
+        ]);
+
+        if($inputValidationResponse != CustomResponseMsg::OK->value){
+            return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $inputValidationResponse);
+        }else{
+            return (new CustomResponse())->setResponse(CustomResponseCode::SUCCESS->value, $inputValidationResponse);
+        }
+
+    }
 
 
 }
