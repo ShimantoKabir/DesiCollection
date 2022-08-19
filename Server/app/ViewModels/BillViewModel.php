@@ -144,7 +144,6 @@ class BillViewModel extends BaseViewModel
 
     public function calculate(Request $request) : CustomResponse
     {
-
         $billViewModel = $request->billViewModel;
 
         $inputValidationResponse = $this->checkInputValidation($billViewModel,[
@@ -154,11 +153,9 @@ class BillViewModel extends BaseViewModel
 
         if($inputValidationResponse != CustomResponseMsg::OK->value){
             return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $inputValidationResponse);
-        }else{
-            return (new CustomResponse())->setResponse(CustomResponseCode::SUCCESS->value, $inputValidationResponse);
         }
 
+        $this->setSaleViewModels($billViewModel["salesViewModels"]);
+        return $this->billUseCase->getCalculationDetails($this);
     }
-
-
 }

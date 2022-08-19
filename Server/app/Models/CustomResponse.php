@@ -25,12 +25,46 @@ class CustomResponse
     public ?object $address;
     public ?array $images;
     public LengthAwarePaginator $paginator;
+    public ?int $vatPercentage;
+    public ?int $singlePurchasePrice;
 
     public function setResponse(int $code, string $msg) : CustomResponse
     {
         $this->code = $code;
         $this->msg = $msg;
         return $this;
+    }
+
+    /**
+     * @param int|null $vatPercentage
+     */
+    public function setVatPercentage(?int $vatPercentage): void
+    {
+        $this->vatPercentage = $vatPercentage;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getVatPercentage(): ?int
+    {
+        return $this->vatPercentage;
+    }
+
+    /**
+     * @param int|null $singlePurchasePrice
+     */
+    public function setSinglePurchasePrice(?int $singlePurchasePrice): void
+    {
+        $this->singlePurchasePrice = $singlePurchasePrice;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getSinglePurchasePrice(): ?int
+    {
+        return $this->singlePurchasePrice;
     }
 
     /**

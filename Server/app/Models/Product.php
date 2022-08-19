@@ -21,6 +21,7 @@ class Product extends Model
         'billNumber',
         'totalQuantity',
         'availableQuantity',
+        'vatPercentage',
         'minOfferPercentage',
         'minProfitPercentage',
         'singlePurchasePrice',

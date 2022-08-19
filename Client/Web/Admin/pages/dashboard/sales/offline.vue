@@ -240,29 +240,27 @@ export default {
       }
     },
     verifyInput(which){
-      this.getProductVatAndPrice();
-      // if (which === this.opState.CREATE){
-      //   this.showValidation = true;
-      //
-      //   let quantityCheck = this.billViewModel.salesViewModels.findIndex(obj=>{
-      //     return obj.productQuantity === 0 || obj.productQuantity === ""
-      //   });
-      //
-      //   let codeCheck = this.billViewModel.salesViewModels.findIndex(obj=>{
-      //     return !obj.productCode
-      //   });
-      //
-      //   if (codeCheck !== -1){
-      //     this.salasValidationMsg = `Code is missing on row: ${codeCheck+1}`;
-      //   }else if (quantityCheck !== -1){
-      //     this.salasValidationMsg = `Quantity is missing on row: ${quantityCheck+1}`;
-      //   }else {
-      //     this.showValidation = false;
-      //     this.isConfirmed = true;
-      //     this.getProductVatAndPrice();
-      //   }
-      //
-      // }
+      if (which === this.opState.CREATE){
+        this.showValidation = true;
+
+        let quantityCheck = this.billViewModel.salesViewModels.findIndex(obj=>{
+          return obj.productQuantity === 0 || obj.productQuantity === ""
+        });
+
+        let codeCheck = this.billViewModel.salesViewModels.findIndex(obj=>{
+          return !obj.productCode
+        });
+
+        if (codeCheck !== -1){
+          this.salasValidationMsg = `Code is missing on row: ${codeCheck+1}`;
+        }else if (quantityCheck !== -1){
+          this.salasValidationMsg = `Quantity is missing on row: ${quantityCheck+1}`;
+        }else {
+          this.showValidation = false;
+          this.isConfirmed = true;
+          this.getProductVatAndPrice();
+        }
+      }
     },
     getProductVatAndPrice(){
       this.showLoader(this);
@@ -273,10 +271,10 @@ export default {
         if(res.code === this.networkState.SUCCESS){
           this.showSuccess(this,res.msg);
         }else {
-          this.showErrorMsg(this,this.opState.READ,res.msg);
+          this.showErrorMsg(this,this.opState.OTHER,res.msg);
         }
       }).catch(err=>{
-        this.showError(this,this.opState.READ);
+        this.showError(this,this.opState.OTHER);
       });
     },
     onModalOpen(){
@@ -293,6 +291,8 @@ export default {
         this.getInitialData();
       }else if(eventData === this.opState.CREATE){
         this.onCreate();
+      }else if(eventData === this.opState.OTHER){
+        this.getProductVatAndPrice();
       }
     },
     getInitialData(){

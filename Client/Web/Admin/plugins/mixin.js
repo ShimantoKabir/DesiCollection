@@ -18,7 +18,8 @@ let mixin = {
         UPDATE: 6,
         DELETE: 7,
         ASK: 8,
-        WARNING: 9
+        WARNING: 9,
+        OTHER: 10
       }
     }
   },

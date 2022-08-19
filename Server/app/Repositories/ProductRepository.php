@@ -8,6 +8,7 @@ use App\Models\CustomResponse;
 use App\Models\Product;
 use App\Repositories\Interfaces\IProductRepository;
 use App\ViewModels\ProductViewModel;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
 class ProductRepository extends BaseRepository implements IProductRepository
@@ -83,7 +84,7 @@ class ProductRepository extends BaseRepository implements IProductRepository
                 'userTypeId' => $productViewModel->getUserTypeId(),
                 'billNumber' => $productViewModel->getBillNumber(),
                 'totalQuantity' => $productViewModel->getTotalQuantity(),
-                'VatPercentage' => $productViewModel->getVatPercentage(),
+                'vatPercentage' => $productViewModel->getVatPercentage(),
                 'minOfferPercentage' => $productViewModel->getMinOfferPercentage(),
                 'minProfitPercentage' => $productViewModel->getMinProfitPercentage(),
                 'singlePurchasePrice' => $productViewModel->getSinglePurchasePrice(),
@@ -203,5 +204,16 @@ class ProductRepository extends BaseRepository implements IProductRepository
         }
 
         return $productQuery->get()->toArray();
+    }
+
+
+    public function getProductDetailsByCode(string $code): CustomResponse
+    {
+        $res = new CustomResponse();
+        $product = Product::query()->where("code",$code)
+            ->first(["vatPercentage","singlePurchasePrice"]);
+        $res->setVatPercentage($product->vatPercentage);
+        $res->setSinglePurchasePrice($product->singlePurchasePrice);
+        return $res;
     }
 }
