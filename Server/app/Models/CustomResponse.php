@@ -27,12 +27,29 @@ class CustomResponse
     public LengthAwarePaginator $paginator;
     public ?int $vatPercentage;
     public ?int $singlePurchasePrice;
+    public ?array $saleViewModels;
 
     public function setResponse(int $code, string $msg) : CustomResponse
     {
         $this->code = $code;
         $this->msg = $msg;
         return $this;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getSaleViewModels(): ?array
+    {
+        return $this->saleViewModels;
+    }
+
+    /**
+     * @param array|null $saleViewModels
+     */
+    public function setSaleViewModels(?array $saleViewModels): void
+    {
+        $this->saleViewModels = $saleViewModels;
     }
 
     /**

@@ -186,7 +186,6 @@
 export default {
   name: "offline",
   mounted() {
-    this.getInitialData();
     this.currentDate = new Date();
     this.billViewModel.date = this.formatDate(this.currentDate);
     this.billViewModel.maxDate = this.formatDate(this.currentDate);
@@ -231,7 +230,8 @@ export default {
           singlePrice : 0,
           vatPercentage : 0,
           productCode : "",
-          productQuantity : 0
+          productQuantity : 0,
+          total: 0
         });
       }else {
         if(this.billViewModel.salesViewModels.length > 1){
@@ -269,7 +269,11 @@ export default {
         userInfoViewModel: this.getAuthInfo()
       }).then(res=>{
         if(res.code === this.networkState.SUCCESS){
-          this.showSuccess(this,res.msg);
+          res.saleViewModels.forEach((obj,index)=>{
+            this.billViewModel.salesViewModels[index].vatPercentage = obj.vatPercentage;
+            this.billViewModel.salesViewModels[index].singlePrice = obj.singlePrice;
+          });
+          this.showSuccess(this, res.msg);
         }else {
           this.showErrorMsg(this,this.opState.OTHER,res.msg);
         }
@@ -287,27 +291,11 @@ export default {
       console.log("eventDate=",eventData);
     },
     onRightBtnClick(eventData){
-      if (eventData === this.opState.READ){
-        this.getInitialData();
-      }else if(eventData === this.opState.CREATE){
+      if(eventData === this.opState.CREATE){
         this.onCreate();
       }else if(eventData === this.opState.OTHER){
         this.getProductVatAndPrice();
       }
-    },
-    getInitialData(){
-      this.showLoader(this);
-      this.$axios.$post('/sales-offline/index',{
-        userInfoViewModel : this.getAuthInfo()
-      }).then(res=>{
-        if(res.code === this.networkState.SUCCESS){
-          this.showSuccess(this,res.msg);
-        }else {
-          this.showErrorMsg(this,this.opState.READ,res.msg);
-        }
-      }).catch(err=>{
-        this.showError(this,this.opState.READ);
-      });
     },
     onCreate(){
 

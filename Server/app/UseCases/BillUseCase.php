@@ -41,11 +41,23 @@ class BillUseCase extends BaseUseCase
     public function getCalculationDetails(BillViewModel $billViewModel) : CustomResponse
     {
         $res = new CustomResponse();
-        $products = [];
-        foreach ($billViewModel->getSaleViewModels() as $item) {
-            $products[] = $this->productRepository->getProductDetailsByCode($item["productCode"]);
+        $salesViewModels = $billViewModel->getSaleViewModels();
+        $productCodes = [];
+        foreach ($salesViewModels as $item) {
+            $productCodes[] = $item["productCode"];
         }
-        $res->setProducts($products);
+
+        $products = $this->productRepository->getProductsDetailsByCodes($productCodes);
+
+        foreach ($products as $pKey=>$pVal){
+            $salesViewModels[$pKey]["vatPercentage"] = $pVal["vatPercentage"];
+            $salesViewModels[$pKey]["singlePrice"] = $pVal["singlePurchasePrice"];
+        }
+
+        $res->setSaleViewModels($salesViewModels);
+        $res->setCode(CustomResponseCode::SUCCESS->value);
+        $res->setMsg(CustomResponseMsg::SUCCESS->value);
+
         return $res;
     }
 }

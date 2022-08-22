@@ -206,14 +206,15 @@ class ProductRepository extends BaseRepository implements IProductRepository
         return $productQuery->get()->toArray();
     }
 
-
-    public function getProductDetailsByCode(string $code): CustomResponse
+    /**
+     * @param array $codes
+     * @return array
+     */
+    public function getProductsDetailsByCodes(array $codes): array
     {
-        $res = new CustomResponse();
-        $product = Product::query()->where("code",$code)
-            ->first(["vatPercentage","singlePurchasePrice"]);
-        $res->setVatPercentage($product->vatPercentage);
-        $res->setSinglePurchasePrice($product->singlePurchasePrice);
-        return $res;
+        return Product::query()
+        ->select("vatPercentage","singlePurchasePrice")
+        ->whereIn("code",$codes)
+        ->get()->toArray();
     }
 }

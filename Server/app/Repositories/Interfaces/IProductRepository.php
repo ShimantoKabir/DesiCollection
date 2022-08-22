@@ -13,5 +13,5 @@ interface IProductRepository extends IBaseRepository
     public function delete(ProductViewModel $productViewModel) : CustomResponse;
     public function isProductExist(ProductViewModel $productViewModel) : CustomResponse;
     public function readProduct(ProductViewModel $productViewModel): array;
-    public function getProductDetailsByCode(string $code): CustomResponse;
+    public function getProductsDetailsByCodes(array $codes): array;
 }
