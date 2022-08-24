@@ -28,12 +28,29 @@ class CustomResponse
     public ?int $vatPercentage;
     public ?int $singlePurchasePrice;
     public ?array $saleViewModels;
+    public ?int $grandTotal;
 
     public function setResponse(int $code, string $msg) : CustomResponse
     {
         $this->code = $code;
         $this->msg = $msg;
         return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getGrandTotal(): ?int
+    {
+        return $this->grandTotal;
+    }
+
+    /**
+     * @param int|null $grandTotal
+     */
+    public function setGrandTotal(?int $grandTotal): void
+    {
+        $this->grandTotal = $grandTotal;
     }
 
     /**

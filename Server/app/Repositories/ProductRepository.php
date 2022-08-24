@@ -217,4 +217,13 @@ class ProductRepository extends BaseRepository implements IProductRepository
         ->whereIn("code",$codes)
         ->get()->toArray();
     }
+
+    /**
+     * @param array $codes
+     * @return bool
+     */
+    public function isProductCodesExist(array $codes): bool
+    {
+        return Product::query()->whereIn("code",$codes)->exists();
+    }
 }

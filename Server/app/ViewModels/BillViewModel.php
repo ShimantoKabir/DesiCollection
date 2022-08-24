@@ -6,6 +6,7 @@ use App\Enums\CustomResponseCode;
 use App\Enums\CustomResponseMsg;
 use App\Models\CustomResponse;
 use App\UseCases\BillUseCase;
+use App\UseCases\UserInfoUseCase;
 use Illuminate\Http\Request;
 
 class BillViewModel extends BaseViewModel
@@ -19,10 +20,43 @@ class BillViewModel extends BaseViewModel
     public SaleViewModel $saleViewModel;
     public BillUseCase $billUseCase;
     public ?array $saleViewModels;
+    public ?string $date;
 
     public function __construct(BillUseCase $billUseCase)
     {
         $this->billUseCase = $billUseCase;
+    }
+
+    /**
+     * @param string|null $firstName
+     */
+    public function setFirstName(?string $firstName): void
+    {
+        $this->firstName = $firstName;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFirstName(): ?string
+    {
+        return $this->firstName;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDate(): ?string
+    {
+        return $this->date;
+    }
+
+    /**
+     * @param string|null $date
+     */
+    public function setDate(?string $date): void
+    {
+        $this->date = $date;
     }
 
     /**
@@ -157,5 +191,39 @@ class BillViewModel extends BaseViewModel
 
         $this->setSaleViewModels($billViewModel["salesViewModels"]);
         return $this->billUseCase->getCalculationDetails($this);
+    }
+
+    public function save(Request $request) : CustomResponse
+    {
+        $billViewModel = $request->billViewModel;
+
+        $billValidationResponse = $this->checkInputValidation($billViewModel,[
+            'date' => 'required|string',
+            'mobileNumber' => 'required|string',
+            'givenPrice' => 'required|integer|min:1'
+        ]);
+
+        if($billValidationResponse != CustomResponseMsg::OK->value){
+            return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $billValidationResponse);
+        }
+
+        $salesValidationResponse = $this->checkInputValidation($billViewModel,[
+            'salesViewModels.*.productCode' => 'required|string',
+            'salesViewModels.*.productQuantity' => 'required|integer|min:1',
+            'salesViewModels.*.singlePrice' => 'required|integer|min:1',
+            'salesViewModels.*.vatPercentage' => 'required|integer|min:1',
+            'salesViewModels.*.total' => 'required|integer|min:1'
+        ]);
+
+        if($salesValidationResponse != CustomResponseMsg::OK->value){
+            return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $salesValidationResponse);
+        }
+
+        $this->setDate($billViewModel["date"]);
+        $this->setMobileNumber($billViewModel["mobileNumber"]);
+        $this->setGivenPrice($billViewModel["givenPrice"]);
+        $this->setFirstName($billViewModel["firstName"]);
+        $this->setSaleViewModels($billViewModel["salesViewModels"]);
+        return $this->billUseCase->save($this);
     }
 }

@@ -12,6 +12,7 @@ use App\Repositories\Interfaces\IUserInfoRepository;
 use App\ViewModels\UserInfoViewModel;
 use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -87,6 +88,7 @@ class UserInfoRepository extends BaseRepository implements IUserInfoRepository
         return $response;
     }
 
+
     public function getCustomers(int $perPage=5) : LengthAwarePaginator
     {
         return UserInfo::query()->where('for_whom', UserType::CUSTOMER->value)->paginate($perPage);
@@ -112,6 +114,7 @@ class UserInfoRepository extends BaseRepository implements IUserInfoRepository
 
             DB::commit();
 
+            $response->setModel($userInfo);
             $response->setMsg(CustomResponseMsg::SUCCESS->value);
             $response->setCode(CustomResponseCode::SUCCESS->value);
 
@@ -122,5 +125,16 @@ class UserInfoRepository extends BaseRepository implements IUserInfoRepository
         }
 
         return $response;
+    }
+
+    /**
+     * @param string $mobileNumber
+     * @return Model
+     */
+    public function getCustomerDetailsByMobileNumber(string $mobileNumber): Model
+    {
+        return UserInfo::query()->where("for_whom",UserType::CUSTOMER->value)
+            ->where("mobile_number",$mobileNumber)
+            ->first();
     }
 }

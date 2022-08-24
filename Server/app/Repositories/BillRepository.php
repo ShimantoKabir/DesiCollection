@@ -4,10 +4,13 @@ namespace App\Repositories;
 
 use App\Enums\CustomResponseCode;
 use App\Enums\CustomResponseMsg;
+use App\Models\Bill;
 use App\Models\CustomResponse;
+use App\Models\Product;
 use App\Repositories\Interfaces\IBillRepository;
 use App\ViewModels\AgeViewModel;
 use App\ViewModels\BillViewModel;
+use Illuminate\Support\Facades\DB;
 
 class BillRepository extends BaseRepository implements IBillRepository
 {
@@ -31,17 +34,37 @@ class BillRepository extends BaseRepository implements IBillRepository
         return $response;
     }
 
-
     /**
      * @param BillViewModel $billViewModel
      * @return CustomResponse
      */
     public function create(BillViewModel $billViewModel): CustomResponse
     {
-        $response = new CustomResponse();
-        $response->setMsg(CustomResponseMsg::SUCCESS->value);
-        $response->setCode(CustomResponseCode::SUCCESS->value);
-        return $response;
+
+        $res = new CustomResponse();
+        DB::beginTransaction();
+        try{
+
+            $model = new Bill();
+            $model->number = "BN".time();
+            $model->ip = $billViewModel->getIp();
+            $model->createdAt = $billViewModel->getDate();
+            $model->modifiedBy = $billViewModel->getModifiedBy();
+            $model->save();
+
+            $res->setModel($model);
+            $res->setCode(CustomResponseCode::SUCCESS->value);
+            $res->setMsg(CustomResponseMsg::SUCCESS->value);
+
+            DB::commit();
+
+        }catch (\Exception $e){
+            DB::rollBack();
+            $res->setCode(CustomResponseCode::ERROR->value);
+            $res->setMsg($e->getMessage());
+        }
+
+        return $res;
     }
 
     /**

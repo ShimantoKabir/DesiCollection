@@ -28,6 +28,8 @@ class UserInfoViewModel extends BaseViewModel
     public string $href;
     public UserInfoUseCase $userInfoUseCase;
 
+
+
     public function __construct(UserInfoUseCase $userInfoUseCase)
     {
         $this->userInfoUseCase = $userInfoUseCase;

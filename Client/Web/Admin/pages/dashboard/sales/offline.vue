@@ -146,6 +146,11 @@
               <td><input v-model="s.total" type="number" class="form-control" disabled></td>
             </tr>
             <tr>
+              <td colspan="4" class="text-center" ></td>
+              <td class="text-center" >Given Price</td>
+              <td><input v-model="billViewModel.givenPrice" type="number" class="form-control"></td>
+            </tr>
+            <tr>
               <td colspan="6" class="text-center" >
                 <button v-on:click="addOrRemoveSales(1)" class="btn btn-outline-success" >
                   <i class="fas fa-plus" ></i>
@@ -159,7 +164,7 @@
               <td colspan="5" >
                 <button class="btn btn-success" >
                   <span v-if="billViewModel.number" >Update</span>
-                  <span v-else >Save</span>
+                  <span v-else v-on:click="onCreate" >Save</span>
                 </button>
               </td>
               <td class="text-end" >
@@ -168,7 +173,7 @@
             </tr>
             <tr v-else >
               <td colspan="5" >
-                <button class="btn btn-success" v-on:click="verifyInput(opState.CREATE)" >Confirm</button>
+                <button class="btn btn-success" v-on:click="verifyInput(opState.OTHER)" >Confirm</button>
               </td>
               <td class="text-end" >
                 <button v-on:click="onCancel" class="btn btn-outline-dark" >Cancel</button>
@@ -205,6 +210,7 @@ export default {
         maxDate: "",
         mobileNumber : "",
         firstName : "",
+        givenPrice: 0,
         salesViewModels : [
           {
             singlePrice : 0,
@@ -240,7 +246,7 @@ export default {
       }
     },
     verifyInput(which){
-      if (which === this.opState.CREATE){
+      if (which === this.opState.OTHER){
         this.showValidation = true;
 
         let quantityCheck = this.billViewModel.salesViewModels.findIndex(obj=>{
@@ -258,6 +264,9 @@ export default {
         }else {
           this.showValidation = false;
           this.isConfirmed = true;
+          this.billViewModel.salesViewModels.forEach(obj=>{
+            obj.productQuantity = parseInt(obj.productQuantity);
+          });
           this.getProductVatAndPrice();
         }
       }
@@ -272,7 +281,9 @@ export default {
           res.saleViewModels.forEach((obj,index)=>{
             this.billViewModel.salesViewModels[index].vatPercentage = obj.vatPercentage;
             this.billViewModel.salesViewModels[index].singlePrice = obj.singlePrice;
+            this.billViewModel.salesViewModels[index].total = obj.total;
           });
+          this.billViewModel.givenPrice = res.grandTotal;
           this.showSuccess(this, res.msg);
         }else {
           this.showErrorMsg(this,this.opState.OTHER,res.msg);
@@ -298,7 +309,20 @@ export default {
       }
     },
     onCreate(){
-
+      this.showLoader(this);
+      this.$axios.$post('/sales-offline',{
+        billViewModel : this.billViewModel,
+        userInfoViewModel: this.getAuthInfo()
+      }).then(res=>{
+        if(res.code === this.networkState.SUCCESS){
+          console.log(res);
+          this.showSuccess(this, res.msg);
+        }else {
+          this.showErrorMsg(this,this.opState.OTHER,res.msg);
+        }
+      }).catch(err=>{
+        this.showError(this,this.opState.OTHER);
+      });
     }
   }
 }

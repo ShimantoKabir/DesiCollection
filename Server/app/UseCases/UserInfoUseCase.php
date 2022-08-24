@@ -19,4 +19,5 @@ class UserInfoUseCase extends BaseUseCase
     {
         return $this->userInfoRepository->checkUserPermission($userInfoViewModel);
     }
+
 }
