@@ -8,6 +8,7 @@ use App\Models\CustomResponse;
 use App\Models\Product;
 use App\Repositories\Interfaces\IProductRepository;
 use App\ViewModels\ProductViewModel;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -57,7 +58,7 @@ class ProductRepository extends BaseRepository implements IProductRepository
 
             DB::commit();
 
-        }catch (\Exception $e){
+        }catch (Exception $e){
             DB::rollBack();
             $res->setCode(CustomResponseCode::ERROR->value);
             $res->setMsg($e->getMessage());
@@ -98,7 +99,7 @@ class ProductRepository extends BaseRepository implements IProductRepository
             $res->setMsg(CustomResponseMsg::SUCCESS->value);
             $res->setModel($productViewModel);
 
-        }catch (\Exception $e){
+        }catch (Exception $e){
             DB::rollBack();
             $res->setCode(CustomResponseCode::ERROR->value);
             $res->setMsg($e->getMessage());
@@ -119,7 +120,7 @@ class ProductRepository extends BaseRepository implements IProductRepository
             $res->setCode(CustomResponseCode::SUCCESS->value);
             $res->setMsg(CustomResponseMsg::SUCCESS->value);
 
-        }catch (\Exception $e){
+        }catch (Exception $e){
             DB::rollBack();
             $res->setCode(CustomResponseCode::ERROR->value);
             $res->setMsg($e->getMessage());
@@ -225,5 +226,54 @@ class ProductRepository extends BaseRepository implements IProductRepository
     public function isProductCodesExist(array $codes): bool
     {
         return Product::query()->whereIn("code",$codes)->exists();
+    }
+
+    /**
+     * @param array $codes
+     * @return Product|null
+     */
+    public function checkProductQty(array $codesWithQty): Model|null
+    {
+
+        $product = null;
+
+        foreach ($codesWithQty as $codeWithQty){
+            $product = Product::query()->where("code",$codeWithQty["code"])
+                ->where("totalQuantity",">=",$codeWithQty["quantity"])
+                ->first();
+            if (is_null($product)){
+                break;
+            }
+        }
+
+        return $product;
+    }
+
+    /**
+     * @param array $codesWithQty
+     * @return CustomResponse
+     */
+    public function deductProductQty(array $codesWithQty): CustomResponse
+    {
+        $res = new CustomResponse();
+        DB::beginTransaction();
+        try{
+
+            foreach ($codesWithQty as $codeWithQty){
+                DB::table("sales")->where("code",$codeWithQty["code"])
+                    ->decrement("totalQuantity",$codeWithQty["quantity"]);
+                DB::commit();
+            }
+
+            $res->setCode(CustomResponseCode::SUCCESS->value);
+            $res->setMsg(CustomResponseMsg::SUCCESS->value);
+
+        }catch (Exception $e){
+            DB::rollBack();
+            $res->setCode(CustomResponseCode::ERROR->value);
+            $res->setMsg($e->getMessage());
+        }
+
+        return $res;
     }
 }

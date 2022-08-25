@@ -4,6 +4,7 @@ namespace App\Repositories\Interfaces;
 
 use App\Models\CustomResponse;
 use App\ViewModels\ProductViewModel;
+use Illuminate\Database\Eloquent\Model;
 
 interface IProductRepository extends IBaseRepository
 {
@@ -15,4 +16,6 @@ interface IProductRepository extends IBaseRepository
     public function readProduct(ProductViewModel $productViewModel): array;
     public function getProductsDetailsByCodes(array $codes): array;
     public function isProductCodesExist(array $codes): bool;
+    public function checkProductQty(array $codesWithQty) : Model|null;
+    public function deductProductQty(array $codesWithQty) : CustomResponse;
 }

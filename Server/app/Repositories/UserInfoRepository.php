@@ -6,6 +6,7 @@ use App\Enums\CustomResponseCode;
 use App\Enums\CustomResponseMsg;
 use App\Enums\OperationType;
 use App\Enums\UserType;
+use App\Models\CustomRequest;
 use App\Models\CustomResponse;
 use App\Models\UserInfo;
 use App\Repositories\Interfaces\IUserInfoRepository;
@@ -95,10 +96,21 @@ class UserInfoRepository extends BaseRepository implements IUserInfoRepository
     }
 
     /**
-     * @param UserInfoViewModel $userInfoViewModel
+     * @param string $mobileNumber
+     * @return Model
+     */
+    public function getCustomerDetailsByMobileNumber(string $mobileNumber): Model|null
+    {
+        return UserInfo::query()->where("for_whom",UserType::CUSTOMER->value)
+            ->where("mobile_number",$mobileNumber)
+            ->first();
+    }
+
+    /**
+     * @param CustomRequest $customRequest
      * @return CustomResponse
      */
-    public function save(UserInfoViewModel $userInfoViewModel): CustomResponse
+    public function saveCustomer(CustomRequest $customRequest): CustomResponse
     {
         $response = new CustomResponse();
 
@@ -107,8 +119,9 @@ class UserInfoRepository extends BaseRepository implements IUserInfoRepository
 
             $userInfo = new UserInfo();
             $userInfo->for_whom = UserType::CUSTOMER->value;
-            $userInfo->password = sha1($userInfoViewModel->getMobileNumber());
-            $userInfo->mobile_number = $userInfoViewModel->getMobileNumber();
+            $userInfo->password = sha1($customRequest->getMobileNumber());
+            $userInfo->mobile_number = $customRequest->getMobileNumber();
+            $userInfo->first_name = $customRequest->getFirstName();
             $userInfo->op_access = OperationType::READ->value;
             $userInfo->save();
 
@@ -125,16 +138,5 @@ class UserInfoRepository extends BaseRepository implements IUserInfoRepository
         }
 
         return $response;
-    }
-
-    /**
-     * @param string $mobileNumber
-     * @return Model
-     */
-    public function getCustomerDetailsByMobileNumber(string $mobileNumber): Model
-    {
-        return UserInfo::query()->where("for_whom",UserType::CUSTOMER->value)
-            ->where("mobile_number",$mobileNumber)
-            ->first();
     }
 }

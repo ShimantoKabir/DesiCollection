@@ -211,7 +211,7 @@ class BillViewModel extends BaseViewModel
             'salesViewModels.*.productCode' => 'required|string',
             'salesViewModels.*.productQuantity' => 'required|integer|min:1',
             'salesViewModels.*.singlePrice' => 'required|integer|min:1',
-            'salesViewModels.*.vatPercentage' => 'required|integer|min:1',
+            'salesViewModels.*.vatPercentage' => 'required|integer|min:0',
             'salesViewModels.*.total' => 'required|integer|min:1'
         ]);
 

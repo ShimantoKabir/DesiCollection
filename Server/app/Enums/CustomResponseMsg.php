@@ -20,4 +20,5 @@ enum CustomResponseMsg : string
     case PAGE_PERMISSION_DENIED = "You don't have permission to access this page!";
     case PERMISSION_OK = "All permission ok!";
     case OK = "OK";
+    case PRODUCT_NOT_FOUND = "Product not found!";
 }

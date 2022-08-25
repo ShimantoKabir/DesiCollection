@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\ViewModels\UserInfoViewModel;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class CustomResponse
