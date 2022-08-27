@@ -11,7 +11,6 @@ use App\Repositories\ProductRepository;
 use App\Repositories\SaleRepository;
 use App\Repositories\UserInfoRepository;
 use App\ViewModels\BillViewModel;
-use App\ViewModels\UserInfoViewModel;
 
 class BillUseCase extends BaseUseCase
 {
@@ -122,15 +121,17 @@ class BillUseCase extends BaseUseCase
 
         $customer = $this->userInfoRepository->getCustomerDetailsByMobileNumber($billViewModel->getMobileNumber());
 
-        $customerSaveRes = null;
         if (is_null($customer)){
             $request = new CustomRequest();
             $request->setFirstName($billViewModel->getFirstName());
             $request->setMobileNumber($billViewModel->getMobileNumber());
             $customerSaveRes = $this->userInfoRepository->saveCustomer($request);
+            if ($customerSaveRes->getCode() == CustomResponseCode::SUCCESS->value){
+                $customer = $customerSaveRes->getModel();
+            }
         }
 
-        if(is_null($customerSaveRes) || $customerSaveRes->getCode() == CustomResponseCode::SUCCESS->value){
+        if(is_null($customer)){
             $res->setCode(CustomResponseCode::ERROR->value);
             $res->setMsg("No customer found or couldn't create a new customer!");
             return $res;
@@ -140,23 +141,27 @@ class BillUseCase extends BaseUseCase
         $billSaveRes = $this->billRepository->create($billViewModel);
 
         if($billSaveRes->getCode() == CustomResponseCode::ERROR->value){
-            $res->setCode(CustomResponseCode::ERROR->value);
-            $res->setMsg("Couldn't save the bill!");
-            return $res;
+            return $billSaveRes;
         }
 
         $billModel = $billSaveRes->getModel();
-        foreach ($salesViewModels as $item) {
-            $item["billNumber"] = $billModel->billNumber;
-            $item["ip"] = $billViewModel->getId();
-            $item["modifiedBy"] = $billViewModel->getModifiedBy();
+
+        foreach ($salesViewModels as $key=>$item) {
+            $salesViewModels[$key]["billNumber"] = $billModel->number;
+            $salesViewModels[$key]["ip"] = $billViewModel->getIp();
+            $salesViewModels[$key]["modifiedBy"] = $billViewModel->getModifiedBy();
+            $salesViewModels[$key]["createdAt"] = $billViewModel->getDate();
         }
 
         $salesSaveRes = $this->saleRepository->createMultiple($salesViewModels);
 
         if ($salesSaveRes->getCode() == CustomResponseCode::ERROR->value){
-            $res->setMsg(CustomResponseMsg::ERROR->value);
-            $res->setMsg("Couldn't save the sales!");
+            return $salesSaveRes;
+        }
+
+        $productDeductRes = $this->productRepository->deductProductQty($productCodeWithQty);
+        if ($productDeductRes->getCode() == CustomResponseCode::ERROR->value){
+            return $productDeductRes;
         }
 
         return $res;

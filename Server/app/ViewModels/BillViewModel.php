@@ -6,7 +6,6 @@ use App\Enums\CustomResponseCode;
 use App\Enums\CustomResponseMsg;
 use App\Models\CustomResponse;
 use App\UseCases\BillUseCase;
-use App\UseCases\UserInfoUseCase;
 use Illuminate\Http\Request;
 
 class BillViewModel extends BaseViewModel
@@ -224,6 +223,8 @@ class BillViewModel extends BaseViewModel
         $this->setGivenPrice($billViewModel["givenPrice"]);
         $this->setFirstName($billViewModel["firstName"]);
         $this->setSaleViewModels($billViewModel["salesViewModels"]);
+        $this->setIp($request->ip());
+        $this->setModifiedBy($request->modifiedBy);
         return $this->billUseCase->save($this);
     }
 }

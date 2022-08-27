@@ -49,8 +49,6 @@ class BillRepository extends BaseRepository implements IBillRepository
             $model->number = "BN".time();
             $model->customerId = $billViewModel->getCustomerId();
             $model->givenPrice = $billViewModel->getGivenPrice();
-            $model->firstName = $billViewModel->getFirstName();
-            $model->mobileNumber = $billViewModel->getMobileNumber();
             $model->ip = $billViewModel->getIp();
             $model->createdAt = $billViewModel->getDate();
             $model->modifiedBy = $billViewModel->getModifiedBy();

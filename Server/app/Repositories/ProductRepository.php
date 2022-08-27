@@ -239,7 +239,7 @@ class ProductRepository extends BaseRepository implements IProductRepository
 
         foreach ($codesWithQty as $codeWithQty){
             $product = Product::query()->where("code",$codeWithQty["code"])
-                ->where("totalQuantity",">=",$codeWithQty["quantity"])
+                ->where("totalQuantity","<",$codeWithQty["quantity"])
                 ->first();
             if (is_null($product)){
                 break;
@@ -260,7 +260,7 @@ class ProductRepository extends BaseRepository implements IProductRepository
         try{
 
             foreach ($codesWithQty as $codeWithQty){
-                DB::table("sales")->where("code",$codeWithQty["code"])
+                DB::table("products")->where("code",$codeWithQty["code"])
                     ->decrement("totalQuantity",$codeWithQty["quantity"]);
                 DB::commit();
             }

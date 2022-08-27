@@ -15,7 +15,7 @@ class CreateSalesTable extends Migration
     {
         Schema::create('sales', function (Blueprint $table) {
             $table->id();
-            $table->integer("billNumber");
+            $table->string("billNumber");
             $table->integer("singlePrice");
             $table->integer("vatPercentage");
             $table->string("productCode");
