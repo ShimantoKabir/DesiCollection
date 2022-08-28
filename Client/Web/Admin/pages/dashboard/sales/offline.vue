@@ -29,32 +29,51 @@
                     <thead>
                     <tr>
                       <th>SL</th>
+                      <th>Number</th>
+                      <th>Mobile</th>
+                      <th>Given Price</th>
+                      <th>Status</th>
                       <th>Date</th>
-                      <th>Voucher No</th>
-                      <th>Account Name</th>
-                      <th>Debit</th>
-                      <th>Credit</th>
+                      <th>Billed By</th>
+                      <th>In Active</th>
                       <th>Edit</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody v-if="previousBill && previousBill.data.length === 0" >
                       <tr class="text-center" >
                         <td colspan="7" >No transaction found!</td>
                       </tr>
                     </tbody>
+                    <tbody v-else-if="previousBill && previousBill.data.length > 0" >
+                      <tr v-for="(b,i) in previousBill.data" >
+                        <td>{{i+1}}</td>
+                        <td>{{b.number}}</td>
+                        <td>{{b.mobileNumber}}</td>
+                        <td>{{b.givenPrice}}</td>
+                        <td>
+                          <span v-if="b.isActive" >Active</span>
+                          <span v-else >In Active</span>
+                        </td>
+                        <td>{{new Date(b.createdAt).toDateString()}}</td>
+                        <td>{{b.billedBy}}</td>
+                        <td><i class="fas fa-power-off" ></i></td>
+                        <td><i class="fas fa-edit" ></i></td>
+                      </tr>
+                    </tbody>
                   </table>
                 </div>
-                <div class="modal-footer">
-                  <date-picker v-model="billViewModel.dateRange"
-                               type="date"
-                               value-type="YYYY-MM-DD"
-                               format="YYYY-MM-DD"
-                               range></date-picker>
-                  <button type="submit"
-                          class="btn btn-primary"
-                          v-on:click="verifyInput('read')">
-                    Show
-                  </button>
+                <div v-if="previousBill" class="modal-footer" >
+                  <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                      <li v-for="(p,i) in previousBill.links"
+                          v-on:click="onModalOpen(p)"
+                          :class="[p.active ? 'page-item my-cursor active' : 'page-item my-cursor']">
+                        <span class="page-link" v-if="p.label.includes('Previous')" ><i class="fas fa-arrow-left" ></i></span>
+                        <span class="page-link" v-else-if="p.label.includes('Next')" ><i class="fas fa-arrow-right" ></i></span>
+                        <span class="page-link" v-else >{{p.label}}</span>
+                      </li>
+                    </ul>
+                  </nav>
                 </div>
               </div>
             </div>
@@ -72,7 +91,7 @@
             <h1 class="h2">Entry</h1>
             <div class="btn-toolbar mb-2 mb-md-0">
               <div class="btn-group me-2">
-                <button v-on:click="onModalOpen"
+                <button v-on:click="onModalOpen({url: 'http://localhost:3000/dashboard/sales/offline?page=1'})"
                   ref="addRoleBtn"
                   type="button"
                   class="btn btn-sm btn-outline-secondary"
@@ -148,7 +167,9 @@
             <tr>
               <td colspan="4" class="text-center" ></td>
               <td class="text-center" >Given Price</td>
-              <td><input v-model="billViewModel.givenPrice" type="number" class="form-control"></td>
+              <td>
+                <input v-model="billViewModel.givenPrice" type="number" class="form-control" :disabled="isConfirmed">
+              </td>
             </tr>
             <tr>
               <td colspan="6" class="text-center" >
@@ -168,7 +189,7 @@
                 </button>
               </td>
               <td class="text-end" >
-                <button v-on:click="onReset" class="btn btn-outline-dark" >Reset</button>
+                <button v-on:click="onCancel" class="btn btn-outline-dark" >Cancel</button>
               </td>
             </tr>
             <tr v-else >
@@ -176,7 +197,7 @@
                 <button class="btn btn-success" v-on:click="verifyInput(opState.OTHER)" >Confirm</button>
               </td>
               <td class="text-end" >
-                <button v-on:click="onCancel" class="btn btn-outline-dark" >Cancel</button>
+                <button v-on:click="onReset" class="btn btn-outline-dark" >Reset</button>
               </td>
             </tr>
             </tbody>
@@ -202,9 +223,9 @@ export default {
       salasValidationMsg: "",
       currentDate : null,
       showValidation : false,
+      previousBill: null,
       billViewModel : {
         number: "",
-        dateRange: null,
         date: "",
         minDate : "",
         maxDate: "",
@@ -225,10 +246,20 @@ export default {
   },
   methods : {
     onCancel(){
-
+      this.isConfirmed = false;
     },
     onReset(){
-
+      this.billViewModel.number = "";
+      this.billViewModel.mobileNumber = "";
+      this.billViewModel.givenPrice = 0;
+      this.billViewModel.firstName = "";
+      this.billViewModel.salesViewModels.forEach(obj=>{
+        obj.productCode = "";
+        obj.productQuantity = 0;
+        obj.total = 0;
+        obj.singlePrice = 0;
+        obj.vatPercentage = 0;
+      });
     },
     addOrRemoveSales(flag){
       if(flag === 1){
@@ -292,8 +323,20 @@ export default {
         this.showError(this,this.opState.OTHER);
       });
     },
-    onModalOpen(){
-
+    onModalOpen(obj){
+      if (obj.url){
+        let url = new URL(obj.url);
+        let page = url.searchParams.get("page");
+        this.$axios.$get('/bills?page='+parseInt(page)).then(res=>{
+          if(res.code === this.networkState.SUCCESS){
+            this.previousBill = res.paginator;
+          }else {
+            this.showErrorMsg(this,this.opState.OTHER,res.msg);
+          }
+        }).catch(err=>{
+          this.showError(this,this.opState.OTHER);
+        });
+      }
     },
     onAlertClose(eventData){
       console.log("eventDate=",eventData);
@@ -315,7 +358,7 @@ export default {
         userInfoViewModel: this.getAuthInfo()
       }).then(res=>{
         if(res.code === this.networkState.SUCCESS){
-          console.log(res);
+          this.billViewModel.number = res.model.number;
           this.showSuccess(this, res.msg);
         }else {
           this.showErrorMsg(this,this.opState.OTHER,res.msg);
@@ -329,5 +372,8 @@ export default {
 </script>
 
 <style scoped>
-
+  .my-cursor{
+    cursor: pointer;
+    color: black;
+  }
 </style>

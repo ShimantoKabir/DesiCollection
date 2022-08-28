@@ -227,4 +227,9 @@ class BillViewModel extends BaseViewModel
         $this->setModifiedBy($request->modifiedBy);
         return $this->billUseCase->save($this);
     }
+
+    public function getBills() : CustomResponse
+    {
+        return $this->billUseCase->getBills();
+    }
 }

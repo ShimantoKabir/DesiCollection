@@ -31,4 +31,9 @@ class BillController extends Controller
     {
         return response()->json($this->billViewModel->save($request), HttpResponseCodes::HTTP_OK);
     }
+
+    public function getBills(Request $request): JsonResponse
+    {
+        return response()->json($this->billViewModel->getBills($request), HttpResponseCodes::HTTP_OK);
+    }
 }

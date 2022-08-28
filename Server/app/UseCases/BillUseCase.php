@@ -164,6 +164,12 @@ class BillUseCase extends BaseUseCase
             return $productDeductRes;
         }
 
+        $res->setModel($billSaveRes->getModel());
         return $res;
+    }
+
+    public function getBills() : CustomResponse
+    {
+        return $this->billRepository->getBills();
     }
 }

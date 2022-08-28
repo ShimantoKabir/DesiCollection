@@ -80,4 +80,24 @@ class BillRepository extends BaseRepository implements IBillRepository
         $response->setCode(CustomResponseCode::SUCCESS->value);
         return $response;
     }
+
+    public function getBills() : CustomResponse
+    {
+        $response = new CustomResponse();
+        $response->setMsg(CustomResponseMsg::SUCCESS->value);
+        $response->setCode(CustomResponseCode::SUCCESS->value);
+
+        $billPaginateRes = DB::table('bills AS b')
+            ->join('user_infos AS c', 'c.id', '=', 'b.customerId')
+            ->join('user_infos AS u', 'u.id', '=', 'b.modifiedBy')
+            ->select(
+                'b.*',
+                DB::raw("c.mobile_number AS mobileNumber"),
+                DB::raw("IFNULL(u.first_name, IFNULL(u.mobile_number, u.email)) AS billedBy")
+            )
+            ->paginate(5);
+
+        $response->setPaginator($billPaginateRes);
+        return $response;
+    }
 }
