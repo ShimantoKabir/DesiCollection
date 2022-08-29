@@ -9,7 +9,6 @@ use Symfony\Component\HttpFoundation\Response as HttpResponseCodes;
 
 class BillController extends Controller
 {
-
     public BillViewModel $billViewModel;
 
     public function __construct(BillViewModel $billViewModel)

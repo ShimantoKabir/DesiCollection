@@ -164,6 +164,10 @@ class BillUseCase extends BaseUseCase
             return $productDeductRes;
         }
 
+        if (!is_null($billViewModel->getNumber())){
+            $this->productRepository->inActiveBillByNumber($billViewModel->getNumber());
+        }
+
         $res->setModel($billSaveRes->getModel());
         return $res;
     }

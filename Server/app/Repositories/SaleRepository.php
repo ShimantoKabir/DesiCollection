@@ -10,6 +10,7 @@ use App\Models\CustomResponse;
 use App\Models\Sale;
 use App\Models\UserInfo;
 use App\Repositories\Interfaces\ISaleRepository;
+use App\ViewModels\SaleViewModel;
 use Illuminate\Support\Facades\DB;
 
 class SaleRepository extends BaseRepository implements ISaleRepository
@@ -52,4 +53,37 @@ class SaleRepository extends BaseRepository implements ISaleRepository
 
         return $response;
     }
+
+    public function getSalesByBillNumber(SaleViewModel $saleViewModel) : CustomResponse
+    {
+        $res = new CustomResponse();
+
+        $saleRecords = Sale::query()->select("singlePrice","vatPercentage","productCode","productQuantity")
+            ->where("billNumber",$saleViewModel->getBillNumber())
+            ->get()->toArray();
+
+        if (count($saleRecords) > 0){
+            foreach ($saleRecords as $index=>$value){
+                $total = $this->totalCalculationWithVat($value);
+                $saleRecords[$index]["total"] = $total;
+            }
+            $res->setSaleViewModels($saleRecords);
+            $res->setCode(CustomResponseCode::SUCCESS->value);
+            $res->setMsg(CustomResponseMsg::SUCCESS->value);
+        }else{
+            $res->setCode(CustomResponseCode::ERROR->value);
+            $res->setMsg(CustomResponseMsg::ERROR->value);
+        }
+
+        return $res;
+    }
+
+    private function totalCalculationWithVat(mixed $value) : int
+    {
+        $priceWithVat = $value["singlePrice"] * ($value["vatPercentage"]/100);
+        $totalVat = $value["productQuantity"] * round($priceWithVat);
+        $totalPrice = $value["productQuantity"] * $value["singlePrice"];
+        return $totalVat + $totalPrice;
+    }
+
 }

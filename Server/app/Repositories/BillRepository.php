@@ -91,8 +91,13 @@ class BillRepository extends BaseRepository implements IBillRepository
             ->join('user_infos AS c', 'c.id', '=', 'b.customerId')
             ->join('user_infos AS u', 'u.id', '=', 'b.modifiedBy')
             ->select(
-                'b.*',
+                'b.number',
+                'b.customerId',
+                'b.givenPrice',
+                'b.isActive',
+                'b.createdAt',
                 DB::raw("c.mobile_number AS mobileNumber"),
+                DB::raw("c.first_name AS firstName"),
                 DB::raw("IFNULL(u.first_name, IFNULL(u.mobile_number, u.email)) AS billedBy")
             )
             ->paginate(5);

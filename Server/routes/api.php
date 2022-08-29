@@ -12,6 +12,7 @@ use App\Http\Controllers\MenuPermissionForRoleCtl;
 use App\Http\Controllers\ProductCtl;
 use App\Http\Controllers\ProductUserTypeCtl;
 use App\Http\Controllers\RoleCtl;
+use App\Http\Controllers\SaleCtl;
 use App\Http\Controllers\SizeCtl;
 use App\Http\Controllers\SupplierAddressCtl;
 use App\Http\Controllers\SupplierBillCtl;
@@ -120,4 +121,6 @@ Route::post('/sales-offline/index', [BillController::class, 'index'])->middlewar
 Route::post('/sales-offline/calculation', [BillController::class, 'calculate'])->middleware(AdministrationMiddleware::class);
 Route::post('/sales-offline', [BillController::class, 'save'])->middleware(AdministrationMiddleware::class);
 Route::get('/bills', [BillController::class, 'getBills']);
+
+Route::post('/sales/bill-number', [SaleCtl::class, 'getSalesByBillNumber'])->middleware(AdministrationMiddleware::class);
 

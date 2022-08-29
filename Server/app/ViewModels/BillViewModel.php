@@ -218,6 +218,7 @@ class BillViewModel extends BaseViewModel
             return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $salesValidationResponse);
         }
 
+        $this->setNumber($billViewModel["number"]);
         $this->setDate($billViewModel["date"]);
         $this->setMobileNumber($billViewModel["mobileNumber"]);
         $this->setGivenPrice($billViewModel["givenPrice"]);

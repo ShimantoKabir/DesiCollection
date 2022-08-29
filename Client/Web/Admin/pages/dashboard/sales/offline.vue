@@ -22,7 +22,13 @@
                   <h5 class="modal-title" id="exampleModalLabel">
                     <span>Entries</span>
                   </h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  <button
+                    type="button"
+                    ref="btn-close"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close">
+                  </button>
                 </div>
                 <div class="modal-body">
                   <table class="table table-bordered" >
@@ -35,7 +41,6 @@
                       <th>Status</th>
                       <th>Date</th>
                       <th>Billed By</th>
-                      <th>In Active</th>
                       <th>Edit</th>
                     </tr>
                     </thead>
@@ -56,8 +61,7 @@
                         </td>
                         <td>{{new Date(b.createdAt).toDateString()}}</td>
                         <td>{{b.billedBy}}</td>
-                        <td><i class="fas fa-power-off" ></i></td>
-                        <td><i class="fas fa-edit" ></i></td>
+                        <td><i class="fas fa-edit" v-on:click="setFormData(b)" ></i></td>
                       </tr>
                     </tbody>
                   </table>
@@ -159,7 +163,14 @@
             <tr  v-for="(s,i) in billViewModel.salesViewModels" >
               <td>{{i+1}}</td>
               <td><input v-model="s.productCode" type="text" class="form-control" :disabled="isConfirmed"></td>
-              <td><input v-model="s.productQuantity" type="number" class="form-control" :disabled="isConfirmed"></td>
+              <td>
+                <input
+                  v-model="s.productQuantity"
+                  type="number"
+                  min="0"
+                  class="form-control"
+                  :disabled="isConfirmed">
+              </td>
               <td><input v-model="s.vatPercentage" type="number" class="form-control" disabled></td>
               <td><input v-model="s.singlePrice" type="number" class="form-control" disabled></td>
               <td><input v-model="s.total" type="number" class="form-control" disabled></td>
@@ -168,7 +179,12 @@
               <td colspan="4" class="text-center" ></td>
               <td class="text-center" >Given Price</td>
               <td>
-                <input v-model="billViewModel.givenPrice" type="number" class="form-control" :disabled="isConfirmed">
+                <input
+                  v-model="billViewModel.givenPrice"
+                  type="number"
+                  min="0"
+                  class="form-control"
+                  :disabled="isConfirmed">
               </td>
             </tr>
             <tr>
@@ -184,7 +200,7 @@
             <tr v-if="isConfirmed" >
               <td colspan="5" >
                 <button class="btn btn-success" >
-                  <span v-if="billViewModel.number" >Update</span>
+                  <span v-if="billViewModel.number" v-on:click="onCreate" >Update</span>
                   <span v-else v-on:click="onCreate" >Save</span>
                 </button>
               </td>
@@ -245,6 +261,36 @@ export default {
     }
   },
   methods : {
+    setFormData(b){
+      this.$refs["btn-close"].click();
+      this.billViewModel.number = b.number;
+      this.billViewModel.mobileNumber = b.mobileNumber;
+      this.billViewModel.firstName = b.firstName;
+      this.billViewModel.givenPrice = b.givenPrice;
+      this.billViewModel.firstName = b.firstName;
+      this.billViewModel.salesViewModels = [];
+      this.getSalesByBillNumber();
+    },
+    getSalesByBillNumber(){
+      this.showLoader(this);
+      this.$axios.$post('/sales/bill-number',{
+        saleViewModel : {
+          billNumber : this.billViewModel.number
+        },
+        userInfoViewModel: this.getAuthInfo()
+      }).then(res=>{
+        if(res.code === this.networkState.SUCCESS){
+          res.saleViewModels.forEach((obj)=>{
+            this.billViewModel.salesViewModels.push(obj);
+          });
+          this.showSuccess(this, res.msg);
+        }else {
+          this.showErrorMsg(this,this.opState.OTHER,res.msg);
+        }
+      }).catch(err=>{
+        this.showError(this,this.opState.OTHER);
+      });
+    },
     onCancel(){
       this.isConfirmed = false;
     },

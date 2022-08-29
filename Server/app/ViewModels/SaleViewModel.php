@@ -2,6 +2,12 @@
 
 namespace App\ViewModels;
 
+use App\Enums\CustomResponseCode;
+use App\Enums\CustomResponseMsg;
+use App\Models\CustomResponse;
+use App\UseCases\SaleUseCase;
+use Illuminate\Http\Request;
+
 class SaleViewModel extends BaseViewModel
 {
     public ?string $billNumber;
@@ -9,6 +15,12 @@ class SaleViewModel extends BaseViewModel
     public int $vatPercentage;
     public int $productCode;
     public int $productQuantity;
+    private SaleUseCase $saleUseCase;
+
+    public function __construct(SaleUseCase $saleUseCase)
+    {
+        $this->saleUseCase = $saleUseCase;
+    }
 
     /**
      * @return string|null
@@ -88,5 +100,23 @@ class SaleViewModel extends BaseViewModel
     public function getProductCode(): int
     {
         return $this->productCode;
+    }
+
+    public function getSalesByBillNumber(Request $request) : CustomResponse
+    {
+
+        $saleViewModel = $request->saleViewModel;
+
+        $saleValidationResponse = $this->checkInputValidation($saleViewModel,[
+            'billNumber' => 'required|string'
+        ]);
+
+        if($saleValidationResponse != CustomResponseMsg::OK->value){
+            return (new CustomResponse())->setResponse(CustomResponseCode::ERROR->value, $saleValidationResponse);
+        }
+
+        $this->setBillNumber($saleViewModel["billNumber"]);
+
+        return $this->saleUseCase->getSalesByBillNumber($this);
     }
 }
