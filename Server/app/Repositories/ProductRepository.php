@@ -278,28 +278,4 @@ class ProductRepository extends BaseRepository implements IProductRepository
         return $res;
     }
 
-    public function inActiveBillByNumber(string $billNumber) : CustomResponse
-    {
-        $res = new CustomResponse();
-        DB::beginTransaction();
-        try{
-
-            Bill::where('number',$billNumber)
-                ->update([
-                    'isActive' => false
-                ]);
-
-            DB::commit();
-
-            $res->setCode(CustomResponseCode::SUCCESS->value);
-            $res->setMsg(CustomResponseMsg::SUCCESS->value);
-
-        }catch (Exception $e){
-            DB::rollBack();
-            $res->setCode(CustomResponseCode::ERROR->value);
-            $res->setMsg($e->getMessage());
-        }
-
-        return $res;
-    }
 }

@@ -20,10 +20,27 @@ class BillViewModel extends BaseViewModel
     public BillUseCase $billUseCase;
     public ?array $saleViewModels;
     public ?string $date;
+    public ?string $replaceBy;
 
     public function __construct(BillUseCase $billUseCase)
     {
         $this->billUseCase = $billUseCase;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getReplaceBy(): ?string
+    {
+        return $this->replaceBy;
+    }
+
+    /**
+     * @param string|null $replaceBy
+     */
+    public function setReplaceBy(?string $replaceBy): void
+    {
+        $this->replaceBy = $replaceBy;
     }
 
     /**

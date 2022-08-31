@@ -39,6 +39,7 @@
                       <th>Mobile</th>
                       <th>Given Price</th>
                       <th>Status</th>
+                      <th>Replace By</th>
                       <th>Date</th>
                       <th>Billed By</th>
                       <th>Edit</th>
@@ -58,6 +59,10 @@
                         <td>
                           <span v-if="b.isActive" >Active</span>
                           <span v-else >In Active</span>
+                        </td>
+                        <td>
+                          <span v-if="b.replaceBy" >{{b.replaceBy}}</span>
+                          <span v-else >--</span>
                         </td>
                         <td>{{new Date(b.createdAt).toDateString()}}</td>
                         <td>{{b.billedBy}}</td>
@@ -197,7 +202,7 @@
                 </button>
               </td>
             </tr>
-            <tr v-if="isConfirmed" >
+            <tr v-if="isConfirmed && billViewModel.isActive" >
               <td colspan="5" >
                 <button class="btn btn-success" >
                   <span v-if="billViewModel.number" v-on:click="onCreate" >Update</span>
@@ -209,7 +214,7 @@
               </td>
             </tr>
             <tr v-else >
-              <td colspan="5" >
+              <td v-if="billViewModel.isActive" colspan="5" >
                 <button class="btn btn-success" v-on:click="verifyInput(opState.OTHER)" >Confirm</button>
               </td>
               <td class="text-end" >
@@ -248,6 +253,7 @@ export default {
         mobileNumber : "",
         firstName : "",
         givenPrice: 0,
+        isActive: 1,
         salesViewModels : [
           {
             singlePrice : 0,
@@ -268,6 +274,7 @@ export default {
       this.billViewModel.firstName = b.firstName;
       this.billViewModel.givenPrice = b.givenPrice;
       this.billViewModel.firstName = b.firstName;
+      this.billViewModel.isActive = b.isActive;
       this.billViewModel.salesViewModels = [];
       this.getSalesByBillNumber();
     },
@@ -298,6 +305,7 @@ export default {
       this.billViewModel.number = "";
       this.billViewModel.mobileNumber = "";
       this.billViewModel.givenPrice = 0;
+      this.billViewModel.isActive = 1;
       this.billViewModel.firstName = "";
       this.billViewModel.salesViewModels.forEach(obj=>{
         obj.productCode = "";
@@ -405,6 +413,7 @@ export default {
       }).then(res=>{
         if(res.code === this.networkState.SUCCESS){
           this.billViewModel.number = res.model.number;
+          this.onReset();
           this.showSuccess(this, res.msg);
         }else {
           this.showErrorMsg(this,this.opState.OTHER,res.msg);

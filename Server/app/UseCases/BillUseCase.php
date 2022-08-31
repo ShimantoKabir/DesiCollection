@@ -165,7 +165,8 @@ class BillUseCase extends BaseUseCase
         }
 
         if (!is_null($billViewModel->getNumber())){
-            $this->productRepository->inActiveBillByNumber($billViewModel->getNumber());
+            $billViewModel->setReplaceBy($billSaveRes->getModel()->number);
+            $this->billRepository->inActiveBillByNumber($billViewModel);
         }
 
         $res->setModel($billSaveRes->getModel());

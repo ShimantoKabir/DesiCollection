@@ -29,8 +29,8 @@
                     <div class="mb-3">
                       <label for="fabricSelectInput" class="form-label">Fabric</label>
                       <select id="fabricSelectInput"
-                              v-model="productViewModel.fabricId"
-                              class="form-select" >
+                        v-model="productViewModel.fabricId"
+                        class="form-select" >
                         <option v-bind:value="null">--select--</option>
                         <option v-bind:value="f.id" v-for="f in productViewModel.fabrics" >
                           {{f.fabricName}}
@@ -40,8 +40,8 @@
                     <div class="mb-3">
                       <label for="sizeSelectInput" class="form-label">Size</label>
                       <select id="sizeSelectInput"
-                              v-model="productViewModel.sizeId"
-                              class="form-select" >
+                        v-model="productViewModel.sizeId"
+                        class="form-select" >
                         <option v-bind:value="null">--select--</option>
                         <option v-bind:value="s.id" v-for="s in productViewModel.sizes" >
                           {{s.sizeName}}
@@ -51,8 +51,8 @@
                     <div class="mb-3">
                       <label for="ageSelectInput" class="form-label">Age</label>
                       <select id="ageSelectInput"
-                              v-model="productViewModel.userAgeId"
-                              class="form-select" >
+                        v-model="productViewModel.userAgeId"
+                        class="form-select" >
                         <option v-bind:value="null">--select--</option>
                         <option v-bind:value="a.id" v-for="a in productViewModel.ages" >
                           <template v-if="a.fixedAge">Fixed Age - {{a.fixedAge}}</template>
@@ -63,8 +63,8 @@
                     <div class="mb-3">
                       <label for="colorSelectInput" class="form-label">Color</label>
                       <select id="colorSelectInput"
-                              v-model="productViewModel.colorId"
-                              class="form-select" >
+                        v-model="productViewModel.colorId"
+                        class="form-select" >
                         <option v-bind:value="null">--select--</option>
                         <option v-bind:value="c.id" v-for="c in productViewModel.colors" >
                           {{c.colorName}}
@@ -74,8 +74,8 @@
                     <div class="mb-3">
                       <label for="typeSelectInput" class="form-label">Type</label>
                       <select id="typeSelectInput"
-                              v-model="productViewModel.typeId"
-                              class="form-select" >
+                        v-model="productViewModel.typeId"
+                        class="form-select" >
                         <option v-bind:value="null">--select--</option>
                         <option v-bind:value="t.id" v-for="t in productViewModel.types" >
                           {{t.typeName}}
@@ -85,8 +85,8 @@
                     <div class="mb-3">
                       <label for="brandSelectInput" class="form-label">Brand</label>
                       <select id="brandSelectInput"
-                              v-model="productViewModel.brandId"
-                              class="form-select" >
+                        v-model="productViewModel.brandId"
+                        class="form-select" >
                         <option v-bind:value="null">--select--</option>
                         <option v-bind:value="b.id" v-for="b in productViewModel.brands" >
                           {{b.brandName}}
@@ -96,8 +96,8 @@
                     <div class="mb-3">
                       <label for="userSelectInput" class="form-label">User</label>
                       <select id="userSelectInput"
-                              v-model="productViewModel.userTypeId"
-                              class="form-select" >
+                        v-model="productViewModel.userTypeId"
+                        class="form-select" >
                         <option v-bind:value="null">--select--</option>
                         <option v-bind:value="u.id" v-for="u in productViewModel.userTypes" >
                           {{u.userTypeName}}
@@ -107,8 +107,8 @@
                     <div class="mb-3">
                       <label for="billSelectInput" class="form-label">Bill No(Supplier)</label>
                       <select id="billSelectInput"
-                              v-model="productViewModel.billNumber"
-                              class="form-select" required>
+                        v-model="productViewModel.billNumber"
+                        class="form-select" required>
                         <option v-bind:value="null">--select--</option>
                         <option v-bind:value="b.billNumber" v-for="b in productViewModel.supplierBills" >
                           {{b.billNumber}}
@@ -124,9 +124,10 @@
                     <div class="mb-3">
                       <label for="totalQuantityInput" class="form-label">Quantity</label>
                       <input v-model="productViewModel.totalQuantity"
-                             type="number"
-                             class="form-control"
-                             id="totalQuantityInput" required>
+                         type="number"
+                         class="form-control"
+                         min="0"
+                         id="totalQuantityInput" required>
                       <div class="invalid-feedback">
                         Please give total quantity!
                       </div>
@@ -137,9 +138,10 @@
                     <div class="mb-3">
                       <label for="singlePriceInput" class="form-label">Price</label>
                       <input v-model="productViewModel.singlePurchasePrice"
-                             type="number"
-                             class="form-control"
-                             id="singlePriceInput" required>
+                         type="number"
+                         min="0"
+                         class="form-control"
+                         id="singlePriceInput" required>
                       <div class="invalid-feedback">
                         Please give single price!
                       </div>
@@ -150,9 +152,10 @@
                     <div class="mb-3">
                       <label for="minOfferInput" class="form-label">Offer(%)</label>
                       <input v-model="productViewModel.minOfferPercentage"
-                             type="number"
-                             class="form-control"
-                             id="minOfferInput" required>
+                         type="number"
+                         class="form-control"
+                         min="0"
+                         id="minOfferInput" required>
                       <div class="invalid-feedback">
                         Please give minimum offer percentage!
                       </div>
@@ -163,9 +166,10 @@
                     <div class="mb-3">
                       <label for="maxProfitInput" class="form-label">Profit(%)</label>
                       <input v-model="productViewModel.minProfitPercentage"
-                             type="number"
-                             class="form-control"
-                             id="maxProfitInput" required>
+                         type="number"
+                         class="form-control"
+                         min="0"
+                         id="maxProfitInput" required>
                       <div class="invalid-feedback">
                         Please give minimum profit percentage!
                       </div>
@@ -176,9 +180,10 @@
                     <div class="mb-3">
                       <label for="vatInput" class="form-label">VAT(%)</label>
                       <input v-model="productViewModel.vatPercentage"
-                         type="number"
-                         class="form-control"
-                         id="vatInput">
+                        type="number"
+                        class="form-control"
+                        min="0"
+                        id="vatInput">
                     </div>
                     <div class="mb-3" >
                       <multiple-image
@@ -195,15 +200,15 @@
                 <div class="modal-footer" >
                   <div v-if="productViewModel.id === -1" ></div>
                   <button v-else-if="productViewModel.id === 0"
-                          type="submit"
-                          class="btn btn-primary"
-                          v-on:click="verifyInput(opState.CREATE)" >
+                    type="submit"
+                    class="btn btn-primary"
+                    v-on:click="verifyInput(opState.CREATE)" >
                     Save
                   </button>
                   <button v-else
-                          type="submit"
-                          class="btn btn-warning"
-                          v-on:click="verifyInput(opState.UPDATE)" >
+                    type="submit"
+                    class="btn btn-warning"
+                    v-on:click="verifyInput(opState.UPDATE)" >
                     Update
                   </button>
                   <button v-on:click="onReset" class="btn btn-outline-dark" >Reset</button>
@@ -308,8 +313,8 @@ export default {
         vatPercentage : 0,
         availableQuantity : null,
         singlePurchasePrice : null,
-        minOfferPercentage : null,
-        minProfitPercentage : null,
+        minOfferPercentage : 0,
+        minProfitPercentage : 0,
         products : [],
         sizes : [],
         fabrics : [],
@@ -440,8 +445,8 @@ export default {
       this.productViewModel.userTypeId = null;
       this.productViewModel.totalQuantity = null;
       this.productViewModel.availableQuantity = null;
-      this.productViewModel.minProfitPercentage = null;
-      this.productViewModel.minOfferPercentage = null;
+      this.productViewModel.minProfitPercentage = 0;
+      this.productViewModel.minOfferPercentage = 0;
       this.productViewModel.singlePurchasePrice = null;
       this.productViewModel.vatPercentage = 0;
       this.productViewModel.initImages = [];

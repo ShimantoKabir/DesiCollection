@@ -20,6 +20,7 @@ class CreateBillsTable extends Migration
             $table->integer("givenPrice");
             $table->boolean("isActive")->default(true);
             $table->string("ip")->nullable();
+            $table->string("replaceBy")->nullable();
             $table->dateTime("createdAt");
             $table->dateTime("updatedAt")->nullable();
             $table->integer("modifiedBy")->nullable();

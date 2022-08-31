@@ -473,10 +473,11 @@ class ProductViewModel extends BaseViewModel
 
         $inputValidationResponse = $this->checkInputValidation($productViewModel,[
             'billNumber' => 'required|string',
-            'totalQuantity' => 'required|int',
-            'minOfferPercentage' => 'required|int',
-            'minProfitPercentage' => 'required|int',
-            'singlePurchasePrice' => 'required|int',
+            'totalQuantity' => 'required|string',
+            'minOfferPercentage' => 'required|string',
+            'minProfitPercentage' => 'required|string',
+            'singlePurchasePrice' => 'required|string',
+            'vatPercentage' => 'required|string'
         ]);
 
         if($inputValidationResponse != CustomResponseMsg::OK->value){
@@ -503,7 +504,7 @@ class ProductViewModel extends BaseViewModel
         $this->setUserTypeId($productViewModel["userTypeId"]);
         $this->setBillNumber($productViewModel["billNumber"]);
         $this->setTotalQuantity($productViewModel["totalQuantity"]);
-        $this->setVatPercentage(is_integer($productViewModel["vatPercentage"]) ? $productViewModel["vatPercentage"] : 0);
+        $this->setVatPercentage($productViewModel["vatPercentage"]);
         $this->setSinglePurchasePrice($productViewModel["singlePurchasePrice"]);
         $this->setMinOfferPercentage($productViewModel["minOfferPercentage"]);
         $this->setMinProfitPercentage($productViewModel["minProfitPercentage"]);
@@ -520,10 +521,11 @@ class ProductViewModel extends BaseViewModel
 
         $inputValidationResponse = $this->checkInputValidation($productViewModel,[
             'billNumber' => 'required|string',
-            'totalQuantity' => 'required|int',
-            'minOfferPercentage' => 'required|int',
-            'minProfitPercentage' => 'required|int',
-            'singlePurchasePrice' => 'required|int'
+            'totalQuantity' => 'required|string',
+            'minOfferPercentage' => 'required|string',
+            'minProfitPercentage' => 'required|string',
+            'singlePurchasePrice' => 'required|string',
+            'vatPercentage' => 'required|string'
         ]);
 
         if($inputValidationResponse != CustomResponseMsg::OK->value){
@@ -550,7 +552,7 @@ class ProductViewModel extends BaseViewModel
         $this->setUserAgeId($productViewModel["userAgeId"]);
         $this->setUserTypeId($productViewModel["userTypeId"]);
         $this->setBillNumber($productViewModel["billNumber"]);
-        $this->setVatPercentage(is_integer($productViewModel["vatPercentage"]) ? $productViewModel["vatPercentage"] : 0);
+        $this->setVatPercentage($productViewModel["vatPercentage"]);
         $this->setTotalQuantity($productViewModel["totalQuantity"]);
         $this->setAvailableQuantity($productViewModel["availableQuantity"]);
         $this->setSinglePurchasePrice($productViewModel["singlePurchasePrice"]);

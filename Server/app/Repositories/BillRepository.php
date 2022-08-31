@@ -10,6 +10,7 @@ use App\Models\Product;
 use App\Repositories\Interfaces\IBillRepository;
 use App\ViewModels\AgeViewModel;
 use App\ViewModels\BillViewModel;
+use Exception;
 use Illuminate\Support\Facades\DB;
 
 class BillRepository extends BaseRepository implements IBillRepository
@@ -95,14 +96,42 @@ class BillRepository extends BaseRepository implements IBillRepository
                 'b.customerId',
                 'b.givenPrice',
                 'b.isActive',
+                'b.replaceBy',
                 'b.createdAt',
                 DB::raw("c.mobile_number AS mobileNumber"),
                 DB::raw("c.first_name AS firstName"),
                 DB::raw("IFNULL(u.first_name, IFNULL(u.mobile_number, u.email)) AS billedBy")
             )
+            ->orderBy("b.id","desc")
             ->paginate(5);
 
         $response->setPaginator($billPaginateRes);
         return $response;
+    }
+
+    public function inActiveBillByNumber(BillViewModel $billViewModel) : CustomResponse
+    {
+        $res = new CustomResponse();
+        DB::beginTransaction();
+        try{
+
+            Bill::where('number',$billViewModel->getNumber())
+                ->update([
+                    'isActive' => false,
+                    'replaceBy' => $billViewModel->getReplaceBy()
+                ]);
+
+            DB::commit();
+
+            $res->setCode(CustomResponseCode::SUCCESS->value);
+            $res->setMsg(CustomResponseMsg::SUCCESS->value);
+
+        }catch (Exception $e){
+            DB::rollBack();
+            $res->setCode(CustomResponseCode::ERROR->value);
+            $res->setMsg($e->getMessage());
+        }
+
+        return $res;
     }
 }

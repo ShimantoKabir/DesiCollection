@@ -14,6 +14,7 @@ class Bill extends Model
         'customerId',
         'givenPrice',
         'isActive',
+        'replaceBy',
         'ip',
         'createdAt',
         'updatedAt',
