@@ -11,15 +11,17 @@ namespace App\Http\Controllers;
 use App\Enums\CustomResponseCode;
 use App\Enums\CustomResponseMsg;
 use App\Models\CustomResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response as HttpResponseCodes;
 
 class TestCtl extends Controller
 {
-    public function test(Request $request) : CustomResponse
+    public function test(Request $request) : JsonResponse
     {
         $res = new CustomResponse();
         $res->setMsg(CustomResponseMsg::SUCCESS->value);
         $res->setCode(CustomResponseCode::SUCCESS->value);
-        return $res;
+        return response()->json($res, HttpResponseCodes::HTTP_OK);
     }
 }
