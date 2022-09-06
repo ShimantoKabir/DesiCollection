@@ -114,7 +114,6 @@ class BillRepository extends BaseRepository implements IBillRepository
         $res = new CustomResponse();
         DB::beginTransaction();
         try{
-
             Bill::where('number',$billViewModel->getNumber())
                 ->update([
                     'isActive' => false,

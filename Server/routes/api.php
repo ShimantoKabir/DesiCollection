@@ -35,7 +35,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/test', [TestCtl::class, 'test']);
+Route::get('/test-db', [TestCtl::class, 'testDB']);
+Route::get('/test-api', [TestCtl::class, 'testApi']);
+Route::get('/clear-cache', [TestCtl::class, 'clearCache']);
 
 Route::post('/user-infos/login', [UserInfoCtl::class, 'login']);
 Route::post('/user-infos/reload', [UserInfoCtl::class, 'reload']);
